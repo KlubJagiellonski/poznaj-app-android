@@ -16,9 +16,8 @@ import pl.poznajapp.model.Point;
 
 public class LocalisationUtils {
 
-
     void pointIsNear(Context context, Location userPosition, List<Point> points){
-        int distance = (int) context.getResources().getDimension(R.dimen.standard_destination_acc);
+        int distance = context.getResources().getInteger(R.integer.standard_destination_acc);
         for(Point point : points){
             Location locPoint = new Location("");
             locPoint.setLatitude(point.getmLant());

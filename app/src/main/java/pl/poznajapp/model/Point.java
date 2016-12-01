@@ -1,5 +1,9 @@
 package pl.poznajapp.model;
 
+import android.graphics.drawable.Drawable;
+
+import java.util.List;
+
 /**
  * Created by rafal on 01.12.2016.
  */
@@ -10,6 +14,7 @@ public class Point {
     long mLong;
     String mTitle;
     String mDescription;
+    List<Drawable> images;
 
     public long getmLant() {
         return mLant;
@@ -41,5 +46,13 @@ public class Point {
 
     public void setmDescription(String mDescription) {
         this.mDescription = mDescription;
+    }
+
+    public List<Drawable> getImages() {
+        return images;
+    }
+
+    public void setImages(List<Drawable> images) {
+        this.images = images;
     }
 }

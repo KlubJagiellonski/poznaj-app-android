@@ -12,6 +12,6 @@
     <dimen name="main_card_view_title_font_size">24sp</dimen>
 
 
-    <dimen name="standard_destination_acc">100</dimen>
+    <integer name="standard_destination_acc">100</integer>
 
 </resources>
