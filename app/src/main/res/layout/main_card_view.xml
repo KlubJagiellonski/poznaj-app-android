@@ -30,7 +30,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/main_card_title"
-            android:textStyle="bold"
             android:textSize="@dimen/main_card_view_title_font_size"
             android:paddingTop="@dimen/main_card_view_title_top_padding"
             android:paddingBottom="@dimen/main_card_view_title_bottom_padding"
