@@ -11,4 +11,7 @@
     <dimen name="main_card_view_title_bottom_padding">16dp</dimen>
     <dimen name="main_card_view_title_font_size">24sp</dimen>
 
+
+    <dimen name="standard_destination_acc">100</dimen>
+
 </resources>
