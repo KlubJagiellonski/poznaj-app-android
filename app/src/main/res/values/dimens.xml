@@ -6,5 +6,9 @@
 
     <dimen name="main_card_view_horizontal_margin">16dp</dimen>
     <dimen name="main_card_view_vertical_margin">8dp</dimen>
+    <dimen name="main_card_view_title_top_padding">24dp</dimen>
+    <dimen name="main_card_view_title_horizontal_padding">16dp</dimen>
+    <dimen name="main_card_view_title_bottom_padding">16dp</dimen>
+    <dimen name="main_card_view_title_font_size">24sp</dimen>
 
 </resources>

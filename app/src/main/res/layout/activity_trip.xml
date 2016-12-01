@@ -70,7 +70,7 @@
 
             <fragment
                 android:id="@+id/trip_map"
-                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:name="com.google.android.gms.maps.MapFragment"
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
                 tools:context="pl.poznajapp.view.activity.TripActivity" />
@@ -89,6 +89,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/activity_horizontal_margin"
+        android:src="@drawable/ic_directions_walk_white_24dp"
         app:layout_anchor="@id/trip_appbar"
         app:layout_anchorGravity="bottom|right|end" />
 

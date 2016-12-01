@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/card_view"
     android:layout_width="match_parent"
-    android:layout_height="200dp"
+    android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:layout_marginBottom="@dimen/main_card_view_vertical_margin"
     android:layout_marginLeft="@dimen/main_card_view_horizontal_margin"
@@ -15,17 +15,28 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/mock_trip_image">
+        android:layout_height="wrap_content">
+
+
+        <pl.poznajapp.view.widget.PanoramicImageView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/mock_trip_image"
+            android:scaleType="centerCrop"
+            android:id="@+id/panoramicImageView" />
 
         <TextView
             android:id="@+id/main_card_view_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Hello Card"
-            android:textSize="28sp"
-            android:textColor="#fff"
-            android:layout_alignParentBottom="true"
+            android:text="@string/main_card_title"
+            android:textStyle="bold"
+            android:textSize="@dimen/main_card_view_title_font_size"
+            android:paddingTop="@dimen/main_card_view_title_top_padding"
+            android:paddingBottom="@dimen/main_card_view_title_bottom_padding"
+            android:paddingLeft="@dimen/main_card_view_title_horizontal_padding"
+            android:paddingRight="@dimen/main_card_view_title_horizontal_padding"
+            android:layout_below="@+id/panoramicImageView"
             android:layout_alignParentStart="true"
             android:layout_alignParentEnd="true" />
 

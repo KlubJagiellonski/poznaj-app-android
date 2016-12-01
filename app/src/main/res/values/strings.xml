@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Lorem ipsum</string>
+
+    <string name="trip_toolbar_title">History trip</string>
+    <string name="main_card_title">History trip</string>
+    <string name="apppoint__title">All point</string>
+
 </resources>
