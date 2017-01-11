@@ -50,7 +50,11 @@ public class TripActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trip);
         ButterKnife.bind(this);
+    }
 
+    @Override
+    public void onResume(){
+        super.onResume();
         mockData();
         initToolbar();
         initList();
@@ -60,8 +64,9 @@ public class TripActivity extends AppCompatActivity implements OnMapReadyCallbac
     void initToolbar() {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(toolbarTitle);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
     }
 
     void initList(){

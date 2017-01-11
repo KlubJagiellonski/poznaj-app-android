@@ -42,11 +42,17 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
         initToolbar();
         initList();
         initAnimations();
         inicClickListsners();
     }
+
 
     void initToolbar(){
         setSupportActionBar(toolbar);
