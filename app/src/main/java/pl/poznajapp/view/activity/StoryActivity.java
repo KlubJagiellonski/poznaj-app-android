@@ -8,6 +8,7 @@ import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -27,13 +28,23 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import pl.poznajapp.R;
 import pl.poznajapp.model.Picture;
+import pl.poznajapp.network.API;
+import pl.poznajapp.pojo.Story;
 import pl.poznajapp.view.adapter.PictureAdapter;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Created by rafal on 29.11.2016.
  */
 
-public class TripActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class StoryActivity extends AppCompatActivity implements OnMapReadyCallback {
+
+    public static final String EXTRA_STORY = "EXTRA_STORY";
+    private static final String TAG = StoryActivity.class.toString();
 
     @BindView(R.id.trip_toolbar) Toolbar toolbar;
     @BindView(R.id.trip_pictures) RecyclerView picturesRecyclerView;
@@ -45,11 +56,22 @@ public class TripActivity extends AppCompatActivity implements OnMapReadyCallbac
     List pictures;
     List<MarkerOptions> markers;
 
+    Integer id;
+    API service;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_trip);
         ButterKnife.bind(this);
+        id = getIntent().getIntExtra(EXTRA_STORY, -1);
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://poznaj-wroclaw.herokuapp.com/api/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        service = retrofit.create(API.class);
+
     }
 
     @Override
@@ -59,6 +81,7 @@ public class TripActivity extends AppCompatActivity implements OnMapReadyCallbac
         initToolbar();
         initList();
         initMap();
+        getStoryDetails();
     }
 
     void initToolbar() {
@@ -149,6 +172,23 @@ public class TripActivity extends AppCompatActivity implements OnMapReadyCallbac
 //        int padding = 50; // offset from edges of the map in pixels
 //        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
 //        googleMap.moveCamera(cu);
+
+    }
+
+    public void getStoryDetails() {
+
+        Call<Story> call = service.getStory(id);
+        call.enqueue(new Callback<Story>() {
+            @Override
+            public void onResponse(Call<Story> call, Response<Story> response) {
+                Log.d(TAG, response.body().getTitle());
+            }
+
+            @Override
+            public void onFailure(Call<Story> call, Throwable t) {
+
+            }
+        });
 
     }
 }

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.OvershootInterpolator;
@@ -17,20 +18,28 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import pl.poznajapp.R;
-import pl.poznajapp.model.Trip;
+import pl.poznajapp.network.API;
+import pl.poznajapp.pojo.Story;
 import pl.poznajapp.utils.Utils;
-import pl.poznajapp.view.adapter.TripAdapter;
+import pl.poznajapp.view.adapter.StoryAdapter;
 import pl.poznajapp.view.listener.RecyclerItemClickListener;
-import timber.log.Timber;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 public class MainActivity extends AppCompatActivity {
+
+    final String TAG = "MainActivity";
 
     @BindView(R.id.main_toolbar) android.support.v7.widget.Toolbar toolbar;
     @BindView(R.id.main_trip_list) android.support.v7.widget.RecyclerView tripList;
     @BindView(R.id.main_action_button) android.support.design.widget.FloatingActionButton actionButton;
 
-    TripAdapter mAdapter;
-    List trips;
+    StoryAdapter mAdapter;
+    ArrayList<Story> stories;
+    API service;
 
     private static final int ANIM_DURATION_TOOLBAR = 200;
     private static final int ANIM_DURATION_FAB = 400;
@@ -41,6 +50,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("https://poznaj-wroclaw.herokuapp.com/api/")
+                .addConverterFactory(GsonConverterFactory.create())
+                .build();
+        service = retrofit.create(API.class);
 
     }
 
@@ -88,21 +103,20 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void initList(){
-        //TODO implement
-        mockList();
-        mAdapter = new TripAdapter(trips);
+        mAdapter = new StoryAdapter(new ArrayList<Story>());
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         tripList.setLayoutManager(mLayoutManager);
         tripList.setItemAnimator(new DefaultItemAnimator());
         tripList.setAdapter(mAdapter);
+        getStoriesList();
     }
 
     void inicClickListsners(){
         tripList.addOnItemTouchListener(new RecyclerItemClickListener(this, tripList, new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                Intent intent =  new Intent(getApplicationContext(), TripActivity.class);
-                //TODO intent etxtras
+                Intent intent =  new Intent(getApplicationContext(), StoryActivity.class);
+                intent.putExtra(StoryActivity.EXTRA_STORY, stories.get(position).getId());
                 startActivity(intent);
             }
 
@@ -114,33 +128,28 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    //TODO to remove
-    void mockList(){
-        trips = new ArrayList<Trip>();
-        Trip trip = new Trip();
-        trip.setTitle("Rzeszów");
-        trips.add(trip);
+    void getStoriesList(){
+        stories = new ArrayList<>();
 
-        trip = new Trip();
-        trip.setTitle("Rzeszów");
-        trips.add(trip);
+        Call<List<Story>> call = service.listStories();
+        call.enqueue(new Callback<List<Story>>() {
+            @Override
+            public void onResponse(Call<List<Story>> call, Response<List<Story>> response) {
+                Log.d("APIResult", "SIEMA");
+                List<Story> stories = response.body();
+                for(Story story : stories){
+                    MainActivity.this.stories.add(story);
+                    mAdapter.setItemList(MainActivity.this.stories);
+                    mAdapter.notifyDataSetChanged();
+                    Log.d("APIResult", "added");
+                }
+            }
 
-        trip = new Trip();
-        trip.setTitle("Rzeszów");
-        trips.add(trip);
-
-        trip = new Trip();
-        trip.setTitle("Rzeszów");
-        trips.add(trip);
-
-        trip = new Trip();
-        trip.setTitle("Rzeszów");
-        trips.add(trip);
-
-        trip = new Trip();
-        trip.setTitle("Rzeszów");
-        trips.add(trip);
-
+            @Override
+            public void onFailure(Call<List<Story>> call, Throwable t) {
+                Log.d("APIResult", "SIEMA2");
+            }
+        });
     }
 
 

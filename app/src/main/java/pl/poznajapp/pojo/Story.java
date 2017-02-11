@@ -7,7 +7,6 @@ import java.util.Map;
 /**
  * Created by rafal on 11.01.17.
  */
-
 public class Story {
 
     private Integer id;
@@ -44,6 +43,7 @@ public class Story {
     public String getDescription() {
         return description;
     }
+
 
     public void setDescription(String description) {
         this.description = description;

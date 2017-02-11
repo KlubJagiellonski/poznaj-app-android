@@ -73,7 +73,7 @@
                 android:name="com.google.android.gms.maps.MapFragment"
                 android:layout_width="match_parent"
                 android:layout_height="300dp"
-                tools:context="pl.poznajapp.view.activity.TripActivity" />
+                tools:context="pl.poznajapp.view.activity.StoryActivity" />
 
 
             <android.support.v7.widget.RecyclerView
