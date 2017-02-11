@@ -11,7 +11,8 @@ import java.util.Map;
 public class Point {
 
     private String type;
-    private List<Feature> features = null;
+    private Geometry geometry;
+    private Properties properties;
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     public String getType() {
@@ -22,12 +23,20 @@ public class Point {
         this.type = type;
     }
 
-    public List<Feature> getFeatures() {
-        return features;
+    public Geometry getGeometry() {
+        return geometry;
     }
 
-    public void setFeatures(List<Feature> features) {
-        this.features = features;
+    public void setGeometry(Geometry geometry) {
+        this.geometry = geometry;
+    }
+
+    public Properties getProperties() {
+        return properties;
+    }
+
+    public void setProperties(Properties properties) {
+        this.properties = properties;
     }
 
     public Map<String, Object> getAdditionalProperties() {

@@ -9,19 +9,24 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.widget.TextView;
 
+import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 import butterknife.BindString;
 import butterknife.BindView;
@@ -29,6 +34,7 @@ import butterknife.ButterKnife;
 import pl.poznajapp.R;
 import pl.poznajapp.model.Picture;
 import pl.poznajapp.network.API;
+import pl.poznajapp.pojo.Point;
 import pl.poznajapp.pojo.Story;
 import pl.poznajapp.view.adapter.PictureAdapter;
 import retrofit2.Call;
@@ -47,14 +53,18 @@ public class StoryActivity extends AppCompatActivity implements OnMapReadyCallba
     private static final String TAG = StoryActivity.class.toString();
 
     @BindView(R.id.trip_toolbar) Toolbar toolbar;
+    @BindView(R.id.story_description) TextView storyDescription;
+    @BindView(R.id.story_duration) TextView storyDuration;
     @BindView(R.id.trip_pictures) RecyclerView picturesRecyclerView;
 
-    @BindString(R.string.trip_toolbar_title) String toolbarTitle;
-
     MapFragment supportMapFragment;
+    GoogleMap googleMap;
     PictureAdapter mAdapter;
     List pictures;
     List<MarkerOptions> markers;
+
+
+    Story story;
 
     Integer id;
     API service;
@@ -81,12 +91,10 @@ public class StoryActivity extends AppCompatActivity implements OnMapReadyCallba
         initToolbar();
         initList();
         initMap();
-        getStoryDetails();
     }
 
     void initToolbar() {
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle(toolbarTitle);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -127,51 +135,29 @@ public class StoryActivity extends AppCompatActivity implements OnMapReadyCallba
         pic.setUrl("http://google.pl");
         pictures.add(pic);
 
-        LatLng PERTH = new LatLng(-31.952854, 115.857342);
-        LatLng SYDNEY = new LatLng(-33.87365, 151.20689);
-        LatLng BRISBANE = new LatLng(-27.47093, 153.0235);
-
-
-        markers = new ArrayList<>();
-        markers.add(new MarkerOptions()
-                .position(PERTH)
-                .title("Perth"));
-        markers.add(new MarkerOptions()
-                .position(SYDNEY)
-                .title("Sydnay"));
-        markers.add(new MarkerOptions()
-                .position(BRISBANE)
-                .title("Brisbane"));
-
     }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        googleMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-        googleMap.getUiSettings().setAllGesturesEnabled(false);
-        googleMap.getUiSettings().setMapToolbarEnabled(false);
-        googleMap.getUiSettings().setRotateGesturesEnabled(false);
-        googleMap.getUiSettings().setCompassEnabled(false);
-        googleMap.getUiSettings().setMyLocationButtonEnabled(false);
-        googleMap.getUiSettings().setTiltGesturesEnabled(false);
-        googleMap.getUiSettings().setZoomControlsEnabled(false);
-        googleMap.getUiSettings().setZoomGesturesEnabled(false);
+        this.googleMap = googleMap;
+        this.googleMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+        this.googleMap.getUiSettings().setAllGesturesEnabled(false);
+        this.googleMap.getUiSettings().setMapToolbarEnabled(false);
+        this.googleMap.getUiSettings().setRotateGesturesEnabled(false);
+        this.googleMap.getUiSettings().setCompassEnabled(false);
+        this.googleMap.getUiSettings().setMyLocationButtonEnabled(false);
+        this.googleMap.getUiSettings().setTiltGesturesEnabled(false);
+        this.googleMap.getUiSettings().setZoomControlsEnabled(false);
+        this.googleMap.getUiSettings().setZoomGesturesEnabled(false);
 
-
-        PolylineOptions line= new PolylineOptions();
-        line.width(5).color(Color.BLACK);
-        LatLngBounds.Builder builder = new LatLngBounds.Builder();
-        for (MarkerOptions marker : markers) {
-            googleMap.addMarker(marker);
-            builder.include(marker.getPosition());
-            line.add(marker.getPosition());
-        }
-        LatLngBounds bounds = builder.build();
-        googleMap.addPolyline(line);
-        //TODO implement
-//        int padding = 50; // offset from edges of the map in pixels
-//        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
-//        googleMap.moveCamera(cu);
+        this.googleMap.setOnMarkerClickListener(
+                new GoogleMap.OnMarkerClickListener() {
+                    boolean doNotMoveCameraToCenterMarker = true;
+                    public boolean onMarkerClick(Marker marker) {
+                        return doNotMoveCameraToCenterMarker;
+                    }
+                });
+        getStoryDetails();
 
     }
 
@@ -182,6 +168,13 @@ public class StoryActivity extends AppCompatActivity implements OnMapReadyCallba
             @Override
             public void onResponse(Call<Story> call, Response<Story> response) {
                 Log.d(TAG, response.body().getTitle());
+                story = response.body();
+                getSupportActionBar().setTitle(story.getTitle());
+                storyDuration.setText(story.getDuration());
+                storyDescription.setText(story.getDescription());
+
+                injectPointOnMap(story.getPoints());
+
             }
 
             @Override
@@ -190,5 +183,54 @@ public class StoryActivity extends AppCompatActivity implements OnMapReadyCallba
             }
         });
 
+    }
+
+    private void injectPointOnMap(List<String> points) {
+        markers = new ArrayList<>();
+        for(String point : points){
+            Log.d(TAG, "Points: " + point + " : " + Integer.toString(getIntFromString(point)));
+
+            Call<Point> call = service.getPoint(getIntFromString(point));
+            call.enqueue(new Callback<Point>() {
+                @Override
+                public void onResponse(Call<Point> call, Response<Point> response) {
+
+                    Point point = response.body();
+                    Log.d(TAG, point.getGeometry().getCoordinates().toString());
+
+                    Double longitude = point.getGeometry().getCoordinates().get(0);
+                    Double latitude = point.getGeometry().getCoordinates().get(1);
+                    LatLng position = new LatLng(latitude, longitude);
+
+                    markers.add(new MarkerOptions()
+                            .position(position)
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_place_black_24dp))
+                            .title(point.getProperties().getTitle()));
+                    googleMap.addMarker(markers.get(markers.size()-1));
+
+
+                    LatLngBounds.Builder builder = new LatLngBounds.Builder();
+                    for (MarkerOptions marker : markers) {
+                        builder.include(marker.getPosition());
+                    }
+                    int padding = 100;
+                    LatLngBounds bounds = builder.build();
+                    CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+                    googleMap.animateCamera(cu);
+                }
+
+                @Override
+                public void onFailure(Call<Point> call, Throwable t) {
+
+                }
+            });
+
+        }
+    }
+
+
+    private int getIntFromString(String s){
+        Scanner in = new Scanner(s).useDelimiter("[^0-9]+");
+        return in.nextInt();
     }
 }

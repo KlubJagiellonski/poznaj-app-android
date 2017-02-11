@@ -22,6 +22,9 @@ public interface API {
     @GET("points/?format=json")
     Call<List<Point>> listPoints();
 
+    @GET("points/{id}?format=json")
+    Call<Point> getPoint(@Path("id") Integer id);
+
     @GET("stories/?format=json")
     Call<List<Story>> listStories();
 
