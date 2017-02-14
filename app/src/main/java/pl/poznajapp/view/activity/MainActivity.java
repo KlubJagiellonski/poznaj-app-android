@@ -115,6 +115,7 @@ public class MainActivity extends AppCompatActivity {
         tripList.addOnItemTouchListener(new RecyclerItemClickListener(this, tripList, new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
+                Log.d(TAG, "Click on item");
                 Intent intent =  new Intent(getApplicationContext(), StoryActivity.class);
                 intent.putExtra(StoryActivity.EXTRA_STORY, stories.get(position).getId());
                 startActivity(intent);
