@@ -1,45 +1,45 @@
 package pl.poznajapp.view.adapter;
 
-import android.app.Activity;
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import pl.poznajapp.R;
-import pl.poznajapp.model.Trip;
+import pl.poznajapp.pojo.Story;
+import pl.poznajapp.view.widget.PanoramicImageView;
 
 /**
  * Created by rafal on 29.11.2016.
  */
 
-public class TripAdapter extends RecyclerView.Adapter<TripAdapter.MyTripViewHolder> {
+public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.MyTripViewHolder> {
 
-    List<Trip> trips;
+    List<Story> trips;
 
-    public TripAdapter(List trips) {
+    public StoryAdapter(List trips) {
         this.trips = trips;
     }
 
     @Override
-    public TripAdapter.MyTripViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public StoryAdapter.MyTripViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext()).inflate(R.layout.main_card_view, parent, false);
 
         return new MyTripViewHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(TripAdapter.MyTripViewHolder holder, int position) {
-        Trip trip = trips.get(position);
+    public void onBindViewHolder(StoryAdapter.MyTripViewHolder holder, int position) {
+        Story trip = trips.get(position);
         holder.vTitle.setText(trip.getTitle());
+    }
 
+
+    public void setItemList(List trips){
+        this.trips = trips;
     }
 
     @Override
@@ -50,6 +50,7 @@ public class TripAdapter extends RecyclerView.Adapter<TripAdapter.MyTripViewHold
     public class MyTripViewHolder extends RecyclerView.ViewHolder {
 
         TextView vTitle;
+        PanoramicImageView panoramicImageView;
 
         public MyTripViewHolder(View itemView) {
             super(itemView);

@@ -11,7 +11,6 @@ import java.util.List;
 
 import pl.poznajapp.R;
 import pl.poznajapp.model.Picture;
-import pl.poznajapp.model.Trip;
 
 /**
  * Created by rafal on 30.11.2016.
