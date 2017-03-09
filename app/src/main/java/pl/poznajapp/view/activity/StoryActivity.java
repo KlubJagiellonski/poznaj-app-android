@@ -1,6 +1,7 @@
 package pl.poznajapp.view.activity;
 
-import android.graphics.Color;
+import android.content.Intent;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -12,7 +13,6 @@ import android.util.Log;
 import android.view.KeyEvent;
 import android.widget.TextView;
 
-import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -21,22 +21,23 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import butterknife.BindString;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import pl.poznajapp.R;
 import pl.poznajapp.model.Picture;
 import pl.poznajapp.network.API;
 import pl.poznajapp.pojo.Point;
 import pl.poznajapp.pojo.Story;
+import pl.poznajapp.service.AppService;
 import pl.poznajapp.view.adapter.PictureAdapter;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -53,10 +54,10 @@ public class StoryActivity extends AppCompatActivity implements OnMapReadyCallba
     public static final String EXTRA_STORY = "EXTRA_STORY";
     private static final String TAG = StoryActivity.class.toString();
 
-    @BindView(R.id.trip_toolbar) Toolbar toolbar;
+    @BindView(R.id.story_toolbar) Toolbar toolbar;
     @BindView(R.id.story_description) TextView storyDescription;
     @BindView(R.id.story_duration) TextView storyDuration;
-    @BindView(R.id.trip_pictures) RecyclerView picturesRecyclerView;
+    @BindView(R.id.story_pictures) RecyclerView picturesRecyclerView;
 
     MapFragment supportMapFragment;
     GoogleMap googleMap;
@@ -73,7 +74,7 @@ public class StoryActivity extends AppCompatActivity implements OnMapReadyCallba
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_trip);
+        setContentView(R.layout.activity_story);
         ButterKnife.bind(this);
         id = getIntent().getIntExtra(EXTRA_STORY, -1);
 
@@ -94,6 +95,16 @@ public class StoryActivity extends AppCompatActivity implements OnMapReadyCallba
         initMap();
     }
 
+    @OnClick(R.id.story_fab)
+    void onClickFab(){
+        Intent i= new Intent(getApplicationContext(), AppService.class);
+        i.putStringArrayListExtra(AppService.POINTS, new ArrayList<String>(story.getPoints()));
+        startService(i);
+
+        Intent intent =  new Intent(getApplicationContext(), TripActivity.class);
+        startActivity(intent);
+    }
+
     void initToolbar() {
         setSupportActionBar(toolbar);
         getSupportActionBar().setHomeButtonEnabled(true);
@@ -110,7 +121,7 @@ public class StoryActivity extends AppCompatActivity implements OnMapReadyCallba
     }
 
     void initMap(){
-        supportMapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.trip_map);
+        supportMapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.story_map);
         supportMapFragment.getMapAsync(this);
     }
 
@@ -135,7 +146,6 @@ public class StoryActivity extends AppCompatActivity implements OnMapReadyCallba
         pic = new Picture();
         pic.setUrl("http://google.pl");
         pictures.add(pic);
-
     }
 
     @Override
@@ -150,6 +160,15 @@ public class StoryActivity extends AppCompatActivity implements OnMapReadyCallba
         this.googleMap.getUiSettings().setTiltGesturesEnabled(false);
         this.googleMap.getUiSettings().setZoomControlsEnabled(false);
         this.googleMap.getUiSettings().setZoomGesturesEnabled(false);
+
+        try {
+            boolean success = googleMap.setMapStyle(
+                    MapStyleOptions.loadRawResourceStyle(this, R.raw.style_json));
+
+            if (!success) Log.e(TAG, "Style parsing failed.");
+        } catch (Resources.NotFoundException e) {
+            Log.e(TAG, "Can't find style. Error: ", e);
+        }
 
         this.googleMap.setOnMarkerClickListener(
                 new GoogleMap.OnMarkerClickListener() {
