@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import java.util.List;
 
@@ -13,7 +12,7 @@ import pl.poznajapp.R;
 import pl.poznajapp.model.Picture;
 
 /**
- * Created by rafal on 30.11.2016.
+ * Created by Rafał Gawlik on 30.11.2016.
  */
 
 public class PictureAdapter extends RecyclerView.Adapter<PictureAdapter.MyPictureViewHolder> {

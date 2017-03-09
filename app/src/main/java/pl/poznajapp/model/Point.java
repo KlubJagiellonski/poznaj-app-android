@@ -5,7 +5,7 @@ import android.graphics.drawable.Drawable;
 import java.util.List;
 
 /**
- * Created by rafal on 01.12.2016.
+ * Created by Rafał Gawlik on 01.12.2016.
  */
 
 public class Point {

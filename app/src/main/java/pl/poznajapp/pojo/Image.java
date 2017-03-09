@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Created by rafal on 11.01.17.
+ * Created by Rafał Gawlik on 11.01.17.
  */
 
 public class Image {

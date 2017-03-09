@@ -13,7 +13,7 @@ import pl.poznajapp.pojo.Story;
 import pl.poznajapp.view.widget.PanoramicImageView;
 
 /**
- * Created by rafal on 29.11.2016.
+ * Created by Rafał Gawlik on 29.11.2016.
  */
 
 public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.MyTripViewHolder> {

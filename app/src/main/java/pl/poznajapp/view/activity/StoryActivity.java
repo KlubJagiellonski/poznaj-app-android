@@ -46,7 +46,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
- * Created by rafal on 29.11.2016.
+ * Created by Rafał Gawlik on 29.11.2016.
  */
 
 public class StoryActivity extends AppCompatActivity implements OnMapReadyCallback {

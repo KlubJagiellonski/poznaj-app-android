@@ -1,7 +1,7 @@
 package pl.poznajapp.model;
 
 /**
- * Created by rafal on 02.01.17.
+ * Created by Rafał Gawlik on 02.01.17.
  */
 
 public class Image {

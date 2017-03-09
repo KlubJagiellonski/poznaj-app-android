@@ -29,6 +29,11 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+/**
+ * Created by Rafał Gawlik on 30.11.2016.
+ */
+
+
 public class MainActivity extends AppCompatActivity {
 
     final String TAG = "MainActivity";

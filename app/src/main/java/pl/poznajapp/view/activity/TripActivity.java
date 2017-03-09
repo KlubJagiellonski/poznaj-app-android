@@ -18,7 +18,7 @@ import butterknife.ButterKnife;
 import pl.poznajapp.R;
 
 /**
- * Created by rafal on 09.03.17.
+ * Created by Rafał Gawlik on 09.03.17.
  */
 
 public class TripActivity extends AppCompatActivity implements OnMapReadyCallback {

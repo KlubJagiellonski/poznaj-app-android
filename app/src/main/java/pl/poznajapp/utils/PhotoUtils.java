@@ -9,7 +9,7 @@ import java.util.List;
 import pl.poznajapp.model.Point;
 
 /**
- * Created by rafal on 01.12.16.
+ * Created by Rafał Gawlik on 01.12.16.
  */
 
 public class PhotoUtils {
