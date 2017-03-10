@@ -1,6 +1,7 @@
 package pl.poznajapp.view.activity;
 
 import android.content.Intent;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -38,9 +39,14 @@ public class MainActivity extends AppCompatActivity {
 
     final String TAG = "MainActivity";
 
-    @BindView(R.id.main_toolbar) android.support.v7.widget.Toolbar toolbar;
-    @BindView(R.id.main_trip_list) android.support.v7.widget.RecyclerView tripList;
-    @BindView(R.id.main_action_button) android.support.design.widget.FloatingActionButton actionButton;
+    @BindView(R.id.main_toolbar)
+    android.support.v7.widget.Toolbar toolbar;
+    @BindView(R.id.main_trip_list)
+    android.support.v7.widget.RecyclerView tripList;
+    @BindView(R.id.main_action_button)
+    android.support.design.widget.FloatingActionButton actionButton;
+    @BindView(R.id.main_swipe_refresh)
+    SwipeRefreshLayout swipeRefreshLayout;
 
     StoryAdapter mAdapter;
     ArrayList<Story> stories;
@@ -65,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         initToolbar();
         initList();
@@ -74,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    void initToolbar(){
+    void initToolbar() {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Lorem ipsum");
     }
@@ -105,23 +111,35 @@ public class MainActivity extends AppCompatActivity {
                 .setDuration(ANIM_DURATION_LIST)
                 .start();
 
+        swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
+                android.R.color.holo_green_light,
+                android.R.color.holo_orange_light,
+                android.R.color.holo_red_light);
     }
 
-    void initList(){
+    void initList() {
         mAdapter = new StoryAdapter(new ArrayList<Story>());
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         tripList.setLayoutManager(mLayoutManager);
         tripList.setItemAnimator(new DefaultItemAnimator());
         tripList.setAdapter(mAdapter);
         getStoriesList();
+
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                getStoriesList();
+                swipeRefreshLayout.setRefreshing(false);
+            }
+        });
     }
 
-    void inicClickListsners(){
+    void inicClickListsners() {
         tripList.addOnItemTouchListener(new RecyclerItemClickListener(this, tripList, new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
                 Log.d(TAG, "Click on item");
-                Intent intent =  new Intent(getApplicationContext(), StoryActivity.class);
+                Intent intent = new Intent(getApplicationContext(), StoryActivity.class);
                 intent.putExtra(StoryActivity.EXTRA_STORY, stories.get(position).getId());
                 startActivity(intent);
             }
@@ -134,7 +152,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    void getStoriesList(){
+    void getStoriesList() {
         stories = new ArrayList<>();
 
         Call<List<Story>> call = service.listStories();
@@ -143,7 +161,7 @@ public class MainActivity extends AppCompatActivity {
             public void onResponse(Call<List<Story>> call, Response<List<Story>> response) {
                 Log.d("APIResult", "SIEMA");
                 List<Story> stories = response.body();
-                for(Story story : stories){
+                for (Story story : stories) {
                     MainActivity.this.stories.add(story);
                     mAdapter.setItemList(MainActivity.this.stories);
                     mAdapter.notifyDataSetChanged();
@@ -160,9 +178,9 @@ public class MainActivity extends AppCompatActivity {
 
 
     @OnClick(R.id.main_action_button)
-    void onClickActionButton(){
+    void onClickActionButton() {
         //TODO implement
-        Intent intent =  new Intent(getApplicationContext(), AllPointActivity.class);
+        Intent intent = new Intent(getApplicationContext(), AllPointActivity.class);
         startActivity(intent);
     }
 

@@ -194,7 +194,6 @@ public class StoryActivity extends AppCompatActivity implements OnMapReadyCallba
                 storyDescription.setText(story.getDescription());
 
                 injectPointOnMap(story.getPoints());
-
             }
 
             @Override
@@ -241,7 +240,7 @@ public class StoryActivity extends AppCompatActivity implements OnMapReadyCallba
 
                     markers.add(new MarkerOptions()
                             .position(position)
-                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_place_black_24dp))
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_place_black_36dp))
                             .title(point.getProperties().getTitle()));
                     googleMap.addMarker(markers.get(markers.size()-1));
 
