@@ -2,7 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="pl.poznajapp">
 
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
@@ -25,9 +26,7 @@
 
         <activity android:name=".view.activity.AllPointActivity"
             android:parentActivityName=".view.activity.MainActivity"/>
-
-        <activity android:name=".view.activity.TripActivity"
-            android:parentActivityName=".view.activity.StoryActivity"/>
+        <activity android:name=".view.activity.PointActivity" />
 
         <service
             android:name=".service.AppService"

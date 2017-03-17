@@ -1,9 +1,19 @@
 package pl.poznajapp.view.activity;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.graphics.Color;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CoordinatorLayout;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,8 +21,10 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.View;
 import android.widget.TextView;
 
+import com.arsy.maps_library.MapRipple;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -45,15 +57,19 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static android.location.LocationManager.GPS_PROVIDER;
+import static android.location.LocationManager.NETWORK_PROVIDER;
+
 /**
  * Created by Rafał Gawlik on 29.11.2016.
  */
 
-public class StoryActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class StoryActivity extends AppCompatActivity implements OnMapReadyCallback, LocationListener {
 
     public static final String EXTRA_STORY = "EXTRA_STORY";
     private static final String TAG = StoryActivity.class.toString();
 
+    @BindView(R.id.story_coordinatorlayout) CoordinatorLayout coordinatorLayout;
     @BindView(R.id.story_toolbar) Toolbar toolbar;
     @BindView(R.id.story_description) TextView storyDescription;
     @BindView(R.id.story_duration) TextView storyDuration;
@@ -65,6 +81,9 @@ public class StoryActivity extends AppCompatActivity implements OnMapReadyCallba
     List pictures;
     List<MarkerOptions> markers;
 
+    LocationManager locationManager;
+    static final long MIN_TIME = 400;
+    static final float MIN_DISTANCE = 1000;
 
     Story story;
 
@@ -87,7 +106,7 @@ public class StoryActivity extends AppCompatActivity implements OnMapReadyCallba
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         mockData();
         initToolbar();
@@ -96,13 +115,22 @@ public class StoryActivity extends AppCompatActivity implements OnMapReadyCallba
     }
 
     @OnClick(R.id.story_fab)
-    void onClickFab(){
-        Intent i= new Intent(getApplicationContext(), AppService.class);
+    void onClickFab() {
+        Intent i = new Intent(getApplicationContext(), AppService.class);
         i.putStringArrayListExtra(AppService.POINTS, new ArrayList<String>(story.getPoints()));
         startService(i);
 
-        Intent intent =  new Intent(getApplicationContext(), TripActivity.class);
-        startActivity(intent);
+        Snackbar snackbar = Snackbar
+                .make(coordinatorLayout, "Ustaliłeś swoją trasę", Snackbar.LENGTH_LONG)
+                .setAction("UNDO", new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        Snackbar snackbar1 = Snackbar.make(coordinatorLayout, "Trasa porzucona", Snackbar.LENGTH_SHORT);
+                        snackbar1.show();
+                    }
+                });
+
+        snackbar.show();
     }
 
     void initToolbar() {
@@ -112,7 +140,7 @@ public class StoryActivity extends AppCompatActivity implements OnMapReadyCallba
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    void initList(){
+    void initList() {
         mAdapter = new PictureAdapter(pictures);
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
         picturesRecyclerView.setLayoutManager(mLayoutManager);
@@ -120,12 +148,12 @@ public class StoryActivity extends AppCompatActivity implements OnMapReadyCallba
         picturesRecyclerView.setAdapter(mAdapter);
     }
 
-    void initMap(){
+    void initMap() {
         supportMapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.story_map);
         supportMapFragment.getMapAsync(this);
     }
 
-    void mockData(){
+    void mockData() {
         pictures = new ArrayList<Picture>();
         Picture pic = new Picture();
         pic.setUrl("http://google.pl");
@@ -173,11 +201,19 @@ public class StoryActivity extends AppCompatActivity implements OnMapReadyCallba
         this.googleMap.setOnMarkerClickListener(
                 new GoogleMap.OnMarkerClickListener() {
                     boolean doNotMoveCameraToCenterMarker = true;
+
                     public boolean onMarkerClick(Marker marker) {
                         return doNotMoveCameraToCenterMarker;
                     }
                 });
         getStoryDetails();
+
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            // TODO: Consider calling
+            return;
+        }
+        locationManager.requestLocationUpdates(GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, (LocationListener) this);
 
     }
 
@@ -210,7 +246,7 @@ public class StoryActivity extends AppCompatActivity implements OnMapReadyCallba
     }
 
     @Override
-    public boolean onKeyDown(int keyCode, KeyEvent event)  {
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (Integer.parseInt(android.os.Build.VERSION.SDK) > 5
                 && keyCode == KeyEvent.KEYCODE_BACK
                 && event.getRepeatCount() == 0) {
@@ -223,7 +259,7 @@ public class StoryActivity extends AppCompatActivity implements OnMapReadyCallba
 
     private void injectPointOnMap(List<String> points) {
         markers = new ArrayList<>();
-        for(String point : points){
+        for (String point : points) {
             Log.d(TAG, "Points: " + point + " : " + Integer.toString(getIntFromString(point)));
 
             Call<Point> call = service.getPoint(getIntFromString(point));
@@ -242,8 +278,11 @@ public class StoryActivity extends AppCompatActivity implements OnMapReadyCallba
                             .position(position)
                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_place_black_36dp))
                             .title(point.getProperties().getTitle()));
-                    googleMap.addMarker(markers.get(markers.size()-1));
+                    googleMap.addMarker(markers.get(markers.size() - 1));
 
+
+
+//                    ic_person_pin_circle_black_36dp
 
                     LatLngBounds.Builder builder = new LatLngBounds.Builder();
                     for (MarkerOptions marker : markers) {
@@ -268,5 +307,43 @@ public class StoryActivity extends AppCompatActivity implements OnMapReadyCallba
     private int getIntFromString(String s){
         Scanner in = new Scanner(s).useDelimiter("[^0-9]+");
         return in.nextInt();
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        Log.d(TAG, "onLocationChanged");
+
+        googleMap.addMarker(new MarkerOptions()
+                .position(new LatLng(location.getLatitude(), location.getLongitude()))
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_person_pin_circle_black_36dp)));
+
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        for (MarkerOptions marker : markers) {
+            builder.include(marker.getPosition());
+        }
+
+        builder.include(new LatLng(location.getLatitude(), location.getLongitude()));
+
+
+        int padding = 100;
+        LatLngBounds bounds = builder.build();
+        CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+        googleMap.animateCamera(cu);
+
+    }
+
+    @Override
+    public void onStatusChanged(String s, int i, Bundle bundle) {
+
+    }
+
+    @Override
+    public void onProviderEnabled(String s) {
+
+    }
+
+    @Override
+    public void onProviderDisabled(String s) {
+
     }
 }

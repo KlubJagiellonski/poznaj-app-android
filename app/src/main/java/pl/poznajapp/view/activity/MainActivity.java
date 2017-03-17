@@ -39,14 +39,10 @@ public class MainActivity extends AppCompatActivity {
 
     final String TAG = "MainActivity";
 
-    @BindView(R.id.main_toolbar)
-    android.support.v7.widget.Toolbar toolbar;
-    @BindView(R.id.main_trip_list)
-    android.support.v7.widget.RecyclerView tripList;
-    @BindView(R.id.main_action_button)
-    android.support.design.widget.FloatingActionButton actionButton;
-    @BindView(R.id.main_swipe_refresh)
-    SwipeRefreshLayout swipeRefreshLayout;
+    @BindView(R.id.main_toolbar) android.support.v7.widget.Toolbar toolbar;
+    @BindView(R.id.main_trip_list) android.support.v7.widget.RecyclerView tripList;
+    @BindView(R.id.main_action_button) android.support.design.widget.FloatingActionButton actionButton;
+    @BindView(R.id.main_swipe_refresh) SwipeRefreshLayout swipeRefreshLayout;
 
     StoryAdapter mAdapter;
     ArrayList<Story> stories;
