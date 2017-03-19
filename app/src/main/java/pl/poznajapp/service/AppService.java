@@ -11,9 +11,11 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.os.Binder;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.IBinder;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.widget.Toast;
@@ -26,6 +28,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import pl.poznajapp.R;
+import pl.poznajapp.database.Database;
 import pl.poznajapp.network.API;
 import pl.poznajapp.pojo.Point;
 import pl.poznajapp.pojo.Story;
@@ -50,11 +53,13 @@ public class AppService extends Service implements LocationListener {
     public static final String POINTS = "POINTS";
 
     LocationManager locationManager;
-    static final long MIN_TIME = 1000;
-    static final float MIN_DISTANCE = 30;
+    static final long MIN_TIME = 100;
+    static final float MIN_DISTANCE = 0;
 
     API service;
 
+    int currectStoryId = -1;
+    Story story;
     ArrayList<Point> points;
 
 
@@ -70,39 +75,47 @@ public class AppService extends Service implements LocationListener {
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
             return Service.START_STICKY;
         }
         locationManager.requestLocationUpdates(GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, (LocationListener) this);
 
         points = new ArrayList<>();
-        getPoints(intent.getStringArrayListExtra(POINTS));
+        currectStoryId = Database.getCurrectStory(getSharedPreferences(Database.PREFERENCES_NAME, Database.MODE));
+
+        Call<Story> call = service.getStory(currectStoryId);
+        call.enqueue(new Callback<Story>() {
+            @Override
+            public void onResponse(Call<Story> call, Response<Story> response) {
+                story = response.body();
+                getPoints(story.getPoints());
+            }
+
+            @Override
+            public void onFailure(Call<Story> call, Throwable t) {
+
+            }
+        });
 
         return Service.START_STICKY;
     }
 
+    @Nullable
     @Override
     public IBinder onBind(Intent intent) {
-
         return null;
     }
 
-    private void showNotification(Point p){
+    private void showNotification(String title, String description, List<String> images){
         Intent intent = new Intent(this, PointActivity.class);
-        intent.putExtra(PointActivity.POINT_TITLE, p.getProperties().getTitle());
-        intent.putExtra(PointActivity.POINT_DESCRIPTION, p.getProperties().getDescription());
-        intent.putStringArrayListExtra(PointActivity.POINT_IMAGES, new ArrayList<String>(p.getProperties().getImages()));
+        intent.putExtra(PointActivity.POINT_TITLE, title);
+        intent.putExtra(PointActivity.POINT_DESCRIPTION, description);
+        intent.putStringArrayListExtra(PointActivity.POINT_IMAGES, (ArrayList<String>) images);
 
         PendingIntent pIntent = PendingIntent.getActivity(this, (int) System.currentTimeMillis(), intent, 0);
 
         Notification notification = new Notification.Builder(this)
                 .setContentTitle("Zdobyłeś punkt")
-                .setContentText(p.getProperties().getTitle())
+                .setContentText(title)
                 .setSmallIcon(R.drawable.ic_directions_walk_white_24dp)
                 .setContentIntent(pIntent)
                 .build();
@@ -113,17 +126,19 @@ public class AppService extends Service implements LocationListener {
 
     @Override
     public void onLocationChanged(Location location) {
+
         for(Point p : points){
             LatLng latLngPoint = new LatLng(
-                    p.getGeometry().getCoordinates().get(0),
-                    p.getGeometry().getCoordinates().get(1));
+                    p.getGeometry().getCoordinates().get(1),
+                    p.getGeometry().getCoordinates().get(0));
 
             LatLng latLngUser= new LatLng(
                     location.getLatitude(),
                     location.getLongitude());
 
-            if(LocalisationUtils.distanceBeetwenPoints(latLngPoint, latLngUser) < 50)
-                showNotification(p);
+            if(LocalisationUtils.distanceBeetwenPoints(latLngPoint, latLngUser) < 5000)
+                showNotification(p.getProperties().getTitle(), p.getProperties().getDescription(), p.getProperties().getImages());
+
             points.remove(p);
             break;
         }
@@ -144,7 +159,7 @@ public class AppService extends Service implements LocationListener {
 
     }
 
-    public void getPoints(final List<String> poinstList) {
+    public void getPoints(List<String> poinstList) {
 
         for(String p : poinstList){
             Call<Point> call = service.getPoint(Integer.parseInt(p));

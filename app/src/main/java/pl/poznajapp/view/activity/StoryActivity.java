@@ -45,6 +45,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import pl.poznajapp.R;
+import pl.poznajapp.database.Database;
 import pl.poznajapp.model.Picture;
 import pl.poznajapp.network.API;
 import pl.poznajapp.pojo.Point;
@@ -116,8 +117,10 @@ public class StoryActivity extends AppCompatActivity implements OnMapReadyCallba
 
     @OnClick(R.id.story_fab)
     void onClickFab() {
+        //Save current story
+        Database.setCurrectStory(getSharedPreferences(Database.PREFERENCES_NAME, Database.MODE), id);
+
         Intent i = new Intent(getApplicationContext(), AppService.class);
-        i.putStringArrayListExtra(AppService.POINTS, new ArrayList<String>(story.getPoints()));
         startService(i);
 
         Snackbar snackbar = Snackbar

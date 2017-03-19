@@ -9,6 +9,7 @@ import android.widget.TextView;
 import java.util.List;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import pl.poznajapp.R;
 
 /**
@@ -34,14 +35,15 @@ public class PointActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_point);
+        ButterKnife.bind(this);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        title = getIntent().getStringExtra(POINT_TITLE);
-        description = getIntent().getStringExtra(POINT_DESCRIPTION);
-        images = getIntent().getStringArrayListExtra(POINT_IMAGES);
+        title = getIntent().getExtras().getString(POINT_TITLE);
+        description = getIntent().getExtras().getString(POINT_DESCRIPTION);
+        images = getIntent().getExtras().getStringArrayList(POINT_IMAGES);
 
         toolbar.setTitle(title);
         pointDescription.setText(description);
