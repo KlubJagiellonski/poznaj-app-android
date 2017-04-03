@@ -11,7 +11,7 @@ public class Image {
 
     private Integer id;
     private String title;
-    private Object imageFile;
+    private String imageFile;
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     public Integer getId() {
@@ -30,11 +30,11 @@ public class Image {
         this.title = title;
     }
 
-    public Object getImageFile() {
+    public String getImageFile() {
         return imageFile;
     }
 
-    public void setImageFile(Object imageFile) {
+    public void setImageFile(String imageFile) {
         this.imageFile = imageFile;
     }
 

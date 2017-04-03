@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -24,7 +23,6 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.TextView;
 
-import com.arsy.maps_library.MapRipple;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -72,6 +70,7 @@ public class StoryActivity extends AppCompatActivity implements OnMapReadyCallba
 
     @BindView(R.id.story_coordinatorlayout) CoordinatorLayout coordinatorLayout;
     @BindView(R.id.story_toolbar) Toolbar toolbar;
+    @BindView(R.id.story_collapsing) android.support.design.widget.CollapsingToolbarLayout collapsingToolbarLayout;
     @BindView(R.id.story_description) TextView storyDescription;
     @BindView(R.id.story_duration) TextView storyDuration;
     @BindView(R.id.story_pictures) RecyclerView picturesRecyclerView;
@@ -228,7 +227,7 @@ public class StoryActivity extends AppCompatActivity implements OnMapReadyCallba
             public void onResponse(Call<Story> call, Response<Story> response) {
                 Log.d(TAG, response.body().getTitle());
                 story = response.body();
-                getSupportActionBar().setTitle(story.getTitle());
+                collapsingToolbarLayout.setTitle(story.getTitle());
                 storyDuration.setText(story.getDuration());
                 storyDescription.setText(story.getDescription());
 
@@ -260,12 +259,12 @@ public class StoryActivity extends AppCompatActivity implements OnMapReadyCallba
         return super.onKeyDown(keyCode, event);
     }
 
-    private void injectPointOnMap(List<String> points) {
+    private void injectPointOnMap(List<Integer> points) {
         markers = new ArrayList<>();
-        for (String point : points) {
-            Log.d(TAG, "Points: " + point + " : " + Integer.toString(getIntFromString(point)));
+        for (Integer point : points) {
+            Log.d(TAG, "Points: " + point + " : " + Integer.toString(point));
 
-            Call<Point> call = service.getPoint(getIntFromString(point));
+            Call<Point> call = service.getPoint(point);
             call.enqueue(new Callback<Point>() {
                 @Override
                 public void onResponse(Call<Point> call, Response<Point> response) {
@@ -315,7 +314,8 @@ public class StoryActivity extends AppCompatActivity implements OnMapReadyCallba
     @Override
     public void onLocationChanged(Location location) {
         Log.d(TAG, "onLocationChanged");
-
+        if(markers == null)
+            return;
         googleMap.addMarker(new MarkerOptions()
                 .position(new LatLng(location.getLatitude(), location.getLongitude()))
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_person_pin_circle_black_36dp)));

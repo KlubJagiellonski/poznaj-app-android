@@ -10,10 +10,11 @@ import java.util.Map;
 public class Story {
 
     private Integer id;
-    private List<String> points = null;
     private String title;
     private String description;
     private String duration;
+    private Integer firstPoint;
+    private List<Integer> points = null;
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     public Integer getId() {
@@ -24,11 +25,11 @@ public class Story {
         this.id = id;
     }
 
-    public List<String> getPoints() {
+    public List<Integer> getPoints() {
         return points;
     }
 
-    public void setPoints(List<String> points) {
+    public void setPoints(List<Integer> points) {
         this.points = points;
     }
 
@@ -44,6 +45,13 @@ public class Story {
         return description;
     }
 
+    public Integer getFirst_Point() {
+        return firstPoint;
+    }
+
+    public void setFirst_Point(Integer firstPoint) {
+        this.firstPoint = firstPoint;
+    }
 
     public void setDescription(String description) {
         this.description = description;

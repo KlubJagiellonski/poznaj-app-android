@@ -41,7 +41,7 @@ public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.main_toolbar) android.support.v7.widget.Toolbar toolbar;
     @BindView(R.id.main_trip_list) android.support.v7.widget.RecyclerView tripList;
-    @BindView(R.id.main_action_button) android.support.design.widget.FloatingActionButton actionButton;
+//    @BindView(R.id.main_action_button) android.support.design.widget.FloatingActionButton actionButton;
     @BindView(R.id.main_swipe_refresh) SwipeRefreshLayout swipeRefreshLayout;
 
     StoryAdapter mAdapter;
@@ -78,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
 
     void initToolbar() {
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("Lorem ipsum");
+        getSupportActionBar().setTitle("PoznajApp");
     }
 
     void initAnimations() {
@@ -90,13 +90,13 @@ public class MainActivity extends AppCompatActivity {
                 .setInterpolator(new DecelerateInterpolator(1.f))
                 .setStartDelay(300);
 
-        actionButton.setTranslationY(2 * 200);
-        actionButton.animate()
-                .translationY(0)
-                .setInterpolator(new OvershootInterpolator(1.f))
-                .setStartDelay(100)
-                .setDuration(ANIM_DURATION_FAB)
-                .start();
+//        actionButton.setTranslationY(2 * 200);
+//        actionButton.animate()
+//                .translationY(0)
+//                .setInterpolator(new OvershootInterpolator(1.f))
+//                .setStartDelay(100)
+//                .setDuration(ANIM_DURATION_FAB)
+//                .start();
 
 
         tripList.setTranslationY(2000);
@@ -114,7 +114,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     void initList() {
-        mAdapter = new StoryAdapter(new ArrayList<Story>());
+        mAdapter = new StoryAdapter(getApplicationContext(), new ArrayList<Story>());
         RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
         tripList.setLayoutManager(mLayoutManager);
         tripList.setItemAnimator(new DefaultItemAnimator());
@@ -135,9 +135,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(View view, int position) {
                 Log.d(TAG, "Click on item");
+                if(stories == null){
+                    return;
+                }
                 Intent intent = new Intent(getApplicationContext(), StoryActivity.class);
                 intent.putExtra(StoryActivity.EXTRA_STORY, stories.get(position).getId());
                 startActivity(intent);
+
             }
 
             @Override
@@ -155,7 +159,6 @@ public class MainActivity extends AppCompatActivity {
         call.enqueue(new Callback<List<Story>>() {
             @Override
             public void onResponse(Call<List<Story>> call, Response<List<Story>> response) {
-                Log.d("APIResult", "SIEMA");
                 List<Story> stories = response.body();
                 for (Story story : stories) {
                     MainActivity.this.stories.add(story);
@@ -167,17 +170,15 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<List<Story>> call, Throwable t) {
-                Log.d("APIResult", "SIEMA2");
+                Log.d("APIResult", "error");
             }
         });
     }
 
-
-    @OnClick(R.id.main_action_button)
-    void onClickActionButton() {
-        //TODO implement
-        Intent intent = new Intent(getApplicationContext(), AllPointActivity.class);
-        startActivity(intent);
-    }
-
+//    @OnClick(R.id.main_action_button)
+//    void onClickActionButton() {
+//        //TODO implement
+//        Intent intent = new Intent(getApplicationContext(), AllPointActivity.class);
+//        startActivity(intent);
+//    }
 }

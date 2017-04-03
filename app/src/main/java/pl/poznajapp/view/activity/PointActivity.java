@@ -4,6 +4,8 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.widget.TextView;
 
 import java.util.List;
@@ -23,6 +25,7 @@ public class PointActivity extends AppCompatActivity {
     public static final String POINT_IMAGES = "POINT_IMAGES";
 
     @BindView(R.id.point_toolbar) Toolbar toolbar;
+    @BindView(R.id.point_collapsing) android.support.design.widget.CollapsingToolbarLayout collapsingToolbarLayout;
     @BindView(R.id.point_description) TextView pointDescription;
 
 
@@ -41,13 +44,41 @@ public class PointActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        initToolbar();
         title = getIntent().getExtras().getString(POINT_TITLE);
         description = getIntent().getExtras().getString(POINT_DESCRIPTION);
         images = getIntent().getExtras().getStringArrayList(POINT_IMAGES);
 
-        toolbar.setTitle(title);
+        collapsingToolbarLayout.setTitle(title);
         pointDescription.setText(description);
     }
+
+    void initToolbar() {
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        finish();
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        if (Integer.parseInt(android.os.Build.VERSION.SDK) > 5
+                && keyCode == KeyEvent.KEYCODE_BACK
+                && event.getRepeatCount() == 0) {
+            Log.d("CDA", "onKeyDown Called");
+            onBackPressed();
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+    }
+
 
     @Override
     protected void onPause() {

@@ -105,11 +105,11 @@ public class AppService extends Service implements LocationListener {
         return null;
     }
 
-    private void showNotification(String title, String description, List<String> images){
+    private void showNotification(String title, String description, List<Integer> images){
         Intent intent = new Intent(this, PointActivity.class);
         intent.putExtra(PointActivity.POINT_TITLE, title);
         intent.putExtra(PointActivity.POINT_DESCRIPTION, description);
-        intent.putStringArrayListExtra(PointActivity.POINT_IMAGES, (ArrayList<String>) images);
+        intent.putIntegerArrayListExtra(PointActivity.POINT_IMAGES, (ArrayList<Integer>) images);
 
         PendingIntent pIntent = PendingIntent.getActivity(this, (int) System.currentTimeMillis(), intent, 0);
 
@@ -159,10 +159,10 @@ public class AppService extends Service implements LocationListener {
 
     }
 
-    public void getPoints(List<String> poinstList) {
+    public void getPoints(List<Integer> poinstList) {
 
-        for(String p : poinstList){
-            Call<Point> call = service.getPoint(Integer.parseInt(p));
+        for(Integer p : poinstList){
+            Call<Point> call = service.getPoint(p);
             call.enqueue(new Callback<Point>() {
                 @Override
                 public void onResponse(Call<Point> call, Response<Point> response) {

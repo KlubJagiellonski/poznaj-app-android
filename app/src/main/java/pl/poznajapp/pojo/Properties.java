@@ -12,7 +12,7 @@ public class Properties {
 
     private String title;
     private String description;
-    private List<String> images = null;
+    private List<Integer> images = null;
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     public String getTitle() {
@@ -31,11 +31,11 @@ public class Properties {
         this.description = description;
     }
 
-    public List<String> getImages() {
+    public List<Integer> getImages() {
         return images;
     }
 
-    public void setImages(List<String> images) {
+    public void setImages(List<Integer> images) {
         this.images = images;
     }
 

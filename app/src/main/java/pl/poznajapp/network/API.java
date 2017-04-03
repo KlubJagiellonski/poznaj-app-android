@@ -13,11 +13,13 @@ import retrofit2.http.Path;
  * Created by Rafał Gawlik on 30.11.2016.
  */
 
-//TODO implement
 public interface API {
 
     @GET("images/?format=json")
     Call<List<Image>> listImages();
+
+    @GET("images/{id}?format=json")
+    Call<Image> getImage(@Path("id") Integer id);
 
     @GET("points/?format=json")
     Call<List<Point>> listPoints();
