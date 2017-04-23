@@ -65,19 +65,19 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.MyTripViewHo
             @Override
             public void onResponse(Call<Point> call, Response<Point> response) {
                 Point point = response.body();
-                Call<Image> call_image = service.getImage(point.getProperties().getImages().get(0));
-                call_image.enqueue(new Callback<Image>() {
-                    @Override
-                    public void onResponse(Call<Image> call, Response<Image> response) {
-                        Image image = response.body();
-                        Picasso.with(context).load(image.getImageFile()).into(holder.panoramicImageView);
-                    }
-
-                    @Override
-                    public void onFailure(Call<Image> call, Throwable t) {
-                        Log.d("APIResult", t.toString());
-                    }
-                });
+//                Call<Image> call_image = service.getImage(point.getProperties().getImages().get(0));
+//                call_image.enqueue(new Callback<Image>() {
+//                    @Override
+//                    public void onResponse(Call<Image> call, Response<Image> response) {
+//                        Image image = response.body();
+//                        Picasso.with(context).load(image.getImageFile()).into(holder.panoramicImageView);
+//                    }
+//
+//                    @Override
+//                    public void onFailure(Call<Image> call, Throwable t) {
+//                        Log.d("APIResult", t.toString());
+//                    }
+//                });
 
             }
 

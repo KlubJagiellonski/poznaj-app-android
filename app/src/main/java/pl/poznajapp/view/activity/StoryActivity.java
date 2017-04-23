@@ -78,7 +78,7 @@ public class StoryActivity extends AppCompatActivity implements OnMapReadyCallba
     MapFragment supportMapFragment;
     GoogleMap googleMap;
     PictureAdapter mAdapter;
-    List pictures;
+
     List<MarkerOptions> markers;
 
     LocationManager locationManager;
@@ -108,9 +108,8 @@ public class StoryActivity extends AppCompatActivity implements OnMapReadyCallba
     @Override
     public void onResume() {
         super.onResume();
-        mockData();
         initToolbar();
-        initList();
+//        initList();
         initMap();
     }
 
@@ -142,40 +141,17 @@ public class StoryActivity extends AppCompatActivity implements OnMapReadyCallba
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    void initList() {
-        mAdapter = new PictureAdapter(pictures);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-        picturesRecyclerView.setLayoutManager(mLayoutManager);
-        picturesRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        picturesRecyclerView.setAdapter(mAdapter);
-    }
+//    void initList() {
+//        mAdapter = new PictureAdapter(pictures);
+//        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
+//        picturesRecyclerView.setLayoutManager(mLayoutManager);
+//        picturesRecyclerView.setItemAnimator(new DefaultItemAnimator());
+//        picturesRecyclerView.setAdapter(mAdapter);
+//    }
 
     void initMap() {
         supportMapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.story_map);
         supportMapFragment.getMapAsync(this);
-    }
-
-    void mockData() {
-        pictures = new ArrayList<Picture>();
-        Picture pic = new Picture();
-        pic.setUrl("http://google.pl");
-        pictures.add(pic);
-
-        pic = new Picture();
-        pic.setUrl("http://google.pl");
-        pictures.add(pic);
-
-        pic = new Picture();
-        pic.setUrl("http://google.pl");
-        pictures.add(pic);
-
-        pic = new Picture();
-        pic.setUrl("http://google.pl");
-        pictures.add(pic);
-
-        pic = new Picture();
-        pic.setUrl("http://google.pl");
-        pictures.add(pic);
     }
 
     @Override
@@ -232,6 +208,11 @@ public class StoryActivity extends AppCompatActivity implements OnMapReadyCallba
                 storyDescription.setText(story.getDescription());
 
                 injectPointOnMap(story.getPoints());
+//
+//                story.getPoints().get(0)
+//
+//                Call<Point> call = service.getStory(id);
+
             }
 
             @Override
@@ -281,10 +262,6 @@ public class StoryActivity extends AppCompatActivity implements OnMapReadyCallba
                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_place_black_36dp))
                             .title(point.getProperties().getTitle()));
                     googleMap.addMarker(markers.get(markers.size() - 1));
-
-
-
-//                    ic_person_pin_circle_black_36dp
 
                     LatLngBounds.Builder builder = new LatLngBounds.Builder();
                     for (MarkerOptions marker : markers) {

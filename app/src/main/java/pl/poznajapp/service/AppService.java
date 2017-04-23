@@ -136,12 +136,26 @@ public class AppService extends Service implements LocationListener {
                     location.getLatitude(),
                     location.getLongitude());
 
-            if(LocalisationUtils.distanceBeetwenPoints(latLngPoint, latLngUser) < 5000)
+            if(LocalisationUtils.distanceBeetwenPoints(latLngPoint, latLngUser) < 500){
                 showNotification(p.getProperties().getTitle(), p.getProperties().getDescription(), p.getProperties().getImages());
-
-            points.remove(p);
-            break;
+                points.remove(p);
+                if(points.size()==0){
+                    showNotificationEnd();
+                    onDestroy();
+                }
+                break;
+            }
         }
+    }
+
+    private void showNotificationEnd() {
+        Notification notification = new Notification.Builder(this)
+                .setContentTitle("Zakończyłeś trasę")
+                .setSmallIcon(R.drawable.ic_directions_walk_white_24dp)
+                .build();
+        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+        notification.flags |= Notification.FLAG_AUTO_CANCEL;
+        notificationManager.notify(0, notification);
     }
 
     @Override

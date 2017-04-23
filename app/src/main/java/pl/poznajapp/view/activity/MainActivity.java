@@ -41,7 +41,6 @@ public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.main_toolbar) android.support.v7.widget.Toolbar toolbar;
     @BindView(R.id.main_trip_list) android.support.v7.widget.RecyclerView tripList;
-//    @BindView(R.id.main_action_button) android.support.design.widget.FloatingActionButton actionButton;
     @BindView(R.id.main_swipe_refresh) SwipeRefreshLayout swipeRefreshLayout;
 
     StoryAdapter mAdapter;
@@ -49,7 +48,6 @@ public class MainActivity extends AppCompatActivity {
     API service;
 
     private static final int ANIM_DURATION_TOOLBAR = 200;
-    private static final int ANIM_DURATION_FAB = 400;
     private static final int ANIM_DURATION_LIST = 600;
 
     @Override
@@ -89,15 +87,6 @@ public class MainActivity extends AppCompatActivity {
                 .setDuration(ANIM_DURATION_TOOLBAR)
                 .setInterpolator(new DecelerateInterpolator(1.f))
                 .setStartDelay(300);
-
-//        actionButton.setTranslationY(2 * 200);
-//        actionButton.animate()
-//                .translationY(0)
-//                .setInterpolator(new OvershootInterpolator(1.f))
-//                .setStartDelay(100)
-//                .setDuration(ANIM_DURATION_FAB)
-//                .start();
-
 
         tripList.setTranslationY(2000);
         tripList.animate()
@@ -174,11 +163,4 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
-//    @OnClick(R.id.main_action_button)
-//    void onClickActionButton() {
-//        //TODO implement
-//        Intent intent = new Intent(getApplicationContext(), AllPointActivity.class);
-//        startActivity(intent);
-//    }
 }
