@@ -1,12 +1,13 @@
 package pl.poznajapp.view.activity;
 
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
@@ -36,8 +37,8 @@ public class MainActivity extends AppCompatActivity {
 
     final String TAG = MainActivity.class.getSimpleName();
 
-    @BindView(R.id.main_toolbar) android.support.v7.widget.Toolbar toolbar;
-    @BindView(R.id.main_trip_list) android.support.v7.widget.RecyclerView tripList;
+    @BindView(R.id.main_toolbar) Toolbar toolbar;
+    @BindView(R.id.main_trip_list) RecyclerView tripList;
     @BindView(R.id.main_swipe_refresh) SwipeRefreshLayout swipeRefreshLayout;
 
     StoryAdapter mAdapter;
@@ -122,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
         tripList.addOnItemTouchListener(new RecyclerItemClickListener(this, tripList, new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                if(stories == null){
+                if (stories == null) {
                     return;
                 }
                 Intent intent = new Intent(getApplicationContext(), StoryActivity.class);

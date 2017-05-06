@@ -17,7 +17,6 @@ import pl.poznajapp.network.API;
 import pl.poznajapp.pojo.Image;
 import pl.poznajapp.pojo.Point;
 import pl.poznajapp.pojo.Story;
-import pl.poznajapp.view.activity.MainActivity;
 import pl.poznajapp.view.widget.PanoramicImageView;
 import retrofit2.Call;
 import retrofit2.Callback;

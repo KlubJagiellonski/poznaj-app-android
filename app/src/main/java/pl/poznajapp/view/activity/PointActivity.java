@@ -77,7 +77,8 @@ public class PointActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onFailure(Call<Image> call, Throwable t) {}
+            public void onFailure(Call<Image> call, Throwable t) {
+            }
         });
     }
 

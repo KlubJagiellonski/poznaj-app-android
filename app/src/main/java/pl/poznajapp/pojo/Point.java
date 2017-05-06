@@ -3,9 +3,6 @@ package pl.poznajapp.pojo;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Created by Rafał Gawlik on 11.01.17.
  */

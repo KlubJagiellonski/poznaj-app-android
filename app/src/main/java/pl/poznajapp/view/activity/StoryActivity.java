@@ -275,7 +275,7 @@ public class StoryActivity extends AppCompatActivity implements OnMapReadyCallba
 
     @Override
     public void onLocationChanged(Location location) {
-        if(markers == null)
+        if (markers == null)
             return;
         googleMap.clear();
         googleMap.addMarker(new MarkerOptions()
@@ -298,11 +298,14 @@ public class StoryActivity extends AppCompatActivity implements OnMapReadyCallba
     }
 
     @Override
-    public void onStatusChanged(String s, int i, Bundle bundle) {}
+    public void onStatusChanged(String s, int i, Bundle bundle) {
+    }
 
     @Override
-    public void onProviderEnabled(String s) {}
+    public void onProviderEnabled(String s) {
+    }
 
     @Override
-    public void onProviderDisabled(String s) {}
+    public void onProviderDisabled(String s) {
+    }
 }

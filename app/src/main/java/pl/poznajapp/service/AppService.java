@@ -65,7 +65,7 @@ public class AppService extends Service implements LocationListener {
                 .build();
         service = retrofit.create(API.class);
 
-        if(!checkPermission())
+        if (!checkPermission())
             return Service.START_STICKY;
         else
             locationManager.requestLocationUpdates(GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
@@ -74,7 +74,7 @@ public class AppService extends Service implements LocationListener {
         return Service.START_STICKY;
     }
 
-    boolean checkPermission(){
+    boolean checkPermission() {
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(
                 this,
@@ -99,7 +99,8 @@ public class AppService extends Service implements LocationListener {
             }
 
             @Override
-            public void onFailure(Call<Story> call, Throwable t) {}
+            public void onFailure(Call<Story> call, Throwable t) {
+            }
         });
     }
 
@@ -109,7 +110,7 @@ public class AppService extends Service implements LocationListener {
         return null;
     }
 
-    private void showNotification(String title, String description, List<Integer> images){
+    private void showNotification(String title, String description, List<Integer> images) {
         Intent intent = new Intent(this, PointActivity.class);
         intent.putExtra(PointActivity.POINT_TITLE, title);
         intent.putExtra(PointActivity.POINT_DESCRIPTION, description);
@@ -131,19 +132,19 @@ public class AppService extends Service implements LocationListener {
     @Override
     public void onLocationChanged(Location location) {
 
-        for(Point p : points){
+        for (Point p : points) {
             LatLng latLngPoint = new LatLng(
                     p.getGeometry().getCoordinates().get(1),
                     p.getGeometry().getCoordinates().get(0));
 
-            LatLng latLngUser= new LatLng(
+            LatLng latLngUser = new LatLng(
                     location.getLatitude(),
                     location.getLongitude());
 
-            if(LocalisationUtils.distanceBeetwenPoints(latLngPoint, latLngUser) < USER_LOCATION_RADIUS){
+            if (LocalisationUtils.distanceBeetwenPoints(latLngPoint, latLngUser) < USER_LOCATION_RADIUS) {
                 showNotification(p.getProperties().getTitle(), p.getProperties().getDescription(), p.getProperties().getImages());
                 points.remove(p);
-                if(points.size()==0){
+                if (points.size() == 0) {
                     showEndNotification();
                     onDestroy();
                 }
@@ -163,22 +164,25 @@ public class AppService extends Service implements LocationListener {
     }
 
     @Override
-    public void onStatusChanged(String s, int i, Bundle bundle) {}
+    public void onStatusChanged(String s, int i, Bundle bundle) {
+    }
 
     @Override
-    public void onProviderEnabled(String s) {}
+    public void onProviderEnabled(String s) {
+    }
 
     @Override
-    public void onProviderDisabled(String s) {}
+    public void onProviderDisabled(String s) {
+    }
 
     void getPoints(List<Integer> poinstList) {
-        for(Integer p : poinstList){
+        for (Integer p : poinstList) {
             Call<Point> call = service.getPoint(p);
             call.enqueue(new Callback<Point>() {
 
                 @Override
                 public void onResponse(Call<Point> call, Response<Point> response) {
-                    Point p =  new Point();
+                    Point p = new Point();
                     p.setType(response.body().getType());
                     p.setGeometry(response.body().getGeometry());
                     p.setProperties(response.body().getProperties());
