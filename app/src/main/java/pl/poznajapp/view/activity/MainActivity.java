@@ -10,14 +10,12 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
-import android.view.animation.OvershootInterpolator;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 import pl.poznajapp.R;
 import pl.poznajapp.network.API;
 import pl.poznajapp.pojo.Story;
@@ -34,10 +32,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Created by Rafał Gawlik on 30.11.2016.
  */
 
-
 public class MainActivity extends AppCompatActivity {
 
-    final String TAG = "MainActivity";
+    final String TAG = MainActivity.class.getSimpleName();
 
     @BindView(R.id.main_toolbar) android.support.v7.widget.Toolbar toolbar;
     @BindView(R.id.main_trip_list) android.support.v7.widget.RecyclerView tripList;
@@ -61,18 +58,21 @@ public class MainActivity extends AppCompatActivity {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         service = retrofit.create(API.class);
-
+        initUI();
     }
 
     @Override
     public void onResume() {
         super.onResume();
+        getStoriesList();
+    }
+
+    void initUI() {
         initToolbar();
         initList();
         initAnimations();
-        inicClickListsners();
+        initClickListsners();
     }
-
 
     void initToolbar() {
         setSupportActionBar(toolbar);
@@ -108,7 +108,6 @@ public class MainActivity extends AppCompatActivity {
         tripList.setLayoutManager(mLayoutManager);
         tripList.setItemAnimator(new DefaultItemAnimator());
         tripList.setAdapter(mAdapter);
-        getStoriesList();
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -119,11 +118,10 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    void inicClickListsners() {
+    void initClickListsners() {
         tripList.addOnItemTouchListener(new RecyclerItemClickListener(this, tripList, new RecyclerItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                Log.d(TAG, "Click on item");
                 if(stories == null){
                     return;
                 }
@@ -140,7 +138,6 @@ public class MainActivity extends AppCompatActivity {
         }));
     }
 
-
     void getStoriesList() {
         stories = new ArrayList<>();
 
@@ -153,13 +150,12 @@ public class MainActivity extends AppCompatActivity {
                     MainActivity.this.stories.add(story);
                     mAdapter.setItemList(MainActivity.this.stories);
                     mAdapter.notifyDataSetChanged();
-                    Log.d("APIResult", "added");
                 }
             }
 
             @Override
             public void onFailure(Call<List<Story>> call, Throwable t) {
-                Log.d("APIResult", "error");
+                Log.d(TAG, "error");
             }
         });
     }

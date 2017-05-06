@@ -3,22 +3,20 @@ package pl.poznajapp.pojo;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
- * Created by Rafał Gawlik on 11.01.17.
+ * Created by rafal on 06.05.17.
  */
 
-public class Geometry {
+public class FeatureCollection {
 
     @SerializedName("type")
     @Expose
     private String type;
-    @SerializedName("coordinates")
+    @SerializedName("features")
     @Expose
-    private List<Double> coordinates = null;
+    private List<Point> features = null;
 
     public String getType() {
         return type;
@@ -28,12 +26,12 @@ public class Geometry {
         this.type = type;
     }
 
-    public List<Double> getCoordinates() {
-        return coordinates;
+    public List<Point> getFeatures() {
+        return features;
     }
 
-    public void setCoordinates(List<Double> coordinates) {
-        this.coordinates = coordinates;
+    public void setFeatures(List<Point> features) {
+        this.features = features;
     }
 
 }

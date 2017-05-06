@@ -1,5 +1,8 @@
 package pl.poznajapp.pojo;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,13 +12,24 @@ import java.util.Map;
  */
 public class Story {
 
+    @SerializedName("id")
+    @Expose
     private Integer id;
+    @SerializedName("title")
+    @Expose
     private String title;
+    @SerializedName("description")
+    @Expose
     private String description;
+    @SerializedName("duration")
+    @Expose
     private String duration;
+    @SerializedName("first_point")
+    @Expose
     private Integer firstPoint;
+    @SerializedName("points")
+    @Expose
     private List<Integer> points = null;
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     public Integer getId() {
         return id;
@@ -23,14 +37,6 @@ public class Story {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public List<Integer> getPoints() {
-        return points;
-    }
-
-    public void setPoints(List<Integer> points) {
-        this.points = points;
     }
 
     public String getTitle() {
@@ -45,14 +51,6 @@ public class Story {
         return description;
     }
 
-    public Integer getFirst_Point() {
-        return firstPoint;
-    }
-
-    public void setFirst_Point(Integer firstPoint) {
-        this.firstPoint = firstPoint;
-    }
-
     public void setDescription(String description) {
         this.description = description;
     }
@@ -65,12 +63,20 @@ public class Story {
         this.duration = duration;
     }
 
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
+    public Integer getFirstPoint() {
+        return firstPoint;
     }
 
-    public void setAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
+    public void setFirstPoint(Integer firstPoint) {
+        this.firstPoint = firstPoint;
+    }
+
+    public List<Integer> getPoints() {
+        return points;
+    }
+
+    public void setPoints(List<Integer> points) {
+        this.points = points;
     }
 
 }

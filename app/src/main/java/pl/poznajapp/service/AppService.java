@@ -11,21 +11,15 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.Binder;
 import android.os.Bundle;
-import android.os.Handler;
 import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
-import android.util.Log;
-import android.widget.Toast;
 
 import com.google.android.gms.maps.model.LatLng;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import pl.poznajapp.R;
 import pl.poznajapp.database.Database;
@@ -33,7 +27,6 @@ import pl.poznajapp.network.API;
 import pl.poznajapp.pojo.Point;
 import pl.poznajapp.pojo.Story;
 import pl.poznajapp.utils.LocalisationUtils;
-import pl.poznajapp.utils.Utils;
 import pl.poznajapp.view.activity.PointActivity;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -56,12 +49,13 @@ public class AppService extends Service implements LocationListener {
     static final long MIN_TIME = 100;
     static final float MIN_DISTANCE = 0;
 
+    static final int USER_LOCATION_RADIUS = 100;
+
     API service;
 
     int currectStoryId = -1;
     Story story;
-    ArrayList<Point> points;
-
+    List<Point> points = new ArrayList<>();
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -71,17 +65,31 @@ public class AppService extends Service implements LocationListener {
                 .build();
         service = retrofit.create(API.class);
 
-
-        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
+        if(!checkPermission())
             return Service.START_STICKY;
-        }
-        locationManager.requestLocationUpdates(GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, (LocationListener) this);
+        else
+            locationManager.requestLocationUpdates(GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
 
-        points = new ArrayList<>();
+        loadCurrentStory();
+        return Service.START_STICKY;
+    }
+
+    boolean checkPermission(){
+        locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+        if (ActivityCompat.checkSelfPermission(
+                this,
+                Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(
+                        this,
+                        Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED)
+            // TODO: Consider calling
+            return true;
+        else
+            return false;
+    }
+
+    private void loadCurrentStory() {
         currectStoryId = Database.getCurrectStory(getSharedPreferences(Database.PREFERENCES_NAME, Database.MODE));
-
         Call<Story> call = service.getStory(currectStoryId);
         call.enqueue(new Callback<Story>() {
             @Override
@@ -91,12 +99,8 @@ public class AppService extends Service implements LocationListener {
             }
 
             @Override
-            public void onFailure(Call<Story> call, Throwable t) {
-
-            }
+            public void onFailure(Call<Story> call, Throwable t) {}
         });
-
-        return Service.START_STICKY;
     }
 
     @Nullable
@@ -136,11 +140,11 @@ public class AppService extends Service implements LocationListener {
                     location.getLatitude(),
                     location.getLongitude());
 
-            if(LocalisationUtils.distanceBeetwenPoints(latLngPoint, latLngUser) < 500){
+            if(LocalisationUtils.distanceBeetwenPoints(latLngPoint, latLngUser) < USER_LOCATION_RADIUS){
                 showNotification(p.getProperties().getTitle(), p.getProperties().getDescription(), p.getProperties().getImages());
                 points.remove(p);
                 if(points.size()==0){
-                    showNotificationEnd();
+                    showEndNotification();
                     onDestroy();
                 }
                 break;
@@ -148,7 +152,7 @@ public class AppService extends Service implements LocationListener {
         }
     }
 
-    private void showNotificationEnd() {
+    private void showEndNotification() {
         Notification notification = new Notification.Builder(this)
                 .setContentTitle("Zakończyłeś trasę")
                 .setSmallIcon(R.drawable.ic_directions_walk_white_24dp)
@@ -159,25 +163,19 @@ public class AppService extends Service implements LocationListener {
     }
 
     @Override
-    public void onStatusChanged(String s, int i, Bundle bundle) {
-
-    }
+    public void onStatusChanged(String s, int i, Bundle bundle) {}
 
     @Override
-    public void onProviderEnabled(String s) {
-
-    }
+    public void onProviderEnabled(String s) {}
 
     @Override
-    public void onProviderDisabled(String s) {
+    public void onProviderDisabled(String s) {}
 
-    }
-
-    public void getPoints(List<Integer> poinstList) {
-
+    void getPoints(List<Integer> poinstList) {
         for(Integer p : poinstList){
             Call<Point> call = service.getPoint(p);
             call.enqueue(new Callback<Point>() {
+
                 @Override
                 public void onResponse(Call<Point> call, Response<Point> response) {
                     Point p =  new Point();
@@ -193,6 +191,5 @@ public class AppService extends Service implements LocationListener {
                 }
             });
         }
-
     }
 }

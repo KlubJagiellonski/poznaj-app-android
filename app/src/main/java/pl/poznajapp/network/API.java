@@ -2,6 +2,7 @@ package pl.poznajapp.network;
 
 import java.util.List;
 
+import pl.poznajapp.pojo.FeatureCollection;
 import pl.poznajapp.pojo.Image;
 import pl.poznajapp.pojo.Point;
 import pl.poznajapp.pojo.Story;
@@ -21,11 +22,11 @@ public interface API {
     @GET("images/{id}?format=json")
     Call<Image> getImage(@Path("id") Integer id);
 
-    @GET("points/?format=json")
-    Call<List<Point>> listPoints();
-
     @GET("points/{id}?format=json")
     Call<Point> getPoint(@Path("id") Integer id);
+
+    @GET("stories/{id}/points?format=json")
+    Call<FeatureCollection> getStoryPoints(@Path("id") Integer id);
 
     @GET("stories/?format=json")
     Call<List<Story>> listStories();

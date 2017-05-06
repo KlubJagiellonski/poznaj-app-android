@@ -1,5 +1,8 @@
 package pl.poznajapp.pojo;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,10 +13,15 @@ import java.util.Map;
 
 public class Properties {
 
+    @SerializedName("title")
+    @Expose
     private String title;
+    @SerializedName("description")
+    @Expose
     private String description;
+    @SerializedName("images")
+    @Expose
     private List<Integer> images = null;
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     public String getTitle() {
         return title;
@@ -37,14 +45,6 @@ public class Properties {
 
     public void setImages(List<Integer> images) {
         this.images = images;
-    }
-
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
-    }
-
-    public void setAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
     }
 
 }

@@ -10,17 +10,17 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.gms.maps.CameraUpdate;
@@ -34,22 +34,22 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.MapStyleOptions;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import pl.poznajapp.R;
 import pl.poznajapp.database.Database;
-import pl.poznajapp.model.Picture;
 import pl.poznajapp.network.API;
+import pl.poznajapp.pojo.FeatureCollection;
+import pl.poznajapp.pojo.Image;
 import pl.poznajapp.pojo.Point;
 import pl.poznajapp.pojo.Story;
 import pl.poznajapp.service.AppService;
-import pl.poznajapp.view.adapter.PictureAdapter;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -57,7 +57,6 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 import static android.location.LocationManager.GPS_PROVIDER;
-import static android.location.LocationManager.NETWORK_PROVIDER;
 
 /**
  * Created by Rafał Gawlik on 29.11.2016.
@@ -65,19 +64,20 @@ import static android.location.LocationManager.NETWORK_PROVIDER;
 
 public class StoryActivity extends AppCompatActivity implements OnMapReadyCallback, LocationListener {
 
-    public static final String EXTRA_STORY = "EXTRA_STORY";
     private static final String TAG = StoryActivity.class.toString();
 
     @BindView(R.id.story_coordinatorlayout) CoordinatorLayout coordinatorLayout;
     @BindView(R.id.story_toolbar) Toolbar toolbar;
-    @BindView(R.id.story_collapsing) android.support.design.widget.CollapsingToolbarLayout collapsingToolbarLayout;
+    @BindView(R.id.story_backdrop) ImageView storyBackdrop;
+    @BindView(R.id.story_collapsing) CollapsingToolbarLayout collapsingToolbarLayout;
     @BindView(R.id.story_description) TextView storyDescription;
     @BindView(R.id.story_duration) TextView storyDuration;
     @BindView(R.id.story_pictures) RecyclerView picturesRecyclerView;
 
+    public static final String EXTRA_STORY = "EXTRA_STORY";
+
     MapFragment supportMapFragment;
     GoogleMap googleMap;
-    PictureAdapter mAdapter;
 
     List<MarkerOptions> markers;
 
@@ -86,8 +86,8 @@ public class StoryActivity extends AppCompatActivity implements OnMapReadyCallba
     static final float MIN_DISTANCE = 1000;
 
     Story story;
-
-    Integer id;
+    Integer story_id;
+    List<Point> points;
     API service;
 
     @Override
@@ -95,28 +95,31 @@ public class StoryActivity extends AppCompatActivity implements OnMapReadyCallba
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_story);
         ButterKnife.bind(this);
-        id = getIntent().getIntExtra(EXTRA_STORY, -1);
+        story_id = getIntent().getIntExtra(EXTRA_STORY, -1);
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://poznaj-wroclaw.herokuapp.com/api/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         service = retrofit.create(API.class);
-
+        initUI();
     }
 
     @Override
     public void onResume() {
         super.onResume();
+
+    }
+
+    void initUI() {
         initToolbar();
-//        initList();
         initMap();
     }
 
     @OnClick(R.id.story_fab)
     void onClickFab() {
         //Save current story
-        Database.setCurrectStory(getSharedPreferences(Database.PREFERENCES_NAME, Database.MODE), id);
+        Database.setCurrectStory(getSharedPreferences(Database.PREFERENCES_NAME, Database.MODE), story_id);
 
         Intent i = new Intent(getApplicationContext(), AppService.class);
         startService(i);
@@ -140,14 +143,6 @@ public class StoryActivity extends AppCompatActivity implements OnMapReadyCallba
         getSupportActionBar().setDefaultDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
-
-//    void initList() {
-//        mAdapter = new PictureAdapter(pictures);
-//        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false);
-//        picturesRecyclerView.setLayoutManager(mLayoutManager);
-//        picturesRecyclerView.setItemAnimator(new DefaultItemAnimator());
-//        picturesRecyclerView.setAdapter(mAdapter);
-//    }
 
     void initMap() {
         supportMapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.story_map);
@@ -195,9 +190,8 @@ public class StoryActivity extends AppCompatActivity implements OnMapReadyCallba
 
     }
 
-    public void getStoryDetails() {
-
-        Call<Story> call = service.getStory(id);
+    void getStoryDetails() {
+        Call<Story> call = service.getStory(story_id);
         call.enqueue(new Callback<Story>() {
             @Override
             public void onResponse(Call<Story> call, Response<Story> response) {
@@ -206,13 +200,7 @@ public class StoryActivity extends AppCompatActivity implements OnMapReadyCallba
                 collapsingToolbarLayout.setTitle(story.getTitle());
                 storyDuration.setText(story.getDuration());
                 storyDescription.setText(story.getDescription());
-
-                injectPointOnMap(story.getPoints());
-//
-//                story.getPoints().get(0)
-//
-//                Call<Point> call = service.getStory(id);
-
+                injectPointOnMap();
             }
 
             @Override
@@ -220,7 +208,6 @@ public class StoryActivity extends AppCompatActivity implements OnMapReadyCallba
 
             }
         });
-
     }
 
     @Override
@@ -230,33 +217,22 @@ public class StoryActivity extends AppCompatActivity implements OnMapReadyCallba
 
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
-        if (Integer.parseInt(android.os.Build.VERSION.SDK) > 5
-                && keyCode == KeyEvent.KEYCODE_BACK
-                && event.getRepeatCount() == 0) {
-            Log.d("CDA", "onKeyDown Called");
-            onBackPressed();
-            return true;
-        }
-        return super.onKeyDown(keyCode, event);
+        finish();
+        return false;
     }
 
-    private void injectPointOnMap(List<Integer> points) {
+    void injectPointOnMap() {
         markers = new ArrayList<>();
-        for (Integer point : points) {
-            Log.d(TAG, "Points: " + point + " : " + Integer.toString(point));
 
-            Call<Point> call = service.getPoint(point);
-            call.enqueue(new Callback<Point>() {
-                @Override
-                public void onResponse(Call<Point> call, Response<Point> response) {
-
-                    Point point = response.body();
-                    Log.d(TAG, point.getGeometry().getCoordinates().toString());
-
+        Call<FeatureCollection> call = service.getStoryPoints(story_id);
+        call.enqueue(new Callback<FeatureCollection>() {
+            @Override
+            public void onResponse(Call<FeatureCollection> call, Response<FeatureCollection> response) {
+                points = response.body().getFeatures();
+                for (Point point : points) {
                     Double longitude = point.getGeometry().getCoordinates().get(0);
                     Double latitude = point.getGeometry().getCoordinates().get(1);
                     LatLng position = new LatLng(latitude, longitude);
-
                     markers.add(new MarkerOptions()
                             .position(position)
                             .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_place_black_36dp))
@@ -271,28 +247,37 @@ public class StoryActivity extends AppCompatActivity implements OnMapReadyCallba
                     LatLngBounds bounds = builder.build();
                     CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
                     googleMap.animateCamera(cu);
+                    initImage();
                 }
+            }
 
-                @Override
-                public void onFailure(Call<Point> call, Throwable t) {
+            @Override
+            public void onFailure(Call<FeatureCollection> call, Throwable t) {
 
-                }
-            });
-
-        }
+            }
+        });
     }
 
+    void initImage() {
 
-    private int getIntFromString(String s){
-        Scanner in = new Scanner(s).useDelimiter("[^0-9]+");
-        return in.nextInt();
+        Call<Image> call = service.getImage(points.get(0).getProperties().getImages().get(0));
+        call.enqueue(new Callback<Image>() {
+            @Override
+            public void onResponse(Call<Image> call, Response<Image> response) {
+                Picasso.with(getApplicationContext()).load(response.body().getImageFile()).into(storyBackdrop);
+            }
+
+            @Override
+            public void onFailure(Call<Image> call, Throwable t) {
+            }
+        });
     }
 
     @Override
     public void onLocationChanged(Location location) {
-        Log.d(TAG, "onLocationChanged");
         if(markers == null)
             return;
+        googleMap.clear();
         googleMap.addMarker(new MarkerOptions()
                 .position(new LatLng(location.getLatitude(), location.getLongitude()))
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_person_pin_circle_black_36dp)));
@@ -313,17 +298,11 @@ public class StoryActivity extends AppCompatActivity implements OnMapReadyCallba
     }
 
     @Override
-    public void onStatusChanged(String s, int i, Bundle bundle) {
-
-    }
+    public void onStatusChanged(String s, int i, Bundle bundle) {}
 
     @Override
-    public void onProviderEnabled(String s) {
-
-    }
+    public void onProviderEnabled(String s) {}
 
     @Override
-    public void onProviderDisabled(String s) {
-
-    }
+    public void onProviderDisabled(String s) {}
 }

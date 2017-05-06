@@ -1,7 +1,7 @@
 package pl.poznajapp.pojo;
 
-import java.util.HashMap;
-import java.util.Map;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by Rafał Gawlik on 11.01.17.
@@ -9,10 +9,15 @@ import java.util.Map;
 
 public class Image {
 
+    @SerializedName("id")
+    @Expose
     private Integer id;
+    @SerializedName("title")
+    @Expose
     private String title;
+    @SerializedName("image_file")
+    @Expose
     private String imageFile;
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     public Integer getId() {
         return id;
@@ -36,14 +41,6 @@ public class Image {
 
     public void setImageFile(String imageFile) {
         this.imageFile = imageFile;
-    }
-
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
-    }
-
-    public void setAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
     }
 
 }
