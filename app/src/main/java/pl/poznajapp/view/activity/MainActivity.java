@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
 
     void initToolbar() {
         setSupportActionBar(toolbar);
-        getSupportActionBar().setTitle("PoznajApp");
+        getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
     }
 
     void initAnimations() {

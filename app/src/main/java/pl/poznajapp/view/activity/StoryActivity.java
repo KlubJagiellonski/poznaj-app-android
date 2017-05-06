@@ -125,11 +125,11 @@ public class StoryActivity extends AppCompatActivity implements OnMapReadyCallba
         startService(i);
 
         Snackbar snackbar = Snackbar
-                .make(coordinatorLayout, "Ustaliłeś swoją trasę", Snackbar.LENGTH_LONG)
-                .setAction("UNDO", new View.OnClickListener() {
+                .make(coordinatorLayout, getResources().getString(R.string.story_start_story), Snackbar.LENGTH_LONG)
+                .setAction(getResources().getString(R.string.undo_button), new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        Snackbar snackbar1 = Snackbar.make(coordinatorLayout, "Trasa porzucona", Snackbar.LENGTH_SHORT);
+                        Snackbar snackbar1 = Snackbar.make(coordinatorLayout, getResources().getString(R.string.story_undo_start_story), Snackbar.LENGTH_SHORT);
                         snackbar1.show();
                     }
                 });
@@ -186,7 +186,7 @@ public class StoryActivity extends AppCompatActivity implements OnMapReadyCallba
             // TODO: Consider calling
             return;
         }
-        locationManager.requestLocationUpdates(GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, (LocationListener) this);
+        locationManager.requestLocationUpdates(GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
 
     }
 

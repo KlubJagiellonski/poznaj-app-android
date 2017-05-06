@@ -119,7 +119,7 @@ public class AppService extends Service implements LocationListener {
         PendingIntent pIntent = PendingIntent.getActivity(this, (int) System.currentTimeMillis(), intent, 0);
 
         Notification notification = new Notification.Builder(this)
-                .setContentTitle("Zdobyłeś punkt")
+                .setContentTitle(getResources().getString(R.string.notification_get_point))
                 .setContentText(title)
                 .setSmallIcon(R.drawable.ic_directions_walk_white_24dp)
                 .setContentIntent(pIntent)
@@ -155,7 +155,7 @@ public class AppService extends Service implements LocationListener {
 
     private void showEndNotification() {
         Notification notification = new Notification.Builder(this)
-                .setContentTitle("Zakończyłeś trasę")
+                .setContentTitle(getResources().getString(R.string.notification_finish_story))
                 .setSmallIcon(R.drawable.ic_directions_walk_white_24dp)
                 .build();
         NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);

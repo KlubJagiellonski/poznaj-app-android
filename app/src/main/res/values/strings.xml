@@ -6,4 +6,11 @@
     <string name="apppoint__title">All point</string>
     <string name="trip_distance">Dystans</string>
 
+
+    <string name="notification_get_point">Zdobyłeś punkt</string>
+    <string name="notification_finish_story">Zakończyłeś trasę</string>
+    <string name="story_start_story">Ustaliłeś swoją trasę</string>
+    <string name="story_undo_start_story">Ustaliłeś swoją trasę</string>
+    <string name="undo_button">Porzóć</string>
+
 </resources>
