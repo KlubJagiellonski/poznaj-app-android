@@ -11,4 +11,8 @@ android:
     - android-25
     - add-on
     - extra
-
+  
+  licenses:
+    - 'android-sdk-preview-license-.+'
+    - 'android-sdk-license-.+'
+    - 'google-gdk-license-.+'
