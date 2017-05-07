@@ -88,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
     void initUI() {
         initToolbar();
         initList();
-        initAnimations();
+//        initAnimations();
         initClickListsners();
     }
 
