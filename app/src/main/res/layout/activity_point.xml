@@ -54,7 +54,6 @@
             android:layout_height="wrap_content"
             android:textSize="18sp"
             android:lineSpacingExtra="8dp"
-            android:text="Lorem ipsum"
             android:padding="@dimen/activity_horizontal_margin"  />
     </android.support.v4.widget.NestedScrollView>
 

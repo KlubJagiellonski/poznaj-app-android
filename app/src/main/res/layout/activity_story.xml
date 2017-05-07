@@ -68,7 +68,6 @@
                 android:layout_height="wrap_content"
                 android:lineSpacingExtra="8dp"
                 android:padding="@dimen/activity_horizontal_margin"
-                android:text="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque sit amet libero eget massa tincidunt euismod. Duis ut arcu nibh. Mauris dolor sem, lobortis a velit at, consequat tempus sapien. Etiam imperdiet sapien id dolor varius, in porttitor diam congue. Fusce mattis luctus augue, efficitur rhoncus enim feugiat sit amet. Sed elementum pellentesque ligula, in venenatis nisi tincidunt quis. Quisque euismod accumsan nulla, ut fringilla odio ultrices sed. Praesent elementum luctus tellus, semper aliquet ipsum rutrum a. Aliquam quis feugiat augue. Donec id sollicitudin lorem, a posuere dolor. Sed scelerisque suscipit tortor. Suspendisse volutpat consectetur massa eu maximus. "
                 android:textSize="16sp" />
 
             <fragment
