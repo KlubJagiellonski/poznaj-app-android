@@ -57,6 +57,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 import static android.location.LocationManager.GPS_PROVIDER;
+import static pl.poznajapp.network.API.API_URL;
 
 /**
  * Created by Rafał Gawlik on 29.11.2016.
@@ -98,7 +99,7 @@ public class StoryActivity extends AppCompatActivity implements OnMapReadyCallba
         story_id = getIntent().getIntExtra(EXTRA_STORY, -1);
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://poznaj-wroclaw.herokuapp.com/api/")
+                .baseUrl(API_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         service = retrofit.create(API.class);

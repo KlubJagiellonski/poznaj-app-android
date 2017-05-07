@@ -24,6 +24,8 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static pl.poznajapp.network.API.API_URL;
+
 /**
  * Created by Rafał Gawlik on 29.11.2016.
  */
@@ -54,7 +56,7 @@ public class PointActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://poznaj-wroclaw.herokuapp.com/api/")
+                .baseUrl(API_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         service = retrofit.create(API.class);

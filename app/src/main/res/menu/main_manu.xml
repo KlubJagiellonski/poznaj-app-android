@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/menu_main_about_app"
+        android:orderInCategory="100"
+        app:showAsAction="never"
+        android:title="@string/about_app" />
+
+    <item
+        android:id="@+id/menu_main_about_kj"
+        android:orderInCategory="200"
+        app:showAsAction="never"
+        android:title="@string/about_kj" />
+
+    <item
+        android:id="@+id/menu_main_team"
+        android:orderInCategory="200"
+        app:showAsAction="never"
+        android:title="@string/team" />
+
+    <item
+        android:id="@+id/menu_main_partners"
+        android:orderInCategory="200"
+        app:showAsAction="never"
+        android:title="@string/partners" />
+
+    <item
+        android:id="@+id/menu_main_error"
+        android:orderInCategory="200"
+        app:showAsAction="never"
+        android:title="@string/notice_bug" />
+
+    <item
+        android:id="@+id/menu_main_rate"
+        android:orderInCategory="200"
+        app:showAsAction="never"
+        android:title="@string/rate_app" />
+
+    <item
+        android:id="@+id/menu_main_fb"
+        android:orderInCategory="200"
+        app:showAsAction="never"
+        android:title="@string/facebook_profile" />
+
+</menu>

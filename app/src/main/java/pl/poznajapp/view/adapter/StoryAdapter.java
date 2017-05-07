@@ -42,11 +42,10 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.MyTripViewHo
         this.trips = trips;
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://poznaj-wroclaw.herokuapp.com/api/")
+                .baseUrl(API.API_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         service = retrofit.create(API.class);
-
     }
 
     @Override
@@ -79,7 +78,7 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.MyTripViewHo
 
                     @Override
                     public void onFailure(Call<Image> call, Throwable t) {
-                        Log.d("APIResult", t.toString());
+                        Log.d(TAG, t.toString());
                     }
                 });
 
@@ -87,7 +86,7 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.MyTripViewHo
 
             @Override
             public void onFailure(Call<Point> call, Throwable t) {
-                Log.d("APIResult",  t.getMessage());
+                Log.d(TAG,  t.getMessage());
             }
         });
 

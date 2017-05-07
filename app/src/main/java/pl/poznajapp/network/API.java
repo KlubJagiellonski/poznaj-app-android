@@ -16,6 +16,9 @@ import retrofit2.http.Path;
 
 public interface API {
 
+    String API_URL = "https://poznaj-wroclaw.herokuapp.com/api/";
+
+
     @GET("images/?format=json")
     Call<List<Image>> listImages();
 

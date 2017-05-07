@@ -2,6 +2,7 @@ package pl.poznajapp.view.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -9,15 +10,22 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import pl.poznajapp.R;
+import pl.poznajapp.database.Database;
 import pl.poznajapp.network.API;
 import pl.poznajapp.pojo.Story;
 import pl.poznajapp.utils.Utils;
@@ -29,6 +37,8 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+import static pl.poznajapp.network.API.API_URL;
+
 /**
  * Created by Rafał Gawlik on 30.11.2016.
  */
@@ -39,7 +49,13 @@ public class MainActivity extends AppCompatActivity {
 
     @BindView(R.id.main_toolbar) Toolbar toolbar;
     @BindView(R.id.main_trip_list) RecyclerView tripList;
+    @BindView(R.id.activity_main) LinearLayout main;
+    @BindView(R.id.main_current_story_title) TextView storyTitle;
+    @BindView(R.id.main_current_story) RelativeLayout currentStory;
     @BindView(R.id.main_swipe_refresh) SwipeRefreshLayout swipeRefreshLayout;
+
+    int currectStoryId = -1;
+    Story story;
 
     StoryAdapter mAdapter;
     ArrayList<Story> stories;
@@ -55,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://poznaj-wroclaw.herokuapp.com/api/")
+                .baseUrl(API_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         service = retrofit.create(API.class);
@@ -65,6 +81,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
+        loadCurrentStory();
         getStoriesList();
     }
 
@@ -78,6 +95,29 @@ public class MainActivity extends AppCompatActivity {
     void initToolbar() {
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle(getResources().getString(R.string.app_name));
+        toolbar.inflateMenu(R.menu.main_manu);
+    }
+
+    @OnClick(R.id.main_current_story_clean)
+    void deleteCurrentStory(){
+        Database.setCurrectStory(getSharedPreferences(Database.PREFERENCES_NAME, Database.MODE), -1);
+        currentStory.setVisibility(View.GONE);
+        Snackbar.make(main, getResources().getString(R.string.story_delete_current_story), Snackbar.LENGTH_LONG).show();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_manu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            // TODO
+            // menu elements
+        }
+        return false;
     }
 
     void initAnimations() {
@@ -159,5 +199,33 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, "error");
             }
         });
+    }
+
+
+
+    @OnClick(R.id.main_current_story)
+    void currentStoryClick(){
+        Intent intent = new Intent(getApplicationContext(), StoryActivity.class);
+        intent.putExtra(StoryActivity.EXTRA_STORY, currectStoryId);
+        startActivity(intent);
+    }
+
+    private void loadCurrentStory() {
+        currectStoryId = Database.getCurrectStory(getSharedPreferences(Database.PREFERENCES_NAME, Database.MODE));
+        if (currectStoryId > 0) {
+            currentStory.setVisibility(View.VISIBLE);
+            Call<Story> call = service.getStory(currectStoryId);
+            call.enqueue(new Callback<Story>() {
+                @Override
+                public void onResponse(Call<Story> call, Response<Story> response) {
+                    story = response.body();
+                    storyTitle.setText(story.getTitle());
+                }
+
+                @Override
+                public void onFailure(Call<Story> call, Throwable t) {
+                }
+            });
+        }
     }
 }

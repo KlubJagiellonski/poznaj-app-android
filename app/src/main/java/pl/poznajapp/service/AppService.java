@@ -35,6 +35,7 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 import static android.location.LocationManager.GPS_PROVIDER;
+import static pl.poznajapp.network.API.API_URL;
 
 /**
  * Created by Rafał Gawlik on 01.12.2016.
@@ -60,7 +61,7 @@ public class AppService extends Service implements LocationListener {
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://poznaj-wroclaw.herokuapp.com/api/")
+                .baseUrl(API_URL)
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         service = retrofit.create(API.class);

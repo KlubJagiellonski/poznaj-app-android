@@ -11,6 +11,15 @@
     <string name="notification_finish_story">Zakończyłeś trasę</string>
     <string name="story_start_story">Ustaliłeś swoją trasę</string>
     <string name="story_undo_start_story">Ustaliłeś swoją trasę</string>
+    <string name="story_delete_current_story">Zrezygnowałeś ze swojej strasy</string>
     <string name="undo_button">Porzóć</string>
+    <string name="about_app">O aplikacji</string>
+    <string name="about_kj">O Klubie Jagiellońskim</string>
+    <string name="team">Zespół</string>
+    <string name="partners">Partnerzy</string>
+    <string name="notice_bug">Zgłoś błąd</string>
+    <string name="rate_app">Oceń</string>
+    <string name="facebook_profile">Facebook</string>
+    <string name="current_story">Aktualna trasa</string>
 
 </resources>
