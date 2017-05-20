@@ -83,8 +83,8 @@ public class StoryActivity extends AppCompatActivity implements OnMapReadyCallba
     List<MarkerOptions> markers;
 
     LocationManager locationManager;
-    static final long MIN_TIME = 400;
-    static final float MIN_DISTANCE = 1000;
+    static final long MIN_TIME = 40;
+    static final float MIN_DISTANCE = 100;
 
     Story story;
     Integer story_id;
@@ -182,11 +182,14 @@ public class StoryActivity extends AppCompatActivity implements OnMapReadyCallba
                 });
         getStoryDetails();
 
+
+
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             // TODO: Consider calling
             return;
         }
+
         locationManager.requestLocationUpdates(GPS_PROVIDER, MIN_TIME, MIN_DISTANCE, this);
 
     }
@@ -286,6 +289,7 @@ public class StoryActivity extends AppCompatActivity implements OnMapReadyCallba
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
         for (MarkerOptions marker : markers) {
             builder.include(marker.getPosition());
+            googleMap.addMarker(marker);
         }
 
         builder.include(new LatLng(location.getLatitude(), location.getLongitude()));

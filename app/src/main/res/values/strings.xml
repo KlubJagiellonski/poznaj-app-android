@@ -21,5 +21,6 @@
     <string name="rate_app">Oceń</string>
     <string name="facebook_profile">Facebook</string>
     <string name="current_story">Aktualna trasa</string>
+    <string name="location_permission_text">Aplikacji nie udzielono uprawnień lokalizacji</string>
 
 </resources>

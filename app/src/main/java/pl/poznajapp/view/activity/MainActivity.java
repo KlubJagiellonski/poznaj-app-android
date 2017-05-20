@@ -1,8 +1,16 @@
 package pl.poznajapp.view.activity;
 
+import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentSender;
+import android.content.pm.PackageManager;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -13,10 +21,19 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.DecelerateInterpolator;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsResult;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +45,6 @@ import pl.poznajapp.R;
 import pl.poznajapp.database.Database;
 import pl.poznajapp.network.API;
 import pl.poznajapp.pojo.Story;
-import pl.poznajapp.utils.Utils;
 import pl.poznajapp.view.adapter.StoryAdapter;
 import pl.poznajapp.view.listener.RecyclerItemClickListener;
 import retrofit2.Call;
@@ -43,9 +59,13 @@ import static pl.poznajapp.network.API.API_URL;
  * Created by Rafał Gawlik on 30.11.2016.
  */
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements
+        ResultCallback<LocationSettingsResult> {
 
     final String TAG = MainActivity.class.getSimpleName();
+
+    protected static final int REQUEST_CHECK_SETTINGS = 0x1;
+    protected static final int PERMISSIONS_REQUEST_LOCATION  = 0x2;
 
     @BindView(R.id.main_toolbar) Toolbar toolbar;
     @BindView(R.id.main_trip_list) RecyclerView tripList;
@@ -61,8 +81,9 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<Story> stories;
     API service;
 
-    private static final int ANIM_DURATION_TOOLBAR = 200;
-    private static final int ANIM_DURATION_LIST = 600;
+    LocationManager mLocationManager;
+    static final long MIN_TIME = 100;
+    static final float MIN_DISTANCE = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,8 +102,24 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onResume() {
         super.onResume();
-        loadCurrentStory();
-        getStoriesList();
+
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
+                    Manifest.permission.ACCESS_FINE_LOCATION)) {
+
+            } else {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        PERMISSIONS_REQUEST_LOCATION);
+            }
+        } else {
+            displayLocationSettingsRequest(getApplicationContext());
+            loadCurrentStory();
+            getStoriesList();
+        }
+
     }
 
     void initUI() {
@@ -99,7 +136,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @OnClick(R.id.main_current_story_clean)
-    void deleteCurrentStory(){
+    void deleteCurrentStory() {
         Database.setCurrectStory(getSharedPreferences(Database.PREFERENCES_NAME, Database.MODE), -1);
         currentStory.setVisibility(View.GONE);
         Snackbar.make(main, getResources().getString(R.string.story_delete_current_story), Snackbar.LENGTH_LONG).show();
@@ -118,29 +155,6 @@ public class MainActivity extends AppCompatActivity {
             // menu elements
         }
         return false;
-    }
-
-    void initAnimations() {
-        int actionbarSize = Utils.dpToPx(56);
-        toolbar.setTranslationY(-actionbarSize);
-        toolbar.animate()
-                .translationY(0)
-                .setDuration(ANIM_DURATION_TOOLBAR)
-                .setInterpolator(new DecelerateInterpolator(1.f))
-                .setStartDelay(300);
-
-        tripList.setTranslationY(2000);
-        tripList.animate()
-                .translationY(0)
-                .setInterpolator(new DecelerateInterpolator(1.f))
-                .setStartDelay(500)
-                .setDuration(ANIM_DURATION_LIST)
-                .start();
-
-        swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_bright,
-                android.R.color.holo_green_light,
-                android.R.color.holo_orange_light,
-                android.R.color.holo_red_light);
     }
 
     void initList() {
@@ -201,10 +215,8 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-
-
     @OnClick(R.id.main_current_story)
-    void currentStoryClick(){
+    void currentStoryClick() {
         Intent intent = new Intent(getApplicationContext(), StoryActivity.class);
         intent.putExtra(StoryActivity.EXTRA_STORY, currectStoryId);
         startActivity(intent);
@@ -228,4 +240,127 @@ public class MainActivity extends AppCompatActivity {
             });
         }
     }
+
+    protected void startLocationUpdates() {
+        mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            return;
+        }
+        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME,
+                MIN_DISTANCE, new android.location.LocationListener() {
+                    @Override
+                    public void onLocationChanged(Location location) {
+
+
+
+                    }
+
+                    @Override
+                    public void onStatusChanged(String s, int i, Bundle bundle) {
+
+                    }
+
+                    @Override
+                    public void onProviderEnabled(String s) {
+
+                    }
+
+                    @Override
+                    public void onProviderDisabled(String s) {
+
+                    }
+                });
+
+
+    }
+
+    private void displayLocationSettingsRequest(Context context) {
+        GoogleApiClient googleApiClient = new GoogleApiClient.Builder(context)
+                .addApi(LocationServices.API).build();
+        googleApiClient.connect();
+
+        LocationRequest locationRequest = LocationRequest.create();
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        locationRequest.setInterval(10000);
+        locationRequest.setFastestInterval(10000 / 2);
+
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder().addLocationRequest(locationRequest);
+        builder.setAlwaysShow(true);
+
+        PendingResult<LocationSettingsResult> result = LocationServices.SettingsApi.checkLocationSettings(googleApiClient, builder.build());
+        result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
+            @Override
+            public void onResult(LocationSettingsResult result) {
+                final Status status = result.getStatus();
+                switch (status.getStatusCode()) {
+                    case LocationSettingsStatusCodes.SUCCESS:
+                        Log.i(TAG, "All location settings are satisfied.");
+                        startLocationUpdates();
+                        break;
+                    case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+                        Log.i(TAG, "Location settings are not satisfied. Show the user a dialog to upgrade location settings ");
+
+                        try {
+                            // Show the dialog by calling startResolutionForResult(), and check the result
+                            // in onActivityResult().
+                            status.startResolutionForResult(MainActivity.this, REQUEST_CHECK_SETTINGS);
+                        } catch (IntentSender.SendIntentException e) {
+                            Log.i(TAG, "PendingIntent unable to execute request.");
+                        }
+                        break;
+                    case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                        Log.i(TAG, "Location settings are inadequate, and cannot be fixed here. Dialog not created.");
+                        break;
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onResult(LocationSettingsResult locationSettingsResult) {
+        final Status status = locationSettingsResult.getStatus();
+        switch (status.getStatusCode()) {
+            case LocationSettingsStatusCodes.SUCCESS:
+                Log.i(TAG, "All location settings are satisfied.");
+                startLocationUpdates();
+                break;
+            case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+                Log.i(TAG, "Location settings are not satisfied. Show the user a dialog to" +
+                        "upgrade location settings ");
+
+                try {
+                    // Show the dialog by calling startResolutionForResult(), and check the result
+                    // in onActivityResult().
+                    status.startResolutionForResult(MainActivity.this, REQUEST_CHECK_SETTINGS);
+                } catch (IntentSender.SendIntentException e) {
+                    Log.i(TAG, "PendingIntent unable to execute request.");
+                }
+                break;
+            case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                Log.i(TAG, "Location settings are inadequate, and cannot be fixed here. Dialog " +
+                        "not created.");
+                break;
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case PERMISSIONS_REQUEST_LOCATION: {
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    displayLocationSettingsRequest(getApplicationContext());
+                } else {
+                    Snackbar.make(main, R.string.location_permission_text, Snackbar.LENGTH_LONG).show();
+
+                }
+                return;
+            }
+
+        }
+    }
+
 }
