@@ -21,7 +21,6 @@
         <pl.poznajapp.view.widget.PanoramicImageView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:src="@drawable/mock_trip_image"
             android:scaleType="centerCrop"
             android:id="@+id/panoramicImageView" />
 

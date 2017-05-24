@@ -99,7 +99,10 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.MyTripViewHo
 
     @Override
     public int getItemCount() {
-        return trips.size();
+        if(trips!=null)
+            return trips.size();
+        else
+            return -1;
     }
 
     public class MyTripViewHolder extends RecyclerView.ViewHolder {

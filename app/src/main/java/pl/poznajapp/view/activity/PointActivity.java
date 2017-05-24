@@ -8,6 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
@@ -42,12 +43,14 @@ public class PointActivity extends AppCompatActivity {
     public static final String POINT_TITLE = "POINT_TITLE";
     public static final String POINT_DESCRIPTION = "POINT_DESCRIPTION";
     public static final String POINT_IMAGES = "POINT_IMAGES";
+    public static final String IS_END = "IS_END";
 
     API service;
 
     String title;
     String description;
     List<Integer> images;
+    boolean isEnd;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -89,9 +92,14 @@ public class PointActivity extends AppCompatActivity {
         title = getIntent().getExtras().getString(POINT_TITLE);
         description = getIntent().getExtras().getString(POINT_DESCRIPTION);
         images = getIntent().getExtras().getIntegerArrayList(POINT_IMAGES);
+        isEnd = getIntent().getExtras().getBoolean(IS_END);
 
         collapsingToolbarLayout.setTitle(title);
         pointDescription.setText(description);
+
+
+        if(isEnd)
+            Toast.makeText(getApplicationContext(), "Skończyłeś trasę", Toast.LENGTH_LONG).show();
     }
 
     void initToolbar() {

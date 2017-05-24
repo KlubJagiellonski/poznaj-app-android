@@ -48,9 +48,9 @@ public class AppService extends Service implements LocationListener {
 
     LocationManager locationManager;
     static final long MIN_TIME = 100;
-    static final float MIN_DISTANCE = 0;
+    static final float MIN_DISTANCE = 40;
 
-    static final int USER_LOCATION_RADIUS = 100;
+    static final int USER_LOCATION_RADIUS = 100;  //meters
 
     API service;
 
@@ -111,10 +111,12 @@ public class AppService extends Service implements LocationListener {
         return null;
     }
 
-    private void showNotification(String title, String description, List<Integer> images) {
+    private void showNotification(String title, String description, List<Integer> images, boolean isEnd) {
         Intent intent = new Intent(this, PointActivity.class);
         intent.putExtra(PointActivity.POINT_TITLE, title);
         intent.putExtra(PointActivity.POINT_DESCRIPTION, description);
+        intent.putExtra(PointActivity.IS_END, isEnd);
+
         intent.putIntegerArrayListExtra(PointActivity.POINT_IMAGES, (ArrayList<Integer>) images);
 
         PendingIntent pIntent = PendingIntent.getActivity(this, (int) System.currentTimeMillis(), intent, 0);
@@ -143,25 +145,14 @@ public class AppService extends Service implements LocationListener {
                     location.getLongitude());
 
             if (LocalisationUtils.distanceBeetwenPoints(latLngPoint, latLngUser) < USER_LOCATION_RADIUS) {
-                showNotification(p.getProperties().getTitle(), p.getProperties().getDescription(), p.getProperties().getImages());
+                showNotification(p.getProperties().getTitle(), p.getProperties().getDescription(), p.getProperties().getImages(), points.size()==1 ? true : false);
                 points.remove(p);
                 if (points.size() == 0) {
-                    showEndNotification();
                     onDestroy();
                 }
                 break;
             }
         }
-    }
-
-    private void showEndNotification() {
-        Notification notification = new Notification.Builder(this)
-                .setContentTitle(getResources().getString(R.string.notification_finish_story))
-                .setSmallIcon(R.drawable.ic_directions_walk_white_24dp)
-                .build();
-        NotificationManager notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
-        notification.flags |= Notification.FLAG_AUTO_CANCEL;
-        notificationManager.notify(0, notification);
     }
 
     @Override

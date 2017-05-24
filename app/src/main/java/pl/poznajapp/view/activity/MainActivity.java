@@ -65,7 +65,7 @@ public class MainActivity extends AppCompatActivity implements
     final String TAG = MainActivity.class.getSimpleName();
 
     protected static final int REQUEST_CHECK_SETTINGS = 0x1;
-    protected static final int PERMISSIONS_REQUEST_LOCATION  = 0x2;
+    protected static final int PERMISSIONS_REQUEST_LOCATION = 0x2;
 
     @BindView(R.id.main_toolbar) Toolbar toolbar;
     @BindView(R.id.main_trip_list) RecyclerView tripList;
@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements
 
     LocationManager mLocationManager;
     static final long MIN_TIME = 100;
-    static final float MIN_DISTANCE = 0;
+    static final float MIN_DISTANCE = 10;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,18 +106,13 @@ public class MainActivity extends AppCompatActivity implements
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.ACCESS_FINE_LOCATION)) {
 
-            } else {
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                        PERMISSIONS_REQUEST_LOCATION);
-            }
+            ActivityCompat.requestPermissions(MainActivity.this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    PERMISSIONS_REQUEST_LOCATION);
+
         } else {
             displayLocationSettingsRequest(getApplicationContext());
-            loadCurrentStory();
-            getStoriesList();
         }
 
     }
@@ -167,7 +162,7 @@ public class MainActivity extends AppCompatActivity implements
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                getStoriesList();
+                startLocationUpdates();
                 swipeRefreshLayout.setRefreshing(false);
             }
         });
@@ -193,19 +188,16 @@ public class MainActivity extends AppCompatActivity implements
         }));
     }
 
-    void getStoriesList() {
+    void getStoriesList(Location location) {
         stories = new ArrayList<>();
-
-        Call<List<Story>> call = service.listStories();
+        Call<List<Story>> call = service.listStories(location.getLatitude(), location.getLongitude());
         call.enqueue(new Callback<List<Story>>() {
             @Override
             public void onResponse(Call<List<Story>> call, Response<List<Story>> response) {
                 List<Story> stories = response.body();
-                for (Story story : stories) {
-                    MainActivity.this.stories.add(story);
-                    mAdapter.setItemList(MainActivity.this.stories);
-                    mAdapter.notifyDataSetChanged();
-                }
+                MainActivity.this.stories = (ArrayList<Story>) stories;
+                mAdapter.setItemList(stories);
+                mAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -243,36 +235,12 @@ public class MainActivity extends AppCompatActivity implements
 
     protected void startLocationUpdates() {
         mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-
+        loadCurrentStory();
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             return;
         }
-        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, MIN_TIME,
-                MIN_DISTANCE, new android.location.LocationListener() {
-                    @Override
-                    public void onLocationChanged(Location location) {
-
-
-
-                    }
-
-                    @Override
-                    public void onStatusChanged(String s, int i, Bundle bundle) {
-
-                    }
-
-                    @Override
-                    public void onProviderEnabled(String s) {
-
-                    }
-
-                    @Override
-                    public void onProviderDisabled(String s) {
-
-                    }
-                });
-
-
+        Location mLocation = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+        getStoriesList(mLocation);
     }
 
     private void displayLocationSettingsRequest(Context context) {
@@ -330,8 +298,6 @@ public class MainActivity extends AppCompatActivity implements
                         "upgrade location settings ");
 
                 try {
-                    // Show the dialog by calling startResolutionForResult(), and check the result
-                    // in onActivityResult().
                     status.startResolutionForResult(MainActivity.this, REQUEST_CHECK_SETTINGS);
                 } catch (IntentSender.SendIntentException e) {
                     Log.i(TAG, "PendingIntent unable to execute request.");
@@ -345,8 +311,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
             case PERMISSIONS_REQUEST_LOCATION: {
                 if (grantResults.length > 0
@@ -355,12 +320,9 @@ public class MainActivity extends AppCompatActivity implements
                     displayLocationSettingsRequest(getApplicationContext());
                 } else {
                     Snackbar.make(main, R.string.location_permission_text, Snackbar.LENGTH_LONG).show();
-
                 }
                 return;
             }
-
         }
     }
-
 }
