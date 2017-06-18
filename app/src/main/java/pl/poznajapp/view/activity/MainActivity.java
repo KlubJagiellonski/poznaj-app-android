@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -29,11 +30,14 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,13 +63,9 @@ import static pl.poznajapp.network.API.API_URL;
  * Created by Rafał Gawlik on 30.11.2016.
  */
 
-public class MainActivity extends AppCompatActivity implements
-        ResultCallback<LocationSettingsResult> {
+public class MainActivity extends AppCompatActivity {
 
     final String TAG = MainActivity.class.getSimpleName();
-
-    protected static final int REQUEST_CHECK_SETTINGS = 0x1;
-    protected static final int PERMISSIONS_REQUEST_LOCATION = 0x2;
 
     @BindView(R.id.main_toolbar) Toolbar toolbar;
     @BindView(R.id.main_trip_list) RecyclerView tripList;
@@ -81,9 +81,10 @@ public class MainActivity extends AppCompatActivity implements
     ArrayList<Story> stories;
     API service;
 
-    LocationManager mLocationManager;
-    static final long MIN_TIME = 100;
-    static final float MIN_DISTANCE = 10;
+    private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
+    private FusedLocationProviderClient mFusedLocationClient;
+    protected Location mLastLocation;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -97,22 +98,23 @@ public class MainActivity extends AppCompatActivity implements
                 .build();
         service = retrofit.create(API.class);
         initUI();
+        initManagers();
+    }
+
+    private void initManagers() {
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
     }
 
     @Override
     public void onResume() {
         super.onResume();
 
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
+        loadCurrentStory();
 
-            ActivityCompat.requestPermissions(MainActivity.this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    PERMISSIONS_REQUEST_LOCATION);
-
+        if (!checkPermissions()) {
+            startLocationPermissionRequest();
         } else {
-            displayLocationSettingsRequest(getApplicationContext());
+            getLastLocation();
         }
 
     }
@@ -120,7 +122,6 @@ public class MainActivity extends AppCompatActivity implements
     void initUI() {
         initToolbar();
         initList();
-//        initAnimations();
         initClickListsners();
     }
 
@@ -162,8 +163,7 @@ public class MainActivity extends AppCompatActivity implements
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                startLocationUpdates();
-                swipeRefreshLayout.setRefreshing(false);
+                getLastLocation();
             }
         });
     }
@@ -233,95 +233,42 @@ public class MainActivity extends AppCompatActivity implements
         }
     }
 
-    protected void startLocationUpdates() {
-        mLocationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        loadCurrentStory();
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            return;
-        }
-        Location mLocation = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
-        getStoriesList(mLocation);
-    }
-
-    private void displayLocationSettingsRequest(Context context) {
-        GoogleApiClient googleApiClient = new GoogleApiClient.Builder(context)
-                .addApi(LocationServices.API).build();
-        googleApiClient.connect();
-
-        LocationRequest locationRequest = LocationRequest.create();
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        locationRequest.setInterval(10000);
-        locationRequest.setFastestInterval(10000 / 2);
-
-        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder().addLocationRequest(locationRequest);
-        builder.setAlwaysShow(true);
-
-        PendingResult<LocationSettingsResult> result = LocationServices.SettingsApi.checkLocationSettings(googleApiClient, builder.build());
-        result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
-            @Override
-            public void onResult(LocationSettingsResult result) {
-                final Status status = result.getStatus();
-                switch (status.getStatusCode()) {
-                    case LocationSettingsStatusCodes.SUCCESS:
-                        Log.i(TAG, "All location settings are satisfied.");
-                        startLocationUpdates();
-                        break;
-                    case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
-                        Log.i(TAG, "Location settings are not satisfied. Show the user a dialog to upgrade location settings ");
-
-                        try {
-                            // Show the dialog by calling startResolutionForResult(), and check the result
-                            // in onActivityResult().
-                            status.startResolutionForResult(MainActivity.this, REQUEST_CHECK_SETTINGS);
-                        } catch (IntentSender.SendIntentException e) {
-                            Log.i(TAG, "PendingIntent unable to execute request.");
+    @SuppressWarnings("MissingPermission")
+    private void getLastLocation() {
+        mFusedLocationClient.getLastLocation()
+                .addOnCompleteListener(this, new OnCompleteListener<Location>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Location> task) {
+                        if (task.isSuccessful() && task.getResult() != null) {
+                            mLastLocation = task.getResult();
+                            getStoriesList(mLastLocation);
+                            if(swipeRefreshLayout.isRefreshing())
+                                swipeRefreshLayout.setRefreshing(false);
                         }
-                        break;
-                    case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
-                        Log.i(TAG, "Location settings are inadequate, and cannot be fixed here. Dialog not created.");
-                        break;
-                }
-            }
-        });
+                    }
+                });
+    }
+
+    private boolean checkPermissions() {
+        int permissionState = ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_COARSE_LOCATION);
+        return permissionState == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private void startLocationPermissionRequest() {
+        ActivityCompat.requestPermissions(MainActivity.this,
+                new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                REQUEST_PERMISSIONS_REQUEST_CODE);
     }
 
     @Override
-    public void onResult(LocationSettingsResult locationSettingsResult) {
-        final Status status = locationSettingsResult.getStatus();
-        switch (status.getStatusCode()) {
-            case LocationSettingsStatusCodes.SUCCESS:
-                Log.i(TAG, "All location settings are satisfied.");
-                startLocationUpdates();
-                break;
-            case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
-                Log.i(TAG, "Location settings are not satisfied. Show the user a dialog to" +
-                        "upgrade location settings ");
-
-                try {
-                    status.startResolutionForResult(MainActivity.this, REQUEST_CHECK_SETTINGS);
-                } catch (IntentSender.SendIntentException e) {
-                    Log.i(TAG, "PendingIntent unable to execute request.");
-                }
-                break;
-            case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
-                Log.i(TAG, "Location settings are inadequate, and cannot be fixed here. Dialog " +
-                        "not created.");
-                break;
-        }
-    }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case PERMISSIONS_REQUEST_LOCATION: {
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    displayLocationSettingsRequest(getApplicationContext());
-                } else {
-                    Snackbar.make(main, R.string.location_permission_text, Snackbar.LENGTH_LONG).show();
-                }
-                return;
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        if (requestCode == REQUEST_PERMISSIONS_REQUEST_CODE) {
+            if (grantResults.length <= 0) {
+                finish();
+            } else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                getLastLocation();
             }
         }
     }
