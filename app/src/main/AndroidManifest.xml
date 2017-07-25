@@ -25,6 +25,10 @@
             android:parentActivityName=".view.activity.MainActivity"/>
 
         <activity android:name=".view.activity.PointActivity" />
+        <activity android:name=".view.activity.info.Partners" />
+        <activity android:name=".view.activity.info.AboutApp" />
+        <activity android:name=".view.activity.info.AboutKJ" />
+        <activity android:name=".view.activity.info.Team" />
 
         <service
             android:name=".service.AppService"
