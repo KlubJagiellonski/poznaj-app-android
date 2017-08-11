@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">PoznajApp</string>
+    <string name="poznaj_app_api_url">https://poznaj-wroclaw.herokuapp.com/api</string>
 </resources>
