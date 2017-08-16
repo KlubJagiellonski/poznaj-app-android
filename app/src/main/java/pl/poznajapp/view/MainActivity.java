@@ -22,7 +22,6 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -31,6 +30,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
@@ -66,8 +66,7 @@ public class MainActivity extends AppCompatActivity {
         if (!checkPermissions()) {
             requestPermissions();
         } else {
-            bindService(new Intent(this, LocationService.class), serviceConnection,
-                    Context.BIND_AUTO_CREATE);
+            checkLocationEnabled();
         }
     }
 
@@ -126,7 +125,12 @@ public class MainActivity extends AppCompatActivity {
 
     private void checkLocationEnabled(){
         //location settings
+        LocationRequest locationRequest = LocationRequest.create();
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
         LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
+        builder.addLocationRequest(locationRequest);
+
         googleApiClient = new GoogleApiClient.Builder(this)
                 .addApi(LocationServices.API)
                 .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
@@ -137,7 +141,7 @@ public class MainActivity extends AppCompatActivity {
 
                     @Override
                     public void onConnectionSuspended(int i) {
-
+                        googleApiClient.connect();
                     }
                 })
                 .addOnConnectionFailedListener(new GoogleApiClient.OnConnectionFailedListener() {
@@ -146,20 +150,26 @@ public class MainActivity extends AppCompatActivity {
 
                     }
                 }).build();
+
+        builder.setAlwaysShow(true);
+
         googleApiClient.connect();
         PendingResult<LocationSettingsResult> result =
                 LocationServices.SettingsApi.checkLocationSettings(googleApiClient, builder.build());
+
         result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
             @Override
             public void onResult(@NonNull LocationSettingsResult locationSettingsResult) {
                 final Status status = locationSettingsResult.getStatus();
+                Timber.d(status.toString());
                 switch (status.getStatusCode()){
                     case LocationSettingsStatusCodes.SUCCESS:
-                        //TODO location enabled
+                        Timber.d("LocationSettingsStatusCodes.SUCCESS");
+                        bindService(new Intent(getApplicationContext(), LocationService.class), serviceConnection,
+                                Context.BIND_AUTO_CREATE);
                         break;
                     case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
-                        //TODO RESOLUTION_REQUIRED
-
+                        Timber.d("LocationSettingsStatusCodes.RESOLUTION_REQUIRED");
                         try {
                             status.startResolutionForResult(MainActivity.this, REQUEST_CHECK_SETTINGS);
                         } catch (@SuppressLint("NewApi") IntentSender.SendIntentException e) {
@@ -168,7 +178,8 @@ public class MainActivity extends AppCompatActivity {
 
                         break;
                     case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
-                        //TODO tun off
+                        Timber.d("LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE");
+                        //TODO show toast - location turn off
                         break;
                 }
             }
@@ -185,10 +196,8 @@ public class MainActivity extends AppCompatActivity {
             if (grantResults.length <= 0) {
                 Timber.d("User interaction was cancelled.");
             } else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                bindService(new Intent(this, LocationService.class), serviceConnection,
-                        Context.BIND_AUTO_CREATE);
+                checkLocationEnabled();
             } else {
-
                 Snackbar.make(
                         findViewById(R.id.activity_main),
                         R.string.permission_denied_explanation,
@@ -218,8 +227,11 @@ public class MainActivity extends AppCompatActivity {
             case REQUEST_CHECK_SETTINGS:
                 switch (resultCode) {
                     case Activity.RESULT_OK:
+                        bindService(new Intent(getApplicationContext(), LocationService.class), serviceConnection,
+                                Context.BIND_AUTO_CREATE);
                         break;
                     case Activity.RESULT_CANCELED:
+                        //TODO show toast - location turn off
                         break;
                 }
                 break;
