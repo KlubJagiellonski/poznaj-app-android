@@ -18,6 +18,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -45,30 +46,31 @@ public class MainActivity extends AppCompatActivity {
         locationReceiver = new LocationReceiver();
         setContentView(R.layout.activity_main);
 
-        if (Utils.INSTANCE.requestingLocationUpdates(this)) {
-            if (!checkPermissions()) {
-                requestPermissions();
-            } else {
-                bindService(new Intent(this, LocationService.class), serviceConnection,
-                        Context.BIND_AUTO_CREATE);
-            }
-        }
-    }
 
-    @Override
-    protected void onStop() {
-        if (bound) {
-            unbindService(serviceConnection);
-            bound = false;
+        if (!checkPermissions()) {
+            requestPermissions();
+        } else {
+            bindService(new Intent(this, LocationService.class), serviceConnection,
+                    Context.BIND_AUTO_CREATE);
         }
-        super.onStop();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        Timber.i("onResume");
         LocalBroadcastManager.getInstance(this).registerReceiver(locationReceiver,
                 new IntentFilter(LocationService.ACTION_BROADCAST));
+    }
+
+    @Override
+    protected void onStop() {
+        Timber.i("onStop");
+        if (bound) {
+            unbindService(serviceConnection);
+            bound = false;
+        }
+        super.onStop();
     }
 
     private boolean checkPermissions() {
