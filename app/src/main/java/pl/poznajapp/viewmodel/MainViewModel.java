@@ -17,6 +17,7 @@ public class MainViewModel implements ViewModel {
 
     @Override
     public void onCreate() {
+        //TODO remove
         text.set("Test text");
     }
 
