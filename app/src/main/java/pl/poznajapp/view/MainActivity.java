@@ -11,6 +11,7 @@ import android.content.IntentFilter;
 import android.content.IntentSender;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
+import android.databinding.DataBindingUtil;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -38,8 +39,10 @@ import com.google.android.gms.location.LocationSettingsStatusCodes;
 
 import pl.poznajapp.BuildConfig;
 import pl.poznajapp.R;
+import pl.poznajapp.databinding.ActivityMainBinding;
 import pl.poznajapp.helpers.Utils;
 import pl.poznajapp.service.LocationService;
+import pl.poznajapp.viewmodel.MainViewModel;
 import timber.log.Timber;
 
 /**
@@ -56,12 +59,16 @@ public class MainActivity extends AppCompatActivity {
     LocationReceiver locationReceiver;
     GoogleApiClient googleApiClient;
 
+    MainViewModel viewModel =  new MainViewModel();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         locationReceiver = new LocationReceiver();
-        setContentView(R.layout.activity_main);
 
+        ActivityMainBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
+        binding.setViewModel(viewModel);
+        viewModel.onCreate();
 
         if (!checkPermissions()) {
             requestPermissions();
@@ -76,6 +83,19 @@ public class MainActivity extends AppCompatActivity {
         Timber.i("onResume");
         LocalBroadcastManager.getInstance(this).registerReceiver(locationReceiver,
                 new IntentFilter(LocationService.ACTION_BROADCAST));
+        viewModel.onResume();
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        viewModel.onPause();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        viewModel.onDestroy();
     }
 
     @Override
