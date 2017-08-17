@@ -10,7 +10,7 @@ import retrofit2.http.GET
 
 interface APIService {
 
-    @GET("stories")
+    @GET("stories/?format=json")
     fun listStories(): Call<List<Story>>
 
 }

@@ -15,8 +15,6 @@ import java.util.*
 
 object Utils {
 
-    val TIMEOUT_SECONDS: Long = 20
-
     fun dpToPx(dp: Int): Int {
         return (dp * Resources.getSystem().displayMetrics.density).toInt()
     }

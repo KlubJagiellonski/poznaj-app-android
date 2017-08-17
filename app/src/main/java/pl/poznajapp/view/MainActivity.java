@@ -24,7 +24,6 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
-import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -37,12 +36,20 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 
+import java.util.List;
+
+import pl.poznajapp.API.APIService;
 import pl.poznajapp.BuildConfig;
+import pl.poznajapp.PoznajApp;
 import pl.poznajapp.R;
 import pl.poznajapp.databinding.ActivityMainBinding;
 import pl.poznajapp.helpers.Utils;
+import pl.poznajapp.model.Story;
 import pl.poznajapp.service.LocationService;
 import pl.poznajapp.viewmodel.MainViewModel;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import timber.log.Timber;
 
 /**
@@ -59,7 +66,9 @@ public class MainActivity extends AppCompatActivity {
     LocationReceiver locationReceiver;
     GoogleApiClient googleApiClient;
 
-    MainViewModel viewModel =  new MainViewModel();
+    MainViewModel viewModel = new MainViewModel();
+
+    APIService service;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,8 +117,26 @@ public class MainActivity extends AppCompatActivity {
         super.onStop();
     }
 
+    private void loadStories() {
+        service = PoznajApp.retrofit.create(APIService.class);
+
+        Call<List<Story>> storyListCall = service.listStories();
+        storyListCall.enqueue(new Callback<List<Story>>() {
+            @Override
+            public void onResponse(Call<List<Story>> call, Response<List<Story>> response) {
+                viewModel.loadStories(response.body());
+            }
+
+            @Override
+            public void onFailure(Call<List<Story>> call, Throwable t) {
+                Timber.e(t);
+            }
+        });
+
+    }
+
     private boolean checkPermissions() {
-        return  PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(this,
+        return PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION);
     }
 
@@ -143,7 +170,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private void checkLocationEnabled(){
+    private void checkLocationEnabled() {
         //location settings
         LocationRequest locationRequest = LocationRequest.create();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
@@ -182,7 +209,7 @@ public class MainActivity extends AppCompatActivity {
             public void onResult(@NonNull LocationSettingsResult locationSettingsResult) {
                 final Status status = locationSettingsResult.getStatus();
                 Timber.d(status.toString());
-                switch (status.getStatusCode()){
+                switch (status.getStatusCode()) {
                     case LocationSettingsStatusCodes.SUCCESS:
                         Timber.d("LocationSettingsStatusCodes.SUCCESS");
                         bindService(new Intent(getApplicationContext(), LocationService.class), serviceConnection,
@@ -263,8 +290,8 @@ public class MainActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             Location location = intent.getParcelableExtra(LocationService.EXTRA_LOCATION);
             if (location != null) {
-                Toast.makeText(MainActivity.this, Utils.INSTANCE.getLocationText(location),
-                        Toast.LENGTH_SHORT).show();
+                Timber.d(Utils.INSTANCE.getLocationText(location));
+                loadStories();
             }
         }
     }
