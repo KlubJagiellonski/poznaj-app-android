@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/poznaj-app-android.iml" filepath="$PROJECT_DIR$/poznaj-app-android.iml" />
+      <module fileurl="file://$PROJECT_DIR$/recyclerview-binding/recyclerview-binding.iml" filepath="$PROJECT_DIR$/recyclerview-binding/recyclerview-binding.iml" />
     </modules>
   </component>
 </project>

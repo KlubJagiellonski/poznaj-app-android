@@ -1,5 +1,6 @@
 package pl.poznajapp.viewmodel;
 
+import android.databinding.ObservableArrayList;
 import android.databinding.ObservableField;
 
 import java.util.List;
@@ -13,6 +14,7 @@ import pl.poznajapp.model.Story;
 public class MainViewModel implements ViewModel {
 
     public final ObservableField<String> text = new ObservableField<>();
+    public ObservableArrayList<MainViewModel> stories = new ObservableArrayList<>();
 
 
     @Override

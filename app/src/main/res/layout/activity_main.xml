@@ -4,8 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <import type="android.view.View" />
         <variable name="viewModel" type="pl.poznajapp.viewmodel.MainViewModel" />
+        <variable name="view" type="pl.poznajapp.view.MainActivity"/>
     </data>
 
     <android.support.constraint.ConstraintLayout
@@ -14,18 +14,11 @@
         android:layout_height="match_parent"
         tools:context="pl.poznajapp.view.MainActivity">
 
-        <TextView
-            android:id="@+id/textView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@{viewModel.text}"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginEnd="8dp"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginTop="8dp" />
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/activity_main_story_list_rv"
+            android:scrollbars="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
 
     </android.support.constraint.ConstraintLayout>
 </layout>
