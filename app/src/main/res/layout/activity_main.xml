@@ -5,8 +5,7 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="pl.poznajapp.view.MainActivity"
-    android:background="#cc">
+    tools:context="pl.poznajapp.view.MainActivity">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/activity_main_story_list_rv"

@@ -60,7 +60,7 @@ import timber.log.Timber;
  * Created by Rafał Gawlik on 13.08.17.
  */
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends BaseView {
 
     private LocationService locationService = null;
     private boolean bound = false;
