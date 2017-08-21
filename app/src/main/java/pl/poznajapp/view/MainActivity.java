@@ -11,7 +11,6 @@ import android.content.IntentFilter;
 import android.content.IntentSender;
 import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
-import android.databinding.DataBindingUtil;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Bundle;
@@ -23,6 +22,9 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Toast;
 
@@ -37,12 +39,21 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import pl.poznajapp.API.APIService;
 import pl.poznajapp.BuildConfig;
+import pl.poznajapp.PoznajApp;
 import pl.poznajapp.R;
-import pl.poznajapp.databinding.ActivityMainBinding;
+import pl.poznajapp.adapter.StoryListAdapter;
 import pl.poznajapp.helpers.Utils;
+import pl.poznajapp.listeners.RecyclerViewItemClickListener;
+import pl.poznajapp.model.Story;
 import pl.poznajapp.service.LocationService;
-import pl.poznajapp.viewmodel.MainViewModel;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import timber.log.Timber;
 
 /**
@@ -51,24 +62,29 @@ import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity {
 
-    LocationService locationService = null;
-    boolean bound = false;
+    private LocationService locationService = null;
+    private boolean bound = false;
 
     protected static final int REQUEST_CHECK_SETTINGS = 0x1;
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
-    LocationReceiver locationReceiver;
-    GoogleApiClient googleApiClient;
+    private LocationReceiver locationReceiver;
+    private GoogleApiClient googleApiClient;
 
-    MainViewModel viewModel =  new MainViewModel();
+    private APIService service;
+    private List<Story> stories;
+
+    private StoryListAdapter adapter;
+    private RecyclerView storyListRV;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         locationReceiver = new LocationReceiver();
+        setContentView(R.layout.activity_main);
 
-        ActivityMainBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-        binding.setViewModel(viewModel);
-        viewModel.onCreate();
+        stories = new ArrayList<Story>();
+        setupView();
+        initListeners();
 
         if (!checkPermissions()) {
             requestPermissions();
@@ -77,25 +93,67 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void setupView() {
+        storyListRV = (RecyclerView) findViewById(R.id.activity_main_story_list_rv);
+        adapter = new StoryListAdapter(getApplicationContext(), stories);
+        storyListRV.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        storyListRV.setAdapter(adapter);
+        storyListRV.setItemAnimator(new DefaultItemAnimator());
+    }
+
+
+    private void initListeners() {
+        storyListRV.addOnItemTouchListener(new RecyclerViewItemClickListener(this,
+                storyListRV, new RecyclerViewItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                Toast.makeText(getApplicationContext(), "onItemClick", Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onItemLongClick(View view, int position) {
+                Toast.makeText(getApplicationContext(), "onItemLongClick", Toast.LENGTH_SHORT).show();
+            }
+        }));
+    }
+
+    private void loadStories(Location location) {
+        service = PoznajApp.retrofit.create(APIService.class);
+
+        Call<List<Story>> storyListCall = service.listStories(location.getLatitude(), location.getLongitude());
+        storyListCall.enqueue(new Callback<List<Story>>() {
+            @Override
+            public void onResponse(Call<List<Story>> call, Response<List<Story>> response) {
+                Timber.d(response.message());
+                stories.clear();
+                stories.addAll(response.body());
+                adapter.notifyDataSetChanged();
+            }
+
+            @Override
+            public void onFailure(Call<List<Story>> call, Throwable t) {
+                Timber.e(t);
+            }
+        });
+    }
+
     @Override
     protected void onResume() {
         super.onResume();
         Timber.i("onResume");
         LocalBroadcastManager.getInstance(this).registerReceiver(locationReceiver,
                 new IntentFilter(LocationService.ACTION_BROADCAST));
-        viewModel.onResume();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        viewModel.onPause();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(locationReceiver);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        viewModel.onDestroy();
     }
 
     @Override
@@ -263,8 +321,8 @@ public class MainActivity extends AppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             Location location = intent.getParcelableExtra(LocationService.EXTRA_LOCATION);
             if (location != null) {
-                Toast.makeText(MainActivity.this, Utils.INSTANCE.getLocationText(location),
-                        Toast.LENGTH_SHORT).show();
+                Timber.d( Utils.INSTANCE.getLocationText(location));
+                loadStories(location);
             }
         }
     }
