@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <variable name="viewModel" type="pl.poznajapp.viewmodel.MainViewModel" />
+        <variable name="storiesViewModel" type="pl.poznajapp.viewmodel.MainViewModel" />
         <variable name="view" type="pl.poznajapp.view.MainActivity"/>
     </data>
 
@@ -18,7 +18,9 @@
             android:id="@+id/activity_main_story_list_rv"
             android:scrollbars="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
+            android:layout_height="match_parent"
+            app:items="@{storiesViewModel.stories}"
+            app:clickHandler="@{view.clickHandler}"/>
 
     </android.support.constraint.ConstraintLayout>
 </layout>

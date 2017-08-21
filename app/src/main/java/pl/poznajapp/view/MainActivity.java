@@ -23,7 +23,9 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -36,17 +38,24 @@ import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
 
+import net.droidlabs.mvvm.recyclerview.adapter.ClickHandler;
+import net.droidlabs.mvvm.recyclerview.adapter.binder.CompositeItemBinder;
+import net.droidlabs.mvvm.recyclerview.adapter.binder.ItemBinder;
+
 import java.util.List;
 
 import pl.poznajapp.API.APIService;
+import pl.poznajapp.BR;
 import pl.poznajapp.BuildConfig;
 import pl.poznajapp.PoznajApp;
 import pl.poznajapp.R;
+import pl.poznajapp.binder.StoryBinder;
 import pl.poznajapp.databinding.ActivityMainBinding;
 import pl.poznajapp.helpers.Utils;
 import pl.poznajapp.model.Story;
 import pl.poznajapp.service.LocationService;
 import pl.poznajapp.viewmodel.MainViewModel;
+import pl.poznajapp.viewmodel.StoryViewModel;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -66,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
     LocationReceiver locationReceiver;
     GoogleApiClient googleApiClient;
 
-    MainViewModel viewModel = new MainViewModel();
+    MainViewModel viewModel;
 
     APIService service;
 
@@ -74,9 +83,13 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         locationReceiver = new LocationReceiver();
+        viewModel= new MainViewModel();
 
         ActivityMainBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-        binding.setViewModel(viewModel);
+        binding.setStoriesViewModel(viewModel);
+        binding.setView(this);
+        binding.activityMainStoryListRv.setLayoutManager(new LinearLayoutManager(this));
+
         viewModel.onCreate();
 
         if (!checkPermissions()) {
@@ -294,6 +307,21 @@ public class MainActivity extends AppCompatActivity {
                 loadStories();
             }
         }
+    }
+
+    public ItemBinder<StoryViewModel> itemViewBinder() {
+        return new CompositeItemBinder<StoryViewModel>(
+                new StoryBinder(BR.story, R.layout.item_story)
+        );
+    }
+
+    public ClickHandler<StoryViewModel> clickHandler() {
+        return new ClickHandler<StoryViewModel>() {
+            @Override
+            public void onClick(StoryViewModel user) {
+                Toast.makeText(getApplicationContext(), "SIEMA", Toast.LENGTH_SHORT).show();
+            }
+        };
     }
 
     private final ServiceConnection serviceConnection = new ServiceConnection() {
