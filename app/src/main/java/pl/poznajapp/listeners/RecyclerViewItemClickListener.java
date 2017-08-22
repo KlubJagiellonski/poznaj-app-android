@@ -11,6 +11,7 @@ import android.view.View;
  */
 
 public class RecyclerViewItemClickListener implements RecyclerView.OnItemTouchListener {
+
     public interface OnItemClickListener {
         void onItemClick(View view, int position);
 
