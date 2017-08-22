@@ -1,4 +1,4 @@
-package pl.poznajapp.view;
+package pl.poznajapp.view.base;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -12,7 +12,7 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
  * Created by Rafał Gawlik on 21.08.17.
  */
 
-public class BaseView extends AppCompatActivity {
+public class BaseAppCompatActivity extends AppCompatActivity {
 
     @Override
     protected void attachBaseContext(Context newBase) {

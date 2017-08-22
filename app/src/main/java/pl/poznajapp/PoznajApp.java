@@ -44,7 +44,6 @@ public class PoznajApp extends Application {
                 .client(client)
                 .build();
 
-
     }
 
 }

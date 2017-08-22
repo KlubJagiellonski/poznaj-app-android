@@ -21,12 +21,10 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -51,6 +49,7 @@ import pl.poznajapp.helpers.Utils;
 import pl.poznajapp.listeners.RecyclerViewItemClickListener;
 import pl.poznajapp.model.Story;
 import pl.poznajapp.service.LocationService;
+import pl.poznajapp.view.base.BaseAppCompatActivity;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -61,7 +60,7 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
  * Created by Rafał Gawlik on 13.08.17.
  */
 
-public class MainActivity extends BaseView {
+public class MainActivity extends BaseAppCompatActivity {
 
     private LocationService locationService = null;
     private boolean bound = false;
@@ -113,12 +112,12 @@ public class MainActivity extends BaseView {
                 storyListRV, new RecyclerViewItemClickListener.OnItemClickListener() {
             @Override
             public void onItemClick(View view, int position) {
-                Toast.makeText(getApplicationContext(), "onItemClick", Toast.LENGTH_SHORT).show();
+                startActivity(StoryDetailsActivity.getConfigureIntent(getApplicationContext(), stories.get(position).getId()));
             }
 
             @Override
             public void onItemLongClick(View view, int position) {
-                Toast.makeText(getApplicationContext(), "onItemLongClick", Toast.LENGTH_SHORT).show();
+
             }
         }));
     }
@@ -249,6 +248,7 @@ public class MainActivity extends BaseView {
                 switch (status.getStatusCode()){
                     case LocationSettingsStatusCodes.SUCCESS:
                         Timber.d("LocationSettingsStatusCodes.SUCCESS");
+
                         bindService(new Intent(getApplicationContext(), LocationService.class), serviceConnection,
                                 Context.BIND_AUTO_CREATE);
                         break;
