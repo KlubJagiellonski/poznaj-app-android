@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -94,4 +95,12 @@ public class StoryDetailsActivity extends BaseAppCompatActivity {
 
     }
 
+    public void onMapClick(View view) {
+
+    }
+
+    public void onStartClick(View view) {
+        //TODO load points into DB
+        //bind service
+    }
 }
