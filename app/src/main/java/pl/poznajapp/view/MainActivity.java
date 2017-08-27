@@ -124,7 +124,7 @@ public class MainActivity extends BaseAppCompatActivity {
 
     private void loadStories(Location location) {
         service = PoznajApp.retrofit.create(APIService.class);
-
+        showProgressDialog("Trasy", "Pobieraniem tras");
         Call<List<Story>> storyListCall = service.listStories(location.getLatitude(), location.getLongitude());
         storyListCall.enqueue(new Callback<List<Story>>() {
             @Override
@@ -133,11 +133,13 @@ public class MainActivity extends BaseAppCompatActivity {
                 stories.clear();
                 stories.addAll(response.body());
                 adapter.notifyDataSetChanged();
+                hideProgressDialog();
             }
 
             @Override
             public void onFailure(Call<List<Story>> call, Throwable t) {
                 Timber.e(t);
+                hideProgressDialog();
             }
         });
     }
@@ -268,8 +270,6 @@ public class MainActivity extends BaseAppCompatActivity {
                 }
             }
         });
-
-
     }
 
     @Override
