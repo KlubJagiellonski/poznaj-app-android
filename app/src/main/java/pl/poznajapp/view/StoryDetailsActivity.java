@@ -71,6 +71,7 @@ public class StoryDetailsActivity extends BaseAppCompatActivity {
 
         service = PoznajApp.retrofit.create(APIService.class);
 
+        showProgressDialog("Trasa", "Pobieranie ....");
         Call<Story> storyCall = service.getStory(id);
         storyCall.enqueue(new Callback<Story>() {
             @Override
@@ -84,12 +85,14 @@ public class StoryDetailsActivity extends BaseAppCompatActivity {
 
                 //TODO
                 Picasso.with(getApplicationContext()).load("http://i.imgur.com/DvpvklR.png").into(backgroundImage);
+                hideProgressDialog();
 
             }
 
             @Override
             public void onFailure(Call<Story> call, Throwable t) {
                 Timber.e(t);
+                hideProgressDialog();
             }
         });
 
