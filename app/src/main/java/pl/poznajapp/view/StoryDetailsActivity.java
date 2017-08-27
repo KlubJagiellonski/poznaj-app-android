@@ -4,19 +4,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.widget.Toolbar;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import butterknife.BindView;
-import butterknife.ButterKnife;
 import pl.poznajapp.API.APIService;
 import pl.poznajapp.PoznajApp;
 import pl.poznajapp.R;
 import pl.poznajapp.model.Story;
-import pl.poznajapp.view.base.BaseActivity;
 import pl.poznajapp.view.base.BaseAppCompatActivity;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -29,20 +25,19 @@ import timber.log.Timber;
 
 // TODO
 // redesign
-public class StoryDetailsActivity extends BaseActivity {
+public class StoryDetailsActivity extends BaseAppCompatActivity {
 
     public static final String EXTRAS_STORY_ID = "EXTRAS_STORY_ID";
 
-    @BindView(R.id.story_details_toolbar) Toolbar toolbar;
-    @BindView(R.id.story_details_back_iv) ImageView backgroundImage;
-    @BindView(R.id.story_duration_text_tv) TextView duration;
-    @BindView(R.id.story_details_text_tv) TextView description;
-    @BindView(R.id.story_details_fab) FloatingActionButton fab;
+    ImageView backgroundImage;
+    TextView duration;
+    TextView description;
+    FloatingActionButton fab;
 
     private APIService service;
 
-    public static Intent getConfigureIntent(Context context, Integer storyId){
-        Intent intent =  new Intent(context, StoryDetailsActivity.class);
+    public static Intent getConfigureIntent(Context context, Integer storyId) {
+        Intent intent = new Intent(context, StoryDetailsActivity.class);
         intent.putExtra(EXTRAS_STORY_ID, storyId);
         return intent;
     }
@@ -51,16 +46,28 @@ public class StoryDetailsActivity extends BaseActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_story_details);
-        ButterKnife.bind(this);
 
-        if(getIntent().getExtras() != null){
-            loadStory(getIntent().getIntExtra(EXTRAS_STORY_ID, 0));
+        if (getIntent().getExtras() != null) {
+            setupView();
+            loadStory(getIntent().getIntExtra(EXTRAS_STORY_ID, -1));
         } else {
             finish();
         }
     }
 
+    private void setupView() {
+        backgroundImage = (ImageView) findViewById(R.id.story_details_back_iv);
+        duration = (TextView) findViewById(R.id.story_duration_text_tv);
+        description = (TextView) findViewById(R.id.story_details_text_tv);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+    }
+
     private void loadStory(Integer id) {
+        if (id.equals(-1))
+            finish();
+
         service = PoznajApp.retrofit.create(APIService.class);
 
         Call<Story> storyCall = service.getStory(id);
@@ -70,7 +77,7 @@ public class StoryDetailsActivity extends BaseActivity {
                 Timber.d(response.message());
 
                 Story story = response.body();
-                toolbar.setTitle(story.getTitle());
+                getSupportActionBar().setTitle(story.getTitle());
                 duration.setText(story.getDuration());
                 description.setText(story.getDescription());
 
