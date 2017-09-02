@@ -76,6 +76,8 @@ public class MainActivity extends BaseAppCompatActivity {
     private StoryListAdapter adapter;
     private RecyclerView storyListRV;
 
+    private Boolean progressDialogShowed = false; //progress dialog show only first time
+
     @Override
     protected void attachBaseContext(Context newBase) {
         super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
@@ -124,7 +126,11 @@ public class MainActivity extends BaseAppCompatActivity {
 
     private void loadStories(Location location) {
         service = PoznajApp.retrofit.create(APIService.class);
-        showProgressDialog("Trasy", "Pobieraniem tras");
+
+        if (!progressDialogShowed) {
+            showProgressDialog("Trasy", "Pobieraniem tras");
+            progressDialogShowed = true;
+        }
         Call<List<Story>> storyListCall = service.listStories(location.getLatitude(), location.getLongitude());
         storyListCall.enqueue(new Callback<List<Story>>() {
             @Override
