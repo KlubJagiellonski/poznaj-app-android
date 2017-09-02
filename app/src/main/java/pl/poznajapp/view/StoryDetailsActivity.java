@@ -24,8 +24,6 @@ import timber.log.Timber;
  * Created by Rafał Gawlik on 22.08.17.
  */
 
-// TODO
-// redesign
 public class StoryDetailsActivity extends BaseAppCompatActivity {
 
     public static final String EXTRAS_STORY_ID = "EXTRAS_STORY_ID";
@@ -71,6 +69,8 @@ public class StoryDetailsActivity extends BaseAppCompatActivity {
 
         service = PoznajApp.retrofit.create(APIService.class);
 
+
+        //TODO setup string for progress dialog
         showProgressDialog("Trasa", "Pobieranie ....");
         Call<Story> storyCall = service.getStory(id);
         storyCall.enqueue(new Callback<Story>() {
@@ -81,7 +81,7 @@ public class StoryDetailsActivity extends BaseAppCompatActivity {
                 Story story = response.body();
                 getSupportActionBar().setTitle(story.getTitle());
                 duration.setText(story.getDuration());
-                description.setText(story.getDescription());
+                description.setText(story.getDescription()); //TODO date format
 
                 //TODO
                 Picasso.with(getApplicationContext()).load("http://i.imgur.com/DvpvklR.png").into(backgroundImage);
@@ -95,10 +95,6 @@ public class StoryDetailsActivity extends BaseAppCompatActivity {
                 hideProgressDialog();
             }
         });
-
-    }
-
-    public void onMapClick(View view) {
 
     }
 
