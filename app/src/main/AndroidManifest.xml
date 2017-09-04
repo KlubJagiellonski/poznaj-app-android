@@ -29,6 +29,7 @@
             android:name=".view.StoryDetailsActivity"
             android:parentActivityName=".view.MainActivity"
             android:screenOrientation="portrait" />
+        <activity android:name=".view.MapActivity" />
 
         <service
             android:name=".service.LocationService"
