@@ -100,4 +100,4 @@ fabric.properties
 # modules.xml
 # .idea/misc.xml
 # *.ipr
-api_keys.xml
+app/src/main/res/values/api_keys.xml
