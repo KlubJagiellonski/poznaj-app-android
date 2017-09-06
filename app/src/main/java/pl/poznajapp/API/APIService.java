@@ -2,6 +2,7 @@ package pl.poznajapp.API;
 
 import java.util.List;
 
+import pl.poznajapp.model.Point;
 import pl.poznajapp.model.Story;
 import retrofit2.Call;
 import retrofit2.http.GET;
@@ -19,5 +20,8 @@ public interface APIService {
 
     @GET("stories/{id}")
     Call<Story> getStory(@Path("id") Integer id);
+
+    @GET("stories/{id}/points/")
+    Call<List<Point>> getStoryPoints(@Path("id") Integer id);
 
 }

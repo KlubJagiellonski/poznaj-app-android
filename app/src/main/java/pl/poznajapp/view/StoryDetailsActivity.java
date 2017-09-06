@@ -28,10 +28,9 @@ public class StoryDetailsActivity extends BaseAppCompatActivity {
 
     public static final String EXTRAS_STORY_ID = "EXTRAS_STORY_ID";
 
-    ImageView backgroundImage;
-    TextView duration;
-    TextView description;
-    FloatingActionButton fab;
+    private ImageView backgroundImage;
+    private TextView duration, description;
+    private FloatingActionButton fab;
 
     private APIService service;
 
@@ -69,7 +68,6 @@ public class StoryDetailsActivity extends BaseAppCompatActivity {
 
         service = PoznajApp.retrofit.create(APIService.class);
 
-
         //TODO setup string for progress dialog
         showProgressDialog("Trasa", "Pobieranie ....");
         Call<Story> storyCall = service.getStory(id);
@@ -99,7 +97,6 @@ public class StoryDetailsActivity extends BaseAppCompatActivity {
     }
 
     public void onStartClick(View view) {
-        //TODO load points into DB
-        //bind service
+        startActivity(MapActivity.getConfigureIntent(this, 0));
     }
 }
