@@ -30,7 +30,6 @@ public class StoryDetailsActivity extends BaseAppCompatActivity {
 
     private ImageView backgroundImage;
     private TextView duration, description;
-    private FloatingActionButton fab;
 
     private APIService service;
 
