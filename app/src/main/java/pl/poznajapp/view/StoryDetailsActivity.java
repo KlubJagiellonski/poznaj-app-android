@@ -28,12 +28,12 @@ public class StoryDetailsActivity extends BaseAppCompatActivity {
 
     public static final String EXTRAS_STORY_ID = "EXTRAS_STORY_ID";
 
-    ImageView backgroundImage;
-    TextView duration;
-    TextView description;
-    FloatingActionButton fab;
+    private ImageView backgroundImage;
+    private TextView duration, description;
 
     private APIService service;
+
+    private Story story;
 
     public static Intent getConfigureIntent(Context context, Integer storyId) {
         Intent intent = new Intent(context, StoryDetailsActivity.class);
@@ -69,7 +69,6 @@ public class StoryDetailsActivity extends BaseAppCompatActivity {
 
         service = PoznajApp.retrofit.create(APIService.class);
 
-
         //TODO setup string for progress dialog
         showProgressDialog("Trasa", "Pobieranie ....");
         Call<Story> storyCall = service.getStory(id);
@@ -78,15 +77,13 @@ public class StoryDetailsActivity extends BaseAppCompatActivity {
             public void onResponse(Call<Story> call, Response<Story> response) {
                 Timber.d(response.message());
 
-                Story story = response.body();
+                story = response.body();
                 getSupportActionBar().setTitle(story.getTitle());
                 duration.setText(story.getDuration());
                 description.setText(story.getDescription()); //TODO date format
 
-                //TODO
-                Picasso.with(getApplicationContext()).load("http://i.imgur.com/DvpvklR.png").into(backgroundImage);
+                Picasso.with(getApplicationContext()).load(story.getStoryImages().get(0).getImageFile()).into(backgroundImage);
                 hideProgressDialog();
-
             }
 
             @Override
@@ -95,11 +92,10 @@ public class StoryDetailsActivity extends BaseAppCompatActivity {
                 hideProgressDialog();
             }
         });
-
     }
 
     public void onStartClick(View view) {
-        //TODO load points into DB
-        //bind service
+        if(story !=null)
+            startActivity(MapActivity.getConfigureIntent(this, story.getId(), story.getTitle()));
     }
 }
