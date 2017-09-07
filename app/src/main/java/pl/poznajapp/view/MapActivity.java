@@ -6,11 +6,16 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MapStyleOptions;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +24,7 @@ import pl.poznajapp.API.APIService;
 import pl.poznajapp.PoznajApp;
 import pl.poznajapp.R;
 import pl.poznajapp.adapter.PointListAdapter;
+import pl.poznajapp.listeners.RecyclerViewItemClickListener;
 import pl.poznajapp.model.Feature;
 import pl.poznajapp.model.Point;
 import pl.poznajapp.view.base.BaseAppCompatActivity;
@@ -34,6 +40,7 @@ import timber.log.Timber;
 public class MapActivity extends BaseAppCompatActivity implements OnMapReadyCallback {
 
     public static final String EXTRAS_STORY_ID = "EXTRAS_STORY_ID";
+    public static final String EXTRAS_STORY_TITLE = "EXTRAS_STORY_TITLE";
 
     private RecyclerView pointsList;
     private SupportMapFragment supportMapFragment;
@@ -41,9 +48,13 @@ public class MapActivity extends BaseAppCompatActivity implements OnMapReadyCall
     private PointListAdapter adapter;
     private APIService service;
 
-    public static Intent getConfigureIntent(Context context, Integer storyId) {
+    private GoogleMap googleMap;
+    private List<Feature> features;
+
+    public static Intent getConfigureIntent(Context context, Integer storyId, String storyTitle) {
         Intent intent = new Intent(context, MapActivity.class);
         intent.putExtra(EXTRAS_STORY_ID, storyId);
+        intent.putExtra(EXTRAS_STORY_TITLE, storyTitle);
         return intent;
     }
 
@@ -53,12 +64,29 @@ public class MapActivity extends BaseAppCompatActivity implements OnMapReadyCall
         setContentView(R.layout.activity_map);
 
         setupView();
+        features = new ArrayList<>();
         service = PoznajApp.retrofit.create(APIService.class);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Timber.i("onResume");
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        Timber.i("onStop");
+        super.onStop();
     }
 
     private void setupView() {
         pointsList = (RecyclerView) findViewById(R.id.activity_map_point_list_rv);
-
         adapter = new PointListAdapter(getApplicationContext(), new ArrayList<Feature>());
         pointsList.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         pointsList.setAdapter(adapter);
@@ -68,19 +96,47 @@ public class MapActivity extends BaseAppCompatActivity implements OnMapReadyCall
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+        initListeners();
     }
 
+    private void initListeners() {
+        pointsList.addOnItemTouchListener(new RecyclerViewItemClickListener(this,
+                pointsList, new RecyclerViewItemClickListener.OnItemClickListener() {
+            @Override
+            public void onItemClick(View view, int position) {
+                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                        new LatLng(
+                                features.get(position).getGeometry().getCoordinates().get(1),
+                                features.get(position).getGeometry().getCoordinates().get(0)), 14.0f));
+            }
+
+            @Override
+            public void onItemLongClick(View view, int position) {
+
+            }
+        }));
+    }
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
+        this.googleMap = googleMap;
         styleMap(googleMap);
         Call<List<Point>> pointListCall = service.getStoryPoints(6);
         pointListCall.enqueue(new Callback<List<Point>>() {
             @Override
             public void onResponse(Call<List<Point>> call, Response<List<Point>> response) {
                 Timber.d(response.message());
+                features = response.body().get(1).getFeatures();
+
                 adapter.setPointList(response.body().get(1).getFeatures());
                 adapter.notifyDataSetChanged();
+
+                for(Feature feature : response.body().get(1).getFeatures())
+                    addMarker(feature);
+
+                zoomToPoint(new LatLng(features.get(0).getGeometry().getCoordinates().get(1),
+                        features.get(0).getGeometry().getCoordinates().get(0)));
+
             }
 
             @Override
@@ -88,6 +144,10 @@ public class MapActivity extends BaseAppCompatActivity implements OnMapReadyCall
                 Timber.e(t);
             }
         });
+    }
+
+    private void zoomToPoint(LatLng latLng) {
+        googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12.0f));
     }
 
     private void styleMap(GoogleMap googleMap) {
@@ -105,5 +165,13 @@ public class MapActivity extends BaseAppCompatActivity implements OnMapReadyCall
     @Override
     public void onPointerCaptureChanged(boolean hasCapture) {
 
+    }
+
+    private void addMarker(Feature feature) {
+        LatLng latLng = new LatLng(feature.getGeometry().getCoordinates().get(1), feature.getGeometry().getCoordinates().get(0));
+        googleMap.addMarker(new MarkerOptions()
+                        .position(latLng)
+                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_place_black))
+        );
     }
 }

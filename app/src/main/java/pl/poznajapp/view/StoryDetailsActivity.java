@@ -97,6 +97,7 @@ public class StoryDetailsActivity extends BaseAppCompatActivity {
     }
 
     public void onStartClick(View view) {
-        startActivity(MapActivity.getConfigureIntent(this, 0));
+        //TODO
+        startActivity(MapActivity.getConfigureIntent(this, 0, "Szlak"));
     }
 }
