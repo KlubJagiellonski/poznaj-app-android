@@ -102,7 +102,6 @@ public class MainActivity extends BaseAppCompatActivity {
         storyListRV.setItemAnimator(new DefaultItemAnimator());
     }
 
-
     private void initListeners() {
         storyListRV.addOnItemTouchListener(new RecyclerViewItemClickListener(this,
                 storyListRV, new RecyclerViewItemClickListener.OnItemClickListener() {
@@ -183,5 +182,4 @@ public class MainActivity extends BaseAppCompatActivity {
             }
         }
     }
-
 }

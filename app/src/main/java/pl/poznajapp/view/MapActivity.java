@@ -24,7 +24,6 @@ import pl.poznajapp.API.APIService;
 import pl.poznajapp.PoznajApp;
 import pl.poznajapp.R;
 import pl.poznajapp.adapter.PointListAdapter;
-import pl.poznajapp.listeners.RecyclerViewItemClickListener;
 import pl.poznajapp.model.Feature;
 import pl.poznajapp.model.Point;
 import pl.poznajapp.view.base.BaseAppCompatActivity;
@@ -87,7 +86,21 @@ public class MapActivity extends BaseAppCompatActivity implements OnMapReadyCall
 
     private void setupView() {
         pointsList = (RecyclerView) findViewById(R.id.activity_map_point_list_rv);
-        adapter = new PointListAdapter(getApplicationContext(), new ArrayList<Feature>());
+        adapter = new PointListAdapter(getApplicationContext(), new ArrayList<Feature>(), new PointListAdapter.OnItemClickListener() {
+            @Override
+            public void onDetailsClick(Feature feature, int position) {
+
+            }
+
+            @Override
+            public void onMoveClick(Feature feature, int position) {
+                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
+                        new LatLng(
+                                feature.getGeometry().getCoordinates().get(1),
+                                feature.getGeometry().getCoordinates().get(0)), 16.5f));
+            }
+        });
+
         pointsList.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         pointsList.setAdapter(adapter);
 
@@ -96,25 +109,6 @@ public class MapActivity extends BaseAppCompatActivity implements OnMapReadyCall
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
-        initListeners();
-    }
-
-    private void initListeners() {
-        pointsList.addOnItemTouchListener(new RecyclerViewItemClickListener(this,
-                pointsList, new RecyclerViewItemClickListener.OnItemClickListener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(
-                        new LatLng(
-                                features.get(position).getGeometry().getCoordinates().get(1),
-                                features.get(position).getGeometry().getCoordinates().get(0)), 14.0f));
-            }
-
-            @Override
-            public void onItemLongClick(View view, int position) {
-
-            }
-        }));
     }
 
     @Override
