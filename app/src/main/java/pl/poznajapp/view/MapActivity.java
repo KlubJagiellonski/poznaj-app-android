@@ -50,6 +50,9 @@ public class MapActivity extends BaseAppCompatActivity implements OnMapReadyCall
     private GoogleMap googleMap;
     private List<Feature> features;
 
+    private int id;
+    private String title;
+
     public static Intent getConfigureIntent(Context context, Integer storyId, String storyTitle) {
         Intent intent = new Intent(context, MapActivity.class);
         intent.putExtra(EXTRAS_STORY_ID, storyId);
@@ -62,9 +65,17 @@ public class MapActivity extends BaseAppCompatActivity implements OnMapReadyCall
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_map);
 
-        setupView();
-        features = new ArrayList<>();
-        service = PoznajApp.retrofit.create(APIService.class);
+        if (getIntent().getExtras() != null) {
+            id = getIntent().getIntExtra(EXTRAS_STORY_ID, -1);
+            title = getIntent().getStringExtra(EXTRAS_STORY_TITLE);
+            setupView();
+
+            features = new ArrayList<>();
+            service = PoznajApp.retrofit.create(APIService.class);
+        } else {
+            finish();
+        }
+
     }
 
     @Override
@@ -107,6 +118,7 @@ public class MapActivity extends BaseAppCompatActivity implements OnMapReadyCall
         supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.activity_map_map);
         supportMapFragment.getMapAsync(this);
 
+        getSupportActionBar().setTitle(title);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
     }
@@ -115,7 +127,7 @@ public class MapActivity extends BaseAppCompatActivity implements OnMapReadyCall
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
         styleMap(googleMap);
-        Call<List<Point>> pointListCall = service.getStoryPoints(6);
+        Call<List<Point>> pointListCall = service.getStoryPoints(id);
         pointListCall.enqueue(new Callback<List<Point>>() {
             @Override
             public void onResponse(Call<List<Point>> call, Response<List<Point>> response) {

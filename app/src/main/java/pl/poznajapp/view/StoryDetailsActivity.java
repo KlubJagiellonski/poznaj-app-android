@@ -34,6 +34,8 @@ public class StoryDetailsActivity extends BaseAppCompatActivity {
 
     private APIService service;
 
+    private Story story;
+
     public static Intent getConfigureIntent(Context context, Integer storyId) {
         Intent intent = new Intent(context, StoryDetailsActivity.class);
         intent.putExtra(EXTRAS_STORY_ID, storyId);
@@ -76,15 +78,13 @@ public class StoryDetailsActivity extends BaseAppCompatActivity {
             public void onResponse(Call<Story> call, Response<Story> response) {
                 Timber.d(response.message());
 
-                Story story = response.body();
+                story = response.body();
                 getSupportActionBar().setTitle(story.getTitle());
                 duration.setText(story.getDuration());
                 description.setText(story.getDescription()); //TODO date format
 
-                //TODO
-                Picasso.with(getApplicationContext()).load("http://i.imgur.com/DvpvklR.png").into(backgroundImage);
+                Picasso.with(getApplicationContext()).load(story.getStoryImages().get(0).getImageFile()).into(backgroundImage);
                 hideProgressDialog();
-
             }
 
             @Override
@@ -93,11 +93,10 @@ public class StoryDetailsActivity extends BaseAppCompatActivity {
                 hideProgressDialog();
             }
         });
-
     }
 
     public void onStartClick(View view) {
-        //TODO
-        startActivity(MapActivity.getConfigureIntent(this, 0, "Szlak"));
+        if(story !=null)
+            startActivity(MapActivity.getConfigureIntent(this, story.getId(), story.getTitle()));
     }
 }

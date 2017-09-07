@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"
-            app:srcCompat="@drawable/ic_directions_black" />
+            app:srcCompat="@drawable/ic_info_black" />
 
     </RelativeLayout>
     <View

@@ -67,7 +67,6 @@ public class PointListAdapter extends RecyclerView.Adapter<PointListAdapter.View
                         }
                     });
                 }
-
     }
 
     @Override
