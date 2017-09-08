@@ -68,7 +68,6 @@ public class PointDetailsActivity extends BaseAppCompatActivity {
 
         getSupportActionBar().setTitle(title);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
     }
 
     @Override

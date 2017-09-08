@@ -6,7 +6,6 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -101,7 +100,7 @@ public class MapActivity extends BaseAppCompatActivity implements OnMapReadyCall
             @Override
             public void onDetailsClick(Feature feature, int position) {
 
-                if(feature.getProperties().getPointImages().size() > 0 )
+                if (feature.getProperties().getPointImages().size() > 0)
                     startActivity(PointDetailsActivity.getConfigureIntent(
                             getApplicationContext(),
                             feature.getProperties().getPointImages().get(0).getImageFile(),
@@ -126,7 +125,6 @@ public class MapActivity extends BaseAppCompatActivity implements OnMapReadyCall
 
         getSupportActionBar().setTitle(title);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
     }
 
     @Override
@@ -143,7 +141,7 @@ public class MapActivity extends BaseAppCompatActivity implements OnMapReadyCall
                 adapter.setPointList(response.body().get(1).getFeatures());
                 adapter.notifyDataSetChanged();
 
-                for(Feature feature : response.body().get(1).getFeatures())
+                for (Feature feature : response.body().get(1).getFeatures())
                     addMarker(feature);
 
                 zoomToPoint(new LatLng(features.get(0).getGeometry().getCoordinates().get(1),
@@ -182,8 +180,8 @@ public class MapActivity extends BaseAppCompatActivity implements OnMapReadyCall
     private void addMarker(Feature feature) {
         LatLng latLng = new LatLng(feature.getGeometry().getCoordinates().get(1), feature.getGeometry().getCoordinates().get(0));
         googleMap.addMarker(new MarkerOptions()
-                        .position(latLng)
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_place_black))
+                .position(latLng)
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_place_black))
         );
     }
 }

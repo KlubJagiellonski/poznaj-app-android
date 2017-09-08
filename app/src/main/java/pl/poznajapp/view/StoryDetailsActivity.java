@@ -3,7 +3,6 @@ package pl.poznajapp.view;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -60,7 +59,7 @@ public class StoryDetailsActivity extends BaseAppCompatActivity {
         description = (TextView) findViewById(R.id.story_details_text_tv);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
     }
 
     private void loadStory(Integer id) {
@@ -95,7 +94,7 @@ public class StoryDetailsActivity extends BaseAppCompatActivity {
     }
 
     public void onStartClick(View view) {
-        if(story !=null)
+        if (story != null)
             startActivity(MapActivity.getConfigureIntent(this, story.getId(), story.getTitle()));
     }
 }

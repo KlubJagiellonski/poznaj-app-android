@@ -92,7 +92,7 @@ public class LocationService extends Service {
             removeLocationUpdates();
             stopSelf();
         }
-        return START_STICKY;
+        return START_NOT_STICKY;
     }
 
     @Override

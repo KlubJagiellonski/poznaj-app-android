@@ -64,6 +64,14 @@ public class MainActivity extends BaseAppCompatActivity {
 
     private LocationReceiver locationReceiver;
 
+    protected static final int REQUEST_CHECK_SETTINGS = 0x1;
+    protected static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
+
+    private GoogleApiClient googleApiClient;
+    protected LocationService locationService = null;
+    protected boolean bound = false;
+    Location location = null;
+
     private APIService service;
     private List<Story> stories;
 
@@ -86,12 +94,6 @@ public class MainActivity extends BaseAppCompatActivity {
         stories = new ArrayList<Story>();
         setupView();
         initListeners();
-
-        if (!checkPermissions()) {
-            requestPermissions();
-        } else {
-            checkLocationEnabled();
-        }
     }
 
     private void setupView() {
@@ -147,6 +149,13 @@ public class MainActivity extends BaseAppCompatActivity {
     protected void onResume() {
         super.onResume();
         Timber.i("onResume");
+
+        if (!checkPermissions()) {
+            requestPermissions();
+        } else {
+            checkLocationEnabled();
+        }
+
         LocalBroadcastManager.getInstance(this).registerReceiver(locationReceiver,
                 new IntentFilter(LocationService.ACTION_BROADCAST));
     }
@@ -159,6 +168,7 @@ public class MainActivity extends BaseAppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        stopService(new Intent(this, LocationService.class));
         super.onDestroy();
     }
 
@@ -172,14 +182,186 @@ public class MainActivity extends BaseAppCompatActivity {
         super.onStop();
     }
 
+    protected boolean checkPermissions() {
+        return PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION);
+    }
+
+    protected void checkLocationEnabled() {
+        //location settings
+        LocationRequest locationRequest = LocationRequest.create();
+        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+
+        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
+        builder.addLocationRequest(locationRequest);
+
+        googleApiClient = new GoogleApiClient.Builder(this)
+                .addApi(LocationServices.API)
+                .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
+                    @Override
+                    public void onConnected(@Nullable Bundle bundle) {
+
+                    }
+
+                    @Override
+                    public void onConnectionSuspended(int i) {
+                        googleApiClient.connect();
+                    }
+                })
+                .addOnConnectionFailedListener(new GoogleApiClient.OnConnectionFailedListener() {
+                    @Override
+                    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+
+                    }
+                }).build();
+
+        builder.setAlwaysShow(true);
+
+        googleApiClient.connect();
+        PendingResult<LocationSettingsResult> result =
+                LocationServices.SettingsApi.checkLocationSettings(googleApiClient, builder.build());
+
+        result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
+            @Override
+            public void onResult(@NonNull LocationSettingsResult locationSettingsResult) {
+                final Status status = locationSettingsResult.getStatus();
+                Timber.d(status.toString());
+                switch (status.getStatusCode()) {
+                    case LocationSettingsStatusCodes.SUCCESS:
+                        Timber.d("LocationSettingsStatusCodes.SUCCESS");
+
+                        bindService(new Intent(getApplicationContext(), LocationService.class), serviceConnection,
+                                Context.BIND_AUTO_CREATE);
+                        break;
+                    case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+                        Timber.d("LocationSettingsStatusCodes.RESOLUTION_REQUIRED");
+                        try {
+                            status.startResolutionForResult(MainActivity.this, REQUEST_CHECK_SETTINGS);
+                        } catch (@SuppressLint("NewApi") IntentSender.SendIntentException e) {
+                            e.printStackTrace();
+                        }
+
+                        break;
+                    case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                        Timber.d("LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE");
+                        //TODO show toast - location turn off
+                        break;
+                }
+            }
+        });
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        Timber.d("onRequestPermissionResult");
+        if (requestCode == REQUEST_PERMISSIONS_REQUEST_CODE) {
+            if (grantResults.length <= 0) {
+                Timber.d("User interaction was cancelled.");
+            } else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                checkLocationEnabled();
+            } else {
+                Snackbar.make(
+                        findViewById(R.id.activity_main),
+                        R.string.permission_denied_explanation,
+                        Snackbar.LENGTH_INDEFINITE)
+                        .setAction(R.string.settings, new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                // Build intent that displays the App settings screen.
+                                Intent intent = new Intent();
+                                intent.setAction(
+                                        Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+                                Uri uri = Uri.fromParts("package",
+                                        BuildConfig.APPLICATION_ID, null);
+                                intent.setData(uri);
+                                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                                startActivity(intent);
+                            }
+                        })
+                        .show();
+            }
+        }
+    }
+
+    protected void requestPermissions() {
+        boolean shouldProvideRationale =
+                ActivityCompat.shouldShowRequestPermissionRationale(this,
+                        Manifest.permission.ACCESS_FINE_LOCATION);
+
+        if (shouldProvideRationale) {
+            Timber.d("Displaying permission rationale to provide additional context.");
+            Snackbar.make(
+                    findViewById(R.id.activity_main),
+                    R.string.permission_rationale,
+                    Snackbar.LENGTH_INDEFINITE)
+                    .setAction(R.string.ok, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            // Request permission
+                            ActivityCompat.requestPermissions(MainActivity.this,
+                                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                    REQUEST_PERMISSIONS_REQUEST_CODE);
+                        }
+                    })
+                    .show();
+        } else {
+            Timber.d("Requesting permission");
+
+            ActivityCompat.requestPermissions(MainActivity.this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    REQUEST_PERMISSIONS_REQUEST_CODE);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case REQUEST_CHECK_SETTINGS:
+                switch (resultCode) {
+                    case Activity.RESULT_OK:
+                        bindService(new Intent(getApplicationContext(), LocationService.class), serviceConnection,
+                                Context.BIND_AUTO_CREATE);
+                        break;
+                    case Activity.RESULT_CANCELED:
+                        //TODO show toast - location turn off
+                        break;
+                }
+                break;
+        }
+    }
+
     private class LocationReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Location location = intent.getParcelableExtra(LocationService.EXTRA_LOCATION);
-            if (location != null) {
-                Timber.d( Utils.INSTANCE.getLocationText(location));
+            Location newLocation = intent.getParcelableExtra(LocationService.EXTRA_LOCATION);
+
+            if(location == null) {
+                location = newLocation;
+                Timber.d(Utils.INSTANCE.getLocationText(location));
+                loadStories(location);
+            } else if (location.distanceTo(newLocation) > 200.0f) {
+                location = newLocation;
+                Timber.d(Utils.INSTANCE.getLocationText(location));
                 loadStories(location);
             }
         }
     }
+
+    protected final ServiceConnection serviceConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            LocationService.LocalBinder binder = (LocationService.LocalBinder) service;
+            locationService = binder.getService();
+            locationService.requestLocationUpdates();
+            bound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            locationService = null;
+            bound = false;
+        }
+    };
 }
