@@ -2,6 +2,8 @@ package pl.poznajapp.view.base;
 
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
@@ -34,6 +36,12 @@ public class BaseAppCompatActivity extends AppCompatActivity {
         );
 
         progressDialog = new ProgressDialog(this);
+    }
+
+    protected boolean isInternetEnable(){
+        ConnectivityManager conMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = conMgr.getActiveNetworkInfo();
+        return (activeNetwork != null && activeNetwork.isConnected());
     }
 
     @Override

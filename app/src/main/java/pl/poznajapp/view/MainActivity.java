@@ -120,29 +120,37 @@ public class MainActivity extends BaseAppCompatActivity {
     }
 
     private void loadStories(Location location) {
-        service = PoznajApp.retrofit.create(APIService.class);
+        if (isInternetEnable()){
+            service = PoznajApp.retrofit.create(APIService.class);
 
-        if (!progressDialogShowed) {
-            showProgressDialog("Trasy", "Pobieraniem tras");
-            progressDialogShowed = true;
+            if (!progressDialogShowed) {
+                showProgressDialog("Trasy", "Pobieraniem tras");
+                progressDialogShowed = true;
+            }
+            Call<List<Story>> storyListCall = service.listStories(location.getLatitude(), location.getLongitude());
+            storyListCall.enqueue(new Callback<List<Story>>() {
+                @Override
+                public void onResponse(Call<List<Story>> call, Response<List<Story>> response) {
+                    Timber.d(response.message());
+                    stories.clear();
+                    stories.addAll(response.body());
+                    adapter.notifyDataSetChanged();
+                    hideProgressDialog();
+                }
+
+                @Override
+                public void onFailure(Call<List<Story>> call, Throwable t) {
+                    Timber.e(t);
+                    hideProgressDialog();
+                }
+            });
+        } else {
+            Snackbar.make(
+                    findViewById(R.id.activity_main),
+                    getString(R.string.no_internet),
+                    Snackbar.LENGTH_INDEFINITE)
+                    .show();
         }
-        Call<List<Story>> storyListCall = service.listStories(location.getLatitude(), location.getLongitude());
-        storyListCall.enqueue(new Callback<List<Story>>() {
-            @Override
-            public void onResponse(Call<List<Story>> call, Response<List<Story>> response) {
-                Timber.d(response.message());
-                stories.clear();
-                stories.addAll(response.body());
-                adapter.notifyDataSetChanged();
-                hideProgressDialog();
-            }
-
-            @Override
-            public void onFailure(Call<List<Story>> call, Throwable t) {
-                Timber.e(t);
-                hideProgressDialog();
-            }
-        });
     }
 
     @Override

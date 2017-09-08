@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
@@ -131,29 +132,38 @@ public class MapActivity extends BaseAppCompatActivity implements OnMapReadyCall
     public void onMapReady(GoogleMap googleMap) {
         this.googleMap = googleMap;
         styleMap(googleMap);
-        Call<List<Point>> pointListCall = service.getStoryPoints(id);
-        pointListCall.enqueue(new Callback<List<Point>>() {
-            @Override
-            public void onResponse(Call<List<Point>> call, Response<List<Point>> response) {
-                Timber.d(response.message());
-                features = response.body().get(1).getFeatures();
 
-                adapter.setPointList(response.body().get(1).getFeatures());
-                adapter.notifyDataSetChanged();
+            if (isInternetEnable()){
+            Call<List<Point>> pointListCall = service.getStoryPoints(id);
+            pointListCall.enqueue(new Callback<List<Point>>() {
+                @Override
+                public void onResponse(Call<List<Point>> call, Response<List<Point>> response) {
+                    Timber.d(response.message());
+                    features = response.body().get(1).getFeatures();
 
-                for (Feature feature : response.body().get(1).getFeatures())
-                    addMarker(feature);
+                    adapter.setPointList(response.body().get(1).getFeatures());
+                    adapter.notifyDataSetChanged();
 
-                zoomToPoint(new LatLng(features.get(0).getGeometry().getCoordinates().get(1),
-                        features.get(0).getGeometry().getCoordinates().get(0)));
+                    for (Feature feature : response.body().get(1).getFeatures())
+                        addMarker(feature);
 
+                    zoomToPoint(new LatLng(features.get(0).getGeometry().getCoordinates().get(1),
+                            features.get(0).getGeometry().getCoordinates().get(0)));
+
+                }
+
+                @Override
+                public void onFailure(Call<List<Point>> call, Throwable t) {
+                    Timber.e(t);
+                }
+            });
+            } else {
+                Snackbar.make(
+                        findViewById(R.id.activity_main),
+                        getString(R.string.no_internet),
+                        Snackbar.LENGTH_INDEFINITE)
+                        .show();
             }
-
-            @Override
-            public void onFailure(Call<List<Point>> call, Throwable t) {
-                Timber.e(t);
-            }
-        });
     }
 
     private void zoomToPoint(LatLng latLng) {
