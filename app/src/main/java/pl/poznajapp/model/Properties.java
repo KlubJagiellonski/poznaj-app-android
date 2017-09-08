@@ -19,7 +19,7 @@ public class Properties {
     private String description;
     @SerializedName("point_images")
     @Expose
-    private List<Object> pointImages = null;
+    private List<Image> pointImages = null;
 
     public String getTitle() {
         return title;
@@ -37,11 +37,11 @@ public class Properties {
         this.description = description;
     }
 
-    public List<Object> getPointImages() {
+    public List<Image> getPointImages() {
         return pointImages;
     }
 
-    public void setPointImages(List<Object> pointImages) {
+    public void setPointImages(List<Image> pointImages) {
         this.pointImages = pointImages;
     }
 

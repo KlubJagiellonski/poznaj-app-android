@@ -101,6 +101,12 @@ public class MapActivity extends BaseAppCompatActivity implements OnMapReadyCall
             @Override
             public void onDetailsClick(Feature feature, int position) {
 
+                if(feature.getProperties().getPointImages().size() > 0 )
+                    startActivity(PointDetailsActivity.getConfigureIntent(
+                            getApplicationContext(),
+                            feature.getProperties().getPointImages().get(0).getImageFile(),
+                            feature.getProperties().getTitle(),
+                            feature.getProperties().getDescription()));
             }
 
             @Override

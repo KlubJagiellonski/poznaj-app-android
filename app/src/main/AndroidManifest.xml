@@ -34,7 +34,12 @@
 
         <activity
             android:name=".view.MapActivity"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait"
+            android:parentActivityName=".view.StoryDetailsActivity"/>
+
+        <activity android:name=".view.PointDetailsActivity"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".view.MapActivity"/>
 
         <service
             android:name=".service.LocationService"
