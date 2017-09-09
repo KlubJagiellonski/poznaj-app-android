@@ -3,20 +3,41 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
-        android:id="@+id/action_one"
-        android:title="action_one"
+        android:id="@+id/action_about"
         android:orderInCategory="100"
-        app:showAsAction="never"/>
+        android:title="O aplikacji"
+        app:showAsAction="never" />
 
     <item
-        android:id="@+id/action_two"
-        android:title="action_two"
+        android:id="@+id/action_club"
         android:orderInCategory="100"
-        app:showAsAction="never"/>
+        android:title="O Klubie Jagiellońskim"
+        app:showAsAction="never" />
 
     <item
-        android:id="@+id/action_three"
-        android:title="action_three"
+        android:id="@+id/action_team"
         android:orderInCategory="100"
-        app:showAsAction="never"/>
+        android:title="Zespół"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_partners"
+        android:orderInCategory="100"
+        android:title="Partnerzy"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_bug"
+        android:orderInCategory="100"
+        android:title="Zgłoś błąd"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_rate"
+        android:orderInCategory="100"
+        android:title="Oceń aplikację"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_fb"
+        android:orderInCategory="100"
+        android:title="Facebook"
+        app:showAsAction="never" />
 </menu>

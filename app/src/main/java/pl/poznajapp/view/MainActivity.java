@@ -3,6 +3,7 @@ package pl.poznajapp.view;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -27,7 +28,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -56,6 +56,7 @@ import pl.poznajapp.view.base.BaseAppCompatActivity;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.http.Url;
 import timber.log.Timber;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
@@ -65,17 +66,30 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class MainActivity extends BaseAppCompatActivity {
 
-    private LocationService locationService = null;
-    private boolean bound = false;
-
     protected static final int REQUEST_CHECK_SETTINGS = 0x1;
     private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
+    private LocationService locationService = null;
+    private boolean bound = false;
+    private final ServiceConnection serviceConnection = new ServiceConnection() {
+
+        @Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+            LocationService.LocalBinder binder = (LocationService.LocalBinder) service;
+            locationService = binder.getService();
+            locationService.requestLocationUpdates();
+            bound = true;
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName name) {
+            locationService = null;
+            bound = false;
+        }
+    };
     private LocationReceiver locationReceiver;
     private GoogleApiClient googleApiClient;
-
     private APIService service;
     private List<Story> stories;
-
     private StoryListAdapter adapter;
     private RecyclerView storyListRV;
 
@@ -100,24 +114,63 @@ public class MainActivity extends BaseAppCompatActivity {
             checkLocationEnabled();
         }
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // handle item selection
         Intent intent;
         switch (item.getItemId()) {
-            case R.id.action_one:
-
+            case R.id.action_about:
+                intent = new Intent(this, ActivityWebView.class);
+                intent.putExtra("url", Utils.INSTANCE.getURL_POZNAJAPP_ABOUT());
+                startActivity(intent);
                 return true;
-            case R.id.action_two:
-
+            case R.id.action_club:
+                intent = new Intent(this, ActivityWebView.class);
+                intent.putExtra("url", Utils.INSTANCE.getURL_POZNAJAPP_KJ());
+                startActivity(intent);
                 return true;
-            case R.id.action_three:
+            case R.id.action_team:
+                intent = new Intent(this, ActivityWebView.class);
+                intent.putExtra("url", Utils.INSTANCE.getURL_POZNAJAPP_TEAM());
+                startActivity(intent);
+                return true;
+            case R.id.action_partners:
+                intent = new Intent(this, ActivityWebView.class);
+                intent.putExtra("url", Utils.INSTANCE.getURL_POZNAJAPP_PARTNERS());
+                startActivity(intent);
+                return true;
+            case R.id.action_bug:
+                intent = new Intent(android.content.Intent.ACTION_SEND);
+                intent.setType("plain/text");
+                intent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{Utils.INSTANCE.getPOZNAJAPP_MAIL()}); // do kogo
+                intent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Błąd w aplikacji !!! "); // tytuł maila
+                intent.putExtra(android.content.Intent.EXTRA_TEXT, ""); // tresc maila
+                startActivity(intent);
+                return true;
 
+            case R.id.action_rate:
+                Uri uri = Uri.parse("market://details?id=" + this.getPackageName());
+                intent = new Intent(Intent.ACTION_VIEW, uri);
+                intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY |
+                        Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET |
+                        Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+                try {
+                    startActivity(intent);
+                } catch (ActivityNotFoundException e) {
+                    startActivity(new Intent(Intent.ACTION_VIEW,
+                            Uri.parse("http://play.google.com/store/apps/details?id=" + this.getPackageName())));
+                }
+                return true;
+            case R.id.action_fb:
+                String facebookPageURL = getFacebookPageURL(this);
+                intent = new Intent(Intent.ACTION_VIEW, Uri.parse(facebookPageURL));
+                startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -131,7 +184,6 @@ public class MainActivity extends BaseAppCompatActivity {
         storyListRV.setAdapter(adapter);
         storyListRV.setItemAnimator(new DefaultItemAnimator());
     }
-
 
     private void initListeners() {
         storyListRV.addOnItemTouchListener(new RecyclerViewItemClickListener(this,
@@ -200,7 +252,7 @@ public class MainActivity extends BaseAppCompatActivity {
     }
 
     private boolean checkPermissions() {
-        return  PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(this,
+        return PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION);
     }
 
@@ -234,7 +286,7 @@ public class MainActivity extends BaseAppCompatActivity {
         }
     }
 
-    private void checkLocationEnabled(){
+    private void checkLocationEnabled() {
         //location settings
         LocationRequest locationRequest = LocationRequest.create();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
@@ -273,7 +325,7 @@ public class MainActivity extends BaseAppCompatActivity {
             public void onResult(@NonNull LocationSettingsResult locationSettingsResult) {
                 final Status status = locationSettingsResult.getStatus();
                 Timber.d(status.toString());
-                switch (status.getStatusCode()){
+                switch (status.getStatusCode()) {
                     case LocationSettingsStatusCodes.SUCCESS:
                         Timber.d("LocationSettingsStatusCodes.SUCCESS");
 
@@ -353,27 +405,24 @@ public class MainActivity extends BaseAppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             Location location = intent.getParcelableExtra(LocationService.EXTRA_LOCATION);
             if (location != null) {
-                Timber.d( Utils.INSTANCE.getLocationText(location));
+                Timber.d(Utils.INSTANCE.getLocationText(location));
                 loadStories(location);
             }
         }
     }
 
-    private final ServiceConnection serviceConnection = new ServiceConnection() {
-
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            LocationService.LocalBinder binder = (LocationService.LocalBinder) service;
-            locationService = binder.getService();
-            locationService.requestLocationUpdates();
-            bound = true;
+    public String getFacebookPageURL(Context context) {
+        PackageManager packageManager = context.getPackageManager();
+        try {
+            int versionCode = packageManager.getPackageInfo("com.facebook.katana", 0).versionCode;
+            if (versionCode >= 3002850) { //newer versions of fb app
+                return "fb://facewebmodal/f?href=" + "https://www.facebook.com/" + Utils.INSTANCE.getURL_POZNAJAPP_FB_PAGENAME();
+            } else { //older versions of fb app
+                return "fb://page/" + Utils.INSTANCE.getURL_POZNAJAPP_FB_PAGENAME();
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            return Utils.INSTANCE.getURL_POZNAJAPP_FB(); //web url
         }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            locationService = null;
-            bound = false;
-        }
-    };
+    }
 
 }
