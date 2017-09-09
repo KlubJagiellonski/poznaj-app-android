@@ -14,6 +14,7 @@ import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.Settings;
@@ -48,6 +49,7 @@ import pl.poznajapp.BuildConfig;
 import pl.poznajapp.PoznajApp;
 import pl.poznajapp.R;
 import pl.poznajapp.adapter.StoryListAdapter;
+import pl.poznajapp.helpers.FacebookPageUrl;
 import pl.poznajapp.helpers.Utils;
 import pl.poznajapp.listeners.RecyclerViewItemClickListener;
 import pl.poznajapp.model.Story;
@@ -56,7 +58,6 @@ import pl.poznajapp.view.base.BaseAppCompatActivity;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.http.Url;
 import timber.log.Timber;
 import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
@@ -149,8 +150,8 @@ public class MainActivity extends BaseAppCompatActivity {
                 intent = new Intent(android.content.Intent.ACTION_SEND);
                 intent.setType("plain/text");
                 intent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{Utils.INSTANCE.getPOZNAJAPP_MAIL()}); // do kogo
-                intent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Błąd w aplikacji !!! "); // tytuł maila
-                intent.putExtra(android.content.Intent.EXTRA_TEXT, ""); // tresc maila
+                intent.putExtra(android.content.Intent.EXTRA_SUBJECT, getString(R.string.bug_mail_title)); // tytuł maila
+                intent.putExtra(android.content.Intent.EXTRA_TEXT, "APP_VERSION_NAME: "+ BuildConfig.VERSION_NAME + " | ANDROID_VERSION: "+ Build.VERSION.RELEASE + " | DEVICE_MODEL: " +  android.os.Build.MODEL + " | "+ getString(R.string.bug_mail_text) ); // tresc maila
                 startActivity(intent);
                 return true;
 
@@ -168,7 +169,7 @@ public class MainActivity extends BaseAppCompatActivity {
                 }
                 return true;
             case R.id.action_fb:
-                String facebookPageURL = getFacebookPageURL(this);
+                String facebookPageURL = new FacebookPageUrl().getFacebookPageURL(this, Utils.INSTANCE.getURL_POZNAJAPP_FB(), Utils.INSTANCE.getURL_POZNAJAPP_FB_PAGENAME());
                 intent = new Intent(Intent.ACTION_VIEW, Uri.parse(facebookPageURL));
                 startActivity(intent);
                 return true;
@@ -411,18 +412,5 @@ public class MainActivity extends BaseAppCompatActivity {
         }
     }
 
-    public String getFacebookPageURL(Context context) {
-        PackageManager packageManager = context.getPackageManager();
-        try {
-            int versionCode = packageManager.getPackageInfo("com.facebook.katana", 0).versionCode;
-            if (versionCode >= 3002850) { //newer versions of fb app
-                return "fb://facewebmodal/f?href=" + "https://www.facebook.com/" + Utils.INSTANCE.getURL_POZNAJAPP_FB_PAGENAME();
-            } else { //older versions of fb app
-                return "fb://page/" + Utils.INSTANCE.getURL_POZNAJAPP_FB_PAGENAME();
-            }
-        } catch (PackageManager.NameNotFoundException e) {
-            return Utils.INSTANCE.getURL_POZNAJAPP_FB(); //web url
-        }
-    }
 
 }
