@@ -17,11 +17,7 @@
     <item
         android:id="@+id/action_team"
         android:orderInCategory="100"
-<<<<<<< HEAD
         android:title="@string/action_team"
-=======
-        android:title="@string/action_club"
->>>>>>> eb46b69cc2e1729aacd33a2f239351789a4068be
         app:showAsAction="never" />
     <item
         android:id="@+id/action_partners"
