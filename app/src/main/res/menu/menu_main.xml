@@ -5,39 +5,39 @@
     <item
         android:id="@+id/action_about"
         android:orderInCategory="100"
-        android:title="O aplikacji"
+        android:title="@string/action_about"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/action_club"
         android:orderInCategory="100"
-        android:title="O Klubie Jagiellońskim"
+        android:title="@string/action_club"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/action_team"
         android:orderInCategory="100"
-        android:title="Zespół"
+        android:title="@string/action_club"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_partners"
         android:orderInCategory="100"
-        android:title="Partnerzy"
+        android:title="@string/action_partners"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_bug"
         android:orderInCategory="100"
-        android:title="Zgłoś błąd"
+        android:title="@string/action_bug"
         app:showAsAction="never" />
 
     <item
         android:id="@+id/action_rate"
         android:orderInCategory="100"
-        android:title="Oceń aplikację"
+        android:title="@string/action_rate"
         app:showAsAction="never" />
     <item
         android:id="@+id/action_fb"
         android:orderInCategory="100"
-        android:title="Facebook"
+        android:title="@string/action_fb"
         app:showAsAction="never" />
 </menu>
