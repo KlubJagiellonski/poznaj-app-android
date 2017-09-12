@@ -13,7 +13,7 @@ import pl.poznajapp.R;
 import pl.poznajapp.helpers.Utils;
 
 /**
- * Created by mr on 09.09.2017.
+ * Created by Mikołaj Rodkiewicz on 09.09.2017.
  */
 
 public class ActivityWebView extends Activity {
@@ -24,7 +24,7 @@ public class ActivityWebView extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_webview);
 
-        webView = (WebView)findViewById(R.id.web_view);
+        webView = (WebView)findViewById(R.id.activity_web_view);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
         if(getIntent() != null && getIntent().getExtras() != null && getIntent().getExtras().containsKey("url")) {

@@ -24,7 +24,6 @@
         </activity>
         <activity
             android:name=".view.StoryDetailsActivity"
-            android:parentActivityName=".view.MainActivity"
             android:screenOrientation="portrait" />
 
         <service
