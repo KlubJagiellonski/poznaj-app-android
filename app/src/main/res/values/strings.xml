@@ -7,5 +7,17 @@
     <string name="permission_denied_explanation">Permission was denied, but is needed for core functionality.</string>
     <string name="settings">Settings</string>
     <string name="ok">OK</string>
+    <string name="title_activity_about">activity_about</string>
+
+    <string name="action_about">O aplikacji PoznajApp</string>
+    <string name="title_activity_activity_about">O aplikacji</string>
+    <string name="action_club">O Klubie Jagiellońskim</string>
+    <string name="action_team">Zespół</string>
+    <string name="action_partners">Partnerzy</string>
+    <string name="action_bug">Zgłoś Bład</string>
+    <string name="action_rate">Oceń PoznajApp</string>
+    <string name="action_fb">PoznajApp na Facebooku</string>
+    <string name="bug_mail_title">Chce zglosic blad</string>
+    <string name="bug_mail_text"> NIE USUWAJ TYCH INFORMACJI, SĄ ONE POTRZEBNE DO NAPRAWIENIA BŁEDU. PONIŻEJ MOZESZ OPISAC BŁAD. DZIEKUJEMY ZA POMOC! :)</string>
 
 </resources>
