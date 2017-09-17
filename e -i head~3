@@ -1,0 +1,459 @@
+[33mcommit 8f1bcf293bbf1835bb88a4c0a9aec7854e00da4d[m
+Author: Mikołaj Rod <Salezjana@users.noreply.github.com>
+Date:   Sun Sep 17 19:16:46 2017 +0200
+
+    Revert "add menu"
+    
+    This reverts commit 7e0bfe67080fa919e41687ada9885286e2dd8908.
+
+[33mcommit 68ec37fb04ac437a275270770d6c4765e8685dd9[m
+Author: Mikołaj Rod <Salezjana@users.noreply.github.com>
+Date:   Tue Sep 12 21:29:54 2017 +0200
+
+     small issues repair
+
+[33mcommit cf830ea9d8a0b2fd95468fda62aa45af273360bc[m
+Author: Mikołaj Rod <Salezjana@users.noreply.github.com>
+Date:   Sun Sep 10 01:09:50 2017 +0200
+
+    Revert "Merge branch 'master' of https://github.com/Salezjana/poznaj-app-android"
+    
+    This reverts commit 4b46e8d49eb726fce59625a20b1747a5648c5d9a, reversing
+    changes made to 4a10bf92a07483995f09131160ded8737b991241.
+
+[33mcommit 4b46e8d49eb726fce59625a20b1747a5648c5d9a[m
+Merge: 4a10bf9 eb46b69
+Author: Mikołaj Rod <Salezjana@users.noreply.github.com>
+Date:   Sun Sep 10 01:08:35 2017 +0200
+
+    Merge branch 'master' of https://github.com/Salezjana/poznaj-app-android
+
+[33mcommit 4a10bf92a07483995f09131160ded8737b991241[m
+Author: Mikołaj Rod <Salezjana@users.noreply.github.com>
+Date:   Sun Sep 10 01:08:17 2017 +0200
+
+     correcting the naming error
+
+[33mcommit 82e4f3a3e3199851acf60abeda94a48cc4570cd4[m
+Author: Mikołaj Rod <Salezjana@users.noreply.github.com>
+Date:   Sun Sep 10 01:02:44 2017 +0200
+
+    add device info to mail and string implementation to menu
+    
+            modified:   app/src/main/res/menu/menu_main.xml
+            modified:   app/src/main/res/menu/menu_main.xml
+
+[33mcommit eb46b69cc2e1729aacd33a2f239351789a4068be[m
+Author: Mikołaj Rod <Salezjana@users.noreply.github.com>
+Date:   Sun Sep 10 01:02:44 2017 +0200
+
+    add device info to mail and string implementation to menu
+
+[33mcommit 76f140804835d6e6b606d8c60f55615f79419382[m
+Author: Mikołaj Rod <Salezjana@users.noreply.github.com>
+Date:   Sat Sep 9 22:23:04 2017 +0200
+
+    add menu implementation
+
+[33mcommit 7e0bfe67080fa919e41687ada9885286e2dd8908[m
+Author: Mikołaj Rod <Salezjana@users.noreply.github.com>
+Date:   Thu Sep 7 23:59:42 2017 +0200
+
+    add menu
+
+[33mcommit 1eb23c600ed7bca8b00fde35eb586b1cf17335cd[m
+Author: Rafal Gawlik <rafal.gawlik@gmail.com>
+Date:   Sat Sep 2 20:18:23 2017 +0200
+
+    update misc.xml
+
+[33mcommit 6a9bf1a0a748678472ccadc115cc7ef2d3322222[m
+Merge: 6a37731 f165861
+Author: Rafal Gawlik <rafal.gawlik@gmail.com>
+Date:   Sat Sep 2 20:15:38 2017 +0200
+
+    Merge branch 'develop'
+
+[33mcommit 6a377310cbbd635955cd0997752261902f4fbe02[m
+Author: Rafal Gawlik <rafal.gawlik@gmail.com>
+Date:   Sat Sep 2 20:12:31 2017 +0200
+
+    New gradle
+
+[33mcommit f165861c578c2e543809370bcc415efa1c11798a[m
+Merge: 5d312a6 4cf4b30
+Author: Rafał Gawik <rafal.gawlik@gmail.com>
+Date:   Sun Aug 27 23:34:46 2017 +0200
+
+    Merge pull request #18 from KlubJagiellonski/progress_dialog
+    
+    Progress dialog
+
+[33mcommit 4cf4b30a0f73cdadb2640c12125d9f13e46a8b32[m
+Author: Rafal Gawlik <rafal.gawlik@gmail.com>
+Date:   Sun Aug 27 23:32:07 2017 +0200
+
+    Progress dialog
+
+[33mcommit 5d312a691b857efaaf599b44c9875ce8236b765f[m
+Author: Rafal Gawlik <rafal.gawlik@gmail.com>
+Date:   Sun Aug 27 21:33:12 2017 +0200
+
+    Click callbacks
+
+[33mcommit fc515a0079b414fc1042b0c95edfeeaaefe58559[m
+Author: Rafal Gawlik <rafal.gawlik@gmail.com>
+Date:   Sun Aug 27 20:02:39 2017 +0200
+
+    Refactor, clean up, story details, satupdetabase
+
+[33mcommit 786fde2258b7113d2ad8d5b6f49f899220fe188c[m
+Author: Rafal Gawlik <rafal.gawlik@gmail.com>
+Date:   Tue Aug 22 21:43:32 2017 +0200
+
+    Detail story view
+
+[33mcommit 3dc8ee5a9c699a30e3f84a39c2804d6afe4f6e08[m
+Merge: 2c65bba e999071
+Author: Rafal Gawlik <rafal.gawlik@gmail.com>
+Date:   Tue Aug 22 17:51:11 2017 +0200
+
+    Merge branch 'feature/story_list_view_v2' into develop
+
+[33mcommit e9990715257b191fc9dd0dbb159118b8d3e6ec8a[m
+Author: Rafal Gawlik <rafal.gawlik@gmail.com>
+Date:   Tue Aug 22 17:49:54 2017 +0200
+
+    dimens
+
+[33mcommit 3a76b60a6d15d8cf6f938ad72815c18dd17803ed[m
+Author: Rafal Gawlik <rafal.gawlik@gmail.com>
+Date:   Tue Aug 22 07:00:47 2017 +0200
+
+    Lato font & add RecyclerView click listener & design row story list & upgrade gradle
+
+[33mcommit fd677bd7175e621143d8343b09ed6f7a67415d87[m
+Author: Rafal Gawlik <rafal.gawlik@gmail.com>
+Date:   Mon Aug 21 23:21:33 2017 +0200
+
+    Add font
+
+[33mcommit d6c23184936ceddfd8cbcb0d90520e396bd1beb1[m
+Author: Rafal Gawlik <rafal.gawlik@gmail.com>
+Date:   Mon Aug 21 22:56:26 2017 +0200
+
+    Story list v1
+
+[33mcommit 2c65bba3382a2a53ea50711d984d7700870edb62[m
+Author: Rafal Gawlik <rafal.gawlik@gmail.com>
+Date:   Thu Aug 17 21:27:16 2017 +0200
+
+    Setup MVVM architecture
+    
+    create base view in MVVM
+
+[33mcommit b01a7be3878e7695aa70c7e12610a3fbcc63e5cc[m
+Merge: 8e4c819 90995b1
+Author: Rafal Gawlik <rafal.gawlik@gmail.com>
+Date:   Thu Aug 17 21:08:06 2017 +0200
+
+    Merge branch 'kotlin-poznaj-app'
+
+[33mcommit 90995b1f45a326c66910f412ae9302849704b5b2[m
+Author: Rafał Gawik <rafal.gawlik@gmail.com>
+Date:   Thu Aug 17 16:07:48 2017 +0200
+
+    Update .travis.yml
+
+[33mcommit 8e4c81967def61c8beaf12f11cae203086048a5c[m
+Author: Rafał Gawik <rafal.gawlik@gmail.com>
+Date:   Thu Aug 17 16:05:28 2017 +0200
+
+    Update .travis.yml
+
+[33mcommit 36497b5f0be512b12a8b9619f68ed720754c58e4[m
+Author: Rafal Gawlik <rafal.gawlik@gmail.com>
+Date:   Wed Aug 16 18:45:26 2017 +0200
+
+    Setup turn on location
+
+[33mcommit d2d2fed626ed75ad81c405e9cbe721c3751e93d9[m
+Merge: 34f82eb ab2954b
+Author: Rafal Gawlik <rafal.gawlik@gmail.com>
+Date:   Wed Aug 16 18:26:59 2017 +0200
+
+    Merge remote-tracking branch 'origin/turn_on_location_request' into kotlin-poznaj-app
+
+[33mcommit 34f82eb11902084d2537b7e2f9e9d3c70c5b590a[m
+Author: Rafal Gawlik <rafal.gawlik@gmail.com>
+Date:   Wed Aug 16 18:26:09 2017 +0200
+
+    Add onResume to MainActivity & test TextView
+
+[33mcommit ab2954b1cccf5ee3f97ab44c42ac9b9cabdbb55f[m
+Author: Rafal Gawlik <rafal.gawlik.ext@gigaset.com>
+Date:   Wed Aug 16 16:53:30 2017 +0200
+
+    Turn on location request
+
+[33mcommit c110ac9a9fb8201eaa44c2dc937cd445e1dba572[m
+Author: Rafal Gawlik <rafal.gawlik@gmail.com>
+Date:   Mon Aug 14 20:39:45 2017 +0200
+
+    LocationService & permission managment
+
+[33mcommit 1a576a65faa6e3b7070ddc5cb2de83fd02493aca[m
+Author: Rafal Gawlik <rafal.gawlik@gmail.com>
+Date:   Fri Aug 11 22:42:18 2017 +0200
+
+    Setup project architecture
+    
+    * APIservice
+    * Dagger
+    * Service
+    * MVVM
+
+[33mcommit d51188acb6b4ae1efccb98e77d8f67fddbe8056c[m
+Author: Rafal Gawlik <rafal.gawlik@gmail.com>
+Date:   Fri Aug 11 21:06:11 2017 +0200
+
+    Init Kotlin PoznajApp project
+
+[33mcommit c920afbc37bd24a721129a6d15e44c34d467cd76[m
+Author: Rafal Gawlik <rafal.gawlik@gmail.com>
+Date:   Tue Jul 25 21:29:36 2017 +0200
+
+    Add information views
+
+[33mcommit f8671e20d0219f8b8da6710abbfa3d8132bbfd68[m
+Author: Rafal Gawlik <rafal.gawlik@gmail.com>
+Date:   Sun Jun 18 21:48:44 2017 +0200
+
+    Remove unnecesary imports
+
+[33mcommit f413dc55015a36034095b58d22c17a82d6a51458[m
+Author: Rafal Gawlik <rafal.gawlik@gmail.com>
+Date:   Sun Jun 18 21:43:17 2017 +0200
+
+    refactor
+
+[33mcommit 982da2ff34339940e88294c225ea9331e0c6a7c1[m
+Author: Rafal Gawlik <rafal.gawlik@gmail.com>
+Date:   Wed May 24 22:52:08 2017 +0200
+
+    Location, placeholder images
+
+[33mcommit a1b76dee61d31165d511e917626302ea6f482ad5[m
+Author: Rafal Gawlik <rafal.gawlik@gmail.com>
+Date:   Sat May 20 23:34:02 2017 +0200
+
+    location request
+
+[33mcommit 6b5500c976c1b51dd37bab9cc70144b9d416cfd9[m
+Author: Rafal Gawlik <rafal.gawlik@gmail.com>
+Date:   Sun May 7 03:25:29 2017 +0200
+
+    Remove unnecesary text
+
+[33mcommit 25b44b53155116b0c006cf3515f00d4f24698797[m
+Author: Rafal Gawlik <rafal.gawlik@gmail.com>
+Date:   Sun May 7 03:15:46 2017 +0200
+
+    Remove animation from v1 app
+
+[33mcommit 605d47e3358c43e867ec5dd0244e520ee8942b7d[m
+Author: Rafal Gawlik <rafal.gawlik@gmail.com>
+Date:   Sun May 7 03:10:16 2017 +0200
+
+    Current story on main screen, snackbar
+    
+    *refactor API url
+    *new drawables - trash
+    *new mock trip image
+
+[33mcommit 68baa3ee693328c136da8c695cb218b57b5b63f4[m
+Author: Rafal Gawlik <rafal.gawlik@gmail.com>
+Date:   Sun May 7 01:41:50 2017 +0200
+
+    update travis
+
+[33mcommit bb59d5a6c9328e541370ddffda56166d0966bd7e[m
+Author: Rafal Gawlik <rafal.gawlik@gmail.com>
+Date:   Sun May 7 01:32:54 2017 +0200
+
+    update travis
+
+[33mcommit db4881a19bbcc4c13e32bfebdcad1e0c4020f36f[m
+Author: Rafal Gawlik <rafal.gawlik@gmail.com>
+Date:   Sun May 7 01:27:36 2017 +0200
+
+    travis
+
+[33mcommit 1964dec16d774aedc807c7ccd00c305ab2850b1e[m
+Author: Rafal Gawlik <rafal.gawlik@gmail.com>
+Date:   Sun May 7 01:22:56 2017 +0200
+
+    new placeholder
+
+[33mcommit 5653e6e130ef72749c914c76fd1c9070924746d0[m
+Author: Rafal Gawlik <rafal.gawlik@gmail.com>
+Date:   Sat May 6 23:26:03 2017 +0200
+
+    Strings
+
+[33mcommit eb42a1e65f332c27d31d64826b63b0ac1b34f171[m
+Author: Rafal Gawlik <rafal.gawlik@gmail.com>
+Date:   Sat May 6 23:16:52 2017 +0200
+
+    Code refactor, code look
+
+[33mcommit 1efe76b62d79f47bc9a73b1c30f93c5a881bd024[m
+Author: Rafal Gawlik <rafal.gawlik@gmail.com>
+Date:   Sat May 6 23:04:24 2017 +0200
+
+    Rafactor code & implements - load images
+    
+    Remove unnecesary class, methods and imports
+
+[33mcommit d02d8b4ba1f12c0dce2fea8cbf62ef5b3cd553bf[m
+Author: Rafal Gawlik <rafal.gawlik@gmail.com>
+Date:   Sun Apr 23 21:33:21 2017 +0200
+
+    End of trip
+
+[33mcommit 5aef9c7eb878d38bfc2cf2ccdc6f95e129527ed0[m
+Author: Rafal Gawlik <rafal.gawlik@gmail.com>
+Date:   Mon Apr 3 23:20:29 2017 +0200
+
+    App service, models, API, adapter
+
+[33mcommit b2599d73ed835ee9c770acfec2358d5a785df829[m
+Author: Rafal Gawlik <rafal.gawlik@gmail.com>
+Date:   Sun Mar 19 21:09:48 2017 +0100
+
+    Point Activity
+
+[33mcommit 61ab3c5b3b57335ee813b4d0751d73937e6f4a28[m
+Author: Rafal Gawlik <rafal.gawlik@gmail.com>
+Date:   Sat Mar 18 00:24:55 2017 +0100
+
+    PointActivity
+
+[33mcommit 52268096adcd8b6a8683ca5ec827c177e8c3f8ea[m
+Author: Rafal Gawlik <rafal.gawlik@gmail.com>
+Date:   Sat Mar 18 00:18:41 2017 +0100
+
+    Service, Layout, notification
+
+[33mcommit 85d9099e2e52166de9acd83248cc0922eb13df75[m
+Author: Rafal Gawlik <rafal.gawlik@gmail.com>
+Date:   Fri Mar 10 20:31:00 2017 +0100
+
+    Drawables, GPS tracer
+    
+    * add app icon
+    * add icons
+    * improve service
+
+[33mcommit f75e087ba2595456e7ba62ff203ad9486b885e47[m
+Author: Rafal Gawlik <rafal.gawlik@gmail.com>
+Date:   Thu Mar 9 23:01:25 2017 +0100
+
+    * Optimize imports
+    * Authwor
+
+[33mcommit 022ed799d860ee77d64adf6c8ffffcf945d10ee6[m
+Merge: 52064b9 8c2ed80
+Author: Rafal Gawlik <rafal.gawlik@gmail.com>
+Date:   Thu Mar 9 22:09:48 2017 +0100
+
+    Merge branch 'develop'
+
+[33mcommit 52064b936ed50c76cc2b7fe8fbcaf735eecafd21[m
+Author: Rafał Gawik <rafal.gawlik@gmail.com>
+Date:   Thu Mar 9 22:03:40 2017 +0100
+
+    Update LICENSE
+
+[33mcommit 8c2ed800081ae41da92dee337cc8510ed4e13b25[m
+Author: Rafal Gawlik <rafal.gawlik@gmail.com>
+Date:   Thu Mar 9 21:58:51 2017 +0100
+
+    * Map style
+    * Service
+    * start trip Activity
+    * Location Utils
+    
+    * Refactor
+
+[33mcommit 49847a442b5b6a6c7d8e560ac1daaa0e137ded05[m
+Author: Rafal Gawlik <rafal.gawlik@gmail.com>
+Date:   Tue Feb 14 22:09:18 2017 +0100
+
+    Back presed
+
+[33mcommit ca79d3770513151c640ef624221c72bb9071330d[m
+Author: Rafal Gawlik <rafal.gawlik@gmail.com>
+Date:   Sat Feb 11 20:09:12 2017 +0100
+
+    Story map markers
+
+[33mcommit deaa3ed4f0ef0c5a96c2066578041597035c02d3[m
+Author: Rafal Gawlik <rafal.gawlik@gmail.com>
+Date:   Sat Feb 11 17:31:33 2017 +0100
+
+    Connect API, refactor
+
+[33mcommit 6dbd6d276f340b84f8e035cf994c35dc93eece14[m
+Author: Rafal Gawlik <rafal.gawlik@gmail.com>
+Date:   Wed Jan 11 22:37:51 2017 +0100
+
+    construct onResume()
+
+[33mcommit 0daf295348761e5b08d90df0bb34d1e47c69eaa0[m
+Author: Rafal Gawlik <rafal.gawlik@gmail.com>
+Date:   Wed Jan 11 21:58:46 2017 +0100
+
+    POJO models
+
+[33mcommit ba2ce6fa063709f6395fc962cd30764334cdbb34[m
+Author: Rafal Gawlik <rafal.gawlik@gmail.com>
+Date:   Thu Dec 1 23:26:24 2016 +0100
+
+    App colors, res clean
+
+[33mcommit 920b5452d38d9dca451f65fa8a37be60879cd10d[m
+Author: Rafal Gawlik <rafal.gawlik@gmail.com>
+Date:   Thu Dec 1 22:56:26 2016 +0100
+
+    FIX: incorrect res type, create photo utils, update model
+
+[33mcommit 5d9686b4203020199939f0d5400aed26cf121210[m
+Author: Rafał Gawlik <rafal.gawlik@gmail.com>
+Date:   Thu Dec 1 21:38:13 2016 +0100
+
+    Add service, distance utils, point model
+
+[33mcommit db81af9e782beb028bba357fe385ca7d9a597454[m
+Author: Rafał Gawlik <rafal.gawlik@gmail.com>
+Date:   Thu Dec 1 20:51:47 2016 +0100
+
+    Map improvment, card view improvment, icons
+
+[33mcommit 8597624cd162e6b2dbfc083cc60e0386360dad44[m
+Author: Rafał Gawlik <rafal.gawlik@gmail.com>
+Date:   Wed Nov 30 23:03:48 2016 +0100
+
+    Add license
+
+[33mcommit 032e102ad85eabba9899765bb2c9ae89a09c1487[m
+Author: Rafał Gawlik <rafal.gawlik@gmail.com>
+Date:   Wed Nov 30 22:44:02 2016 +0100
+
+    Setup project
+
+[33mcommit ff7df9379e8c4e5b5e56a440e71a62a88dca3190[m
+Author: Rafał Gawlik <rafal.gawlik@gmail.com>
+Date:   Wed Nov 30 22:43:25 2016 +0100
+
+    Initial git
