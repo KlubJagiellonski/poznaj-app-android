@@ -26,8 +26,6 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -115,6 +113,7 @@ public class MainActivity extends BaseAppCompatActivity {
             checkLocationEnabled();
         }
     }
+<<<<<<< HEAD
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -177,6 +176,8 @@ public class MainActivity extends BaseAppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
+=======
+>>>>>>> parent of 7e0bfe6... add menu
 
     private void setupView() {
         storyListRV = (RecyclerView) findViewById(R.id.activity_main_story_list_rv);
