@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/action_about"
+        android:orderInCategory="100"
+        android:title="@string/action_about"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_club"
+        android:orderInCategory="100"
+        android:title="@string/action_club"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_team"
+        android:orderInCategory="100"
+        android:title="@string/action_team"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_partners"
+        android:orderInCategory="100"
+        android:title="@string/action_partners"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_bug"
+        android:orderInCategory="100"
+        android:title="@string/action_bug"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/action_rate"
+        android:orderInCategory="100"
+        android:title="@string/action_rate"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_fb"
+        android:orderInCategory="100"
+        android:title="@string/action_fb"
+        app:showAsAction="never" />
+</menu>

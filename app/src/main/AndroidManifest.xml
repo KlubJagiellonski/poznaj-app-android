@@ -29,11 +29,15 @@
             android:name=".view.StoryDetailsActivity"
             android:parentActivityName=".view.MainActivity"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".view.ActivityWebView"
+            android:screenOrientation="portrait" />
 
         <service
             android:name=".service.LocationService"
             android:enabled="true"
             android:exported="true" />
+
 
     </application>
 
