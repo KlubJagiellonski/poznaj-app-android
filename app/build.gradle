@@ -46,8 +46,8 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:26.0.1'
     compile 'com.android.support:design:26.0.1'
 
-    compile 'com.google.android.gms:play-services-location:11.0.4'
-    compile 'com.google.android.gms:play-services:11.0.4'
+    compile 'com.google.android.gms:play-services-location:11.2.2'
+    compile 'com.google.android.gms:play-services:11.2.2'
 
     compile 'com.squareup.okhttp3:okhttp:3.8.1'
     compile 'com.squareup.okhttp3:logging-interceptor:3.8.1'
@@ -65,5 +65,9 @@ dependencies {
 
     compile 'com.android.support:multidex:1.0.1'
 
+    compile 'com.google.firebase:firebase-crash:11.2.2'
+
     provided 'javax.annotation:jsr250-api:1.0'
 }
+
+apply plugin: 'com.google.gms.google-services'
