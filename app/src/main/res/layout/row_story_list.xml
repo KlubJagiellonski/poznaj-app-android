@@ -14,9 +14,11 @@
         android:layout_width="match_parent"
         android:layout_height="200dp"
         android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
-        card_view:cardCornerRadius="4dp">
+        card_view:cardCornerRadius="4dp"
+        card_view:cardElevation="4dp">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -40,7 +42,6 @@
                 android:paddingLeft="8dp"
                 android:paddingRight="8dp"
                 android:textSize="20sp"
-                fontPath="fonts/Lato-Regular.ttf"
                 android:background="@android:drawable/screen_background_dark_transparent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentBottom="true"

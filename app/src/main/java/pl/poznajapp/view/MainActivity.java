@@ -54,7 +54,6 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import timber.log.Timber;
-import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 /**
  * Created by Rafał Gawlik on 13.08.17.
@@ -62,13 +61,15 @@ import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 public class MainActivity extends BaseAppCompatActivity {
 
-    private LocationService locationService = null;
-    private boolean bound = false;
+    private LocationReceiver locationReceiver;
 
     protected static final int REQUEST_CHECK_SETTINGS = 0x1;
-    private static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
-    private LocationReceiver locationReceiver;
+    protected static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
+
     private GoogleApiClient googleApiClient;
+    protected LocationService locationService = null;
+    protected boolean bound = false;
+    Location location = null;
 
     private APIService service;
     private List<Story> stories;
@@ -76,10 +77,7 @@ public class MainActivity extends BaseAppCompatActivity {
     private StoryListAdapter adapter;
     private RecyclerView storyListRV;
 
-    @Override
-    protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
-    }
+    private Boolean progressDialogShowed = false; //progress dialog show only first time
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,12 +88,6 @@ public class MainActivity extends BaseAppCompatActivity {
         stories = new ArrayList<Story>();
         setupView();
         initListeners();
-
-        if (!checkPermissions()) {
-            requestPermissions();
-        } else {
-            checkLocationEnabled();
-        }
     }
 
     private void setupView() {
@@ -105,7 +97,6 @@ public class MainActivity extends BaseAppCompatActivity {
         storyListRV.setAdapter(adapter);
         storyListRV.setItemAnimator(new DefaultItemAnimator());
     }
-
 
     private void initListeners() {
         storyListRV.addOnItemTouchListener(new RecyclerViewItemClickListener(this,
@@ -123,31 +114,50 @@ public class MainActivity extends BaseAppCompatActivity {
     }
 
     private void loadStories(Location location) {
-        service = PoznajApp.retrofit.create(APIService.class);
-        showProgressDialog("Trasy", "Pobieraniem tras");
-        Call<List<Story>> storyListCall = service.listStories(location.getLatitude(), location.getLongitude());
-        storyListCall.enqueue(new Callback<List<Story>>() {
-            @Override
-            public void onResponse(Call<List<Story>> call, Response<List<Story>> response) {
-                Timber.d(response.message());
-                stories.clear();
-                stories.addAll(response.body());
-                adapter.notifyDataSetChanged();
-                hideProgressDialog();
-            }
+        if (isInternetEnable()){
+            service = PoznajApp.retrofit.create(APIService.class);
 
-            @Override
-            public void onFailure(Call<List<Story>> call, Throwable t) {
-                Timber.e(t);
-                hideProgressDialog();
+            if (!progressDialogShowed) {
+                showProgressDialog("Trasy", "Pobieraniem tras");
+                progressDialogShowed = true;
             }
-        });
+            Call<List<Story>> storyListCall = service.listStories(location.getLatitude(), location.getLongitude());
+            storyListCall.enqueue(new Callback<List<Story>>() {
+                @Override
+                public void onResponse(Call<List<Story>> call, Response<List<Story>> response) {
+                    Timber.d(response.message());
+                    stories.clear();
+                    stories.addAll(response.body());
+                    adapter.notifyDataSetChanged();
+                    hideProgressDialog();
+                }
+
+                @Override
+                public void onFailure(Call<List<Story>> call, Throwable t) {
+                    Timber.e(t);
+                    hideProgressDialog();
+                }
+            });
+        } else {
+            Snackbar.make(
+                    findViewById(R.id.activity_main),
+                    getString(R.string.no_internet),
+                    Snackbar.LENGTH_INDEFINITE)
+                    .show();
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
         Timber.i("onResume");
+
+        if (!checkPermissions()) {
+            requestPermissions();
+        } else {
+            checkLocationEnabled();
+        }
+
         LocalBroadcastManager.getInstance(this).registerReceiver(locationReceiver,
                 new IntentFilter(LocationService.ACTION_BROADCAST));
     }
@@ -160,6 +170,7 @@ public class MainActivity extends BaseAppCompatActivity {
 
     @Override
     protected void onDestroy() {
+        stopService(new Intent(this, LocationService.class));
         super.onDestroy();
     }
 
@@ -173,42 +184,12 @@ public class MainActivity extends BaseAppCompatActivity {
         super.onStop();
     }
 
-    private boolean checkPermissions() {
-        return  PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(this,
+    protected boolean checkPermissions() {
+        return PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION);
     }
 
-    private void requestPermissions() {
-        boolean shouldProvideRationale =
-                ActivityCompat.shouldShowRequestPermissionRationale(this,
-                        Manifest.permission.ACCESS_FINE_LOCATION);
-
-        if (shouldProvideRationale) {
-            Timber.d("Displaying permission rationale to provide additional context.");
-            Snackbar.make(
-                    findViewById(R.id.activity_main),
-                    R.string.permission_rationale,
-                    Snackbar.LENGTH_INDEFINITE)
-                    .setAction(R.string.ok, new View.OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            // Request permission
-                            ActivityCompat.requestPermissions(MainActivity.this,
-                                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                                    REQUEST_PERMISSIONS_REQUEST_CODE);
-                        }
-                    })
-                    .show();
-        } else {
-            Timber.d("Requesting permission");
-
-            ActivityCompat.requestPermissions(MainActivity.this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    REQUEST_PERMISSIONS_REQUEST_CODE);
-        }
-    }
-
-    private void checkLocationEnabled(){
+    protected void checkLocationEnabled() {
         //location settings
         LocationRequest locationRequest = LocationRequest.create();
         locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
@@ -247,7 +228,7 @@ public class MainActivity extends BaseAppCompatActivity {
             public void onResult(@NonNull LocationSettingsResult locationSettingsResult) {
                 final Status status = locationSettingsResult.getStatus();
                 Timber.d(status.toString());
-                switch (status.getStatusCode()){
+                switch (status.getStatusCode()) {
                     case LocationSettingsStatusCodes.SUCCESS:
                         Timber.d("LocationSettingsStatusCodes.SUCCESS");
 
@@ -305,6 +286,36 @@ public class MainActivity extends BaseAppCompatActivity {
         }
     }
 
+    protected void requestPermissions() {
+        boolean shouldProvideRationale =
+                ActivityCompat.shouldShowRequestPermissionRationale(this,
+                        Manifest.permission.ACCESS_FINE_LOCATION);
+
+        if (shouldProvideRationale) {
+            Timber.d("Displaying permission rationale to provide additional context.");
+            Snackbar.make(
+                    findViewById(R.id.activity_main),
+                    R.string.permission_rationale,
+                    Snackbar.LENGTH_INDEFINITE)
+                    .setAction(R.string.ok, new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            // Request permission
+                            ActivityCompat.requestPermissions(MainActivity.this,
+                                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                                    REQUEST_PERMISSIONS_REQUEST_CODE);
+                        }
+                    })
+                    .show();
+        } else {
+            Timber.d("Requesting permission");
+
+            ActivityCompat.requestPermissions(MainActivity.this,
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                    REQUEST_PERMISSIONS_REQUEST_CODE);
+        }
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
@@ -325,15 +336,21 @@ public class MainActivity extends BaseAppCompatActivity {
     private class LocationReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
-            Location location = intent.getParcelableExtra(LocationService.EXTRA_LOCATION);
-            if (location != null) {
-                Timber.d( Utils.INSTANCE.getLocationText(location));
+            Location newLocation = intent.getParcelableExtra(LocationService.EXTRA_LOCATION);
+
+            if(location == null) {
+                location = newLocation;
+                Timber.d(Utils.INSTANCE.getLocationText(location));
+                loadStories(location);
+            } else if (location.distanceTo(newLocation) > 200.0f) {
+                location = newLocation;
+                Timber.d(Utils.INSTANCE.getLocationText(location));
                 loadStories(location);
             }
         }
     }
 
-    private final ServiceConnection serviceConnection = new ServiceConnection() {
+    protected final ServiceConnection serviceConnection = new ServiceConnection() {
 
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
@@ -349,5 +366,4 @@ public class MainActivity extends BaseAppCompatActivity {
             bound = false;
         }
     };
-
 }

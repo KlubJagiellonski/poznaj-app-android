@@ -2,10 +2,12 @@
     <string name="app_name">PoznajApp</string>
     <string name="poznaj_app_api_url">https://poznaj-wroclaw.herokuapp.com/api/</string>
 
-    <string name="location_updated">Location Updated: %1$s</string>
-    <string name="permission_rationale">Location permission is needed for core functionality</string>
-    <string name="permission_denied_explanation">Permission was denied, but is needed for core functionality.</string>
-    <string name="settings">Settings</string>
+    <string name="location_updated">Lokalizacja: %1$s</string>
+    <string name="permission_rationale">Lokalizacja jest potrzebna do podstawowych funkcjonalności</string>
+    <string name="permission_denied_explanation">Nie udziolono dostepu do lokalizacji, podstawowe funkcjonalności nie działają</string>
+    <string name="no_internet">Brak połączenia z internetem</string>
+    <string name="settings">Ustawienia</string>
     <string name="ok">OK</string>
+    <string name="story_duration">Długość:</string>
 
 </resources>
