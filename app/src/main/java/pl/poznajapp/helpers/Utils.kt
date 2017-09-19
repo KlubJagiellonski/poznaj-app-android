@@ -13,6 +13,14 @@ import java.util.*
  */
 
 object Utils {
+    val URL_POZNAJAPP_ABOUT = "https://www.pola-app.pl/m/about"
+    val URL_POZNAJAPP_METHOD = "https://www.pola-app.pl/m/method"
+    val URL_POZNAJAPP_KJ = "https://www.pola-app.pl/m/kj"
+    val URL_POZNAJAPP_TEAM = "https://www.pola-app.pl/m/team"
+    val URL_POZNAJAPP_PARTNERS = "https://www.pola-app.pl/m/partners"
+    val POZNAJAPP_MAIL = "adresmailowy@gmail.com"
+    val URL_POZNAJAPP_FB = "https://www.facebook.com/app.pola"
+    val URL_POZNAJAPP_FB_PAGENAME = "app.pola"
 
     val TIMEOUT_SECONDS: Long = 20
 
