@@ -10,8 +10,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
 
 import pl.poznajapp.R;
-import uk.co.chrisjenx.calligraphy.CalligraphyConfig;
-import uk.co.chrisjenx.calligraphy.CalligraphyContextWrapper;
 
 /**
  * Created by Rafał Gawlik on 21.08.17.
@@ -22,18 +20,8 @@ public class BaseAppCompatActivity extends AppCompatActivity {
     protected ProgressDialog progressDialog;
 
     @Override
-    protected void attachBaseContext(Context newBase) {
-        super.attachBaseContext(CalligraphyContextWrapper.wrap(newBase));
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        CalligraphyConfig.initDefault(new CalligraphyConfig.Builder()
-                .setDefaultFontPath("fonts/Lato-Regular.ttf")
-                .setFontAttrId(R.attr.fontPath)
-                .build()
-        );
 
         progressDialog = new ProgressDialog(this);
     }
