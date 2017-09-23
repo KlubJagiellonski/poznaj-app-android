@@ -13,10 +13,10 @@ import java.util.*
  */
 
 object Utils {
-    val URL_POZNAJAPP_ABOUT = "https://www.pola-app.pl/m/about"
-    val URL_POZNAJAPP_KJ = "https://www.pola-app.pl/m/kj"
-    val URL_POZNAJAPP_TEAM = "https://www.pola-app.pl/m/team"
-    val URL_POZNAJAPP_PARTNERS = "https://www.pola-app.pl/m/partners"
+    val URL_POZNAJAPP_ABOUT = "http://kj.org.pl/"
+    val URL_POZNAJAPP_KJ = "http://kj.org.pl/"
+    val URL_POZNAJAPP_TEAM = "http://kj.org.pl/"
+    val URL_POZNAJAPP_PARTNERS = "http://kj.org.pl/"
     val POZNAJAPP_MAIL = "poznaj.app@gmail.com"
     val URL_POZNAJAPP_FB = "https://www.facebook.com/poznajapp"
     val URL_POZNAJAPP_FB_PAGENAME = "poznajapp"
