@@ -108,21 +108,25 @@ public class MainActivity extends BaseAppCompatActivity {
             case R.id.action_about:
                 intent = new Intent(this, ActivityWebView.class);
                 intent.putExtra("url", Utils.INSTANCE.getURL_POZNAJAPP_ABOUT());
+                intent.putExtra("title", getString(R.string.action_about));
                 startActivity(intent);
                 return true;
             case R.id.action_club:
                 intent = new Intent(this, ActivityWebView.class);
                 intent.putExtra("url", Utils.INSTANCE.getURL_POZNAJAPP_KJ());
+                intent.putExtra("title", getString(R.string.action_club));
                 startActivity(intent);
                 return true;
             case R.id.action_team:
                 intent = new Intent(this, ActivityWebView.class);
                 intent.putExtra("url", Utils.INSTANCE.getURL_POZNAJAPP_TEAM());
+                intent.putExtra("title", getString(R.string.action_team));
                 startActivity(intent);
                 return true;
             case R.id.action_partners:
                 intent = new Intent(this, ActivityWebView.class);
                 intent.putExtra("url", Utils.INSTANCE.getURL_POZNAJAPP_PARTNERS());
+                intent.putExtra("title", getString(R.string.action_partners));
                 startActivity(intent);
                 return true;
             case R.id.action_bug:
