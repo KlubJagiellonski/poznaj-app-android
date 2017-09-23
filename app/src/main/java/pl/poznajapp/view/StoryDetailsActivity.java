@@ -3,7 +3,7 @@ package pl.poznajapp.view;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -24,18 +24,16 @@ import timber.log.Timber;
  * Created by Rafał Gawlik on 22.08.17.
  */
 
-// TODO
-// redesign
 public class StoryDetailsActivity extends BaseAppCompatActivity {
 
     public static final String EXTRAS_STORY_ID = "EXTRAS_STORY_ID";
 
-    ImageView backgroundImage;
-    TextView duration;
-    TextView description;
-    FloatingActionButton fab;
+    private ImageView backgroundImage;
+    private TextView duration, description, dutation_text;
 
     private APIService service;
+
+    private Story story;
 
     public static Intent getConfigureIntent(Context context, Integer storyId) {
         Intent intent = new Intent(context, StoryDetailsActivity.class);
@@ -58,19 +56,21 @@ public class StoryDetailsActivity extends BaseAppCompatActivity {
 
     private void setupView() {
         backgroundImage = (ImageView) findViewById(R.id.story_details_back_iv);
+        dutation_text = (TextView) findViewById(R.id.story_details_tv);
         duration = (TextView) findViewById(R.id.story_duration_text_tv);
         description = (TextView) findViewById(R.id.story_details_text_tv);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
     }
 
     private void loadStory(Integer id) {
         if (id.equals(-1))
             finish();
 
+        if (isInternetEnable()){
         service = PoznajApp.retrofit.create(APIService.class);
 
+        //TODO setup string for progress dialog
         showProgressDialog("Trasa", "Pobieranie ....");
         Call<Story> storyCall = service.getStory(id);
         storyCall.enqueue(new Callback<Story>() {
@@ -78,15 +78,14 @@ public class StoryDetailsActivity extends BaseAppCompatActivity {
             public void onResponse(Call<Story> call, Response<Story> response) {
                 Timber.d(response.message());
 
-                Story story = response.body();
+                story = response.body();
                 getSupportActionBar().setTitle(story.getTitle());
                 duration.setText(story.getDuration());
-                description.setText(story.getDescription());
+                description.setText(story.getDescription()); //TODO date format
 
-                //TODO
-                Picasso.with(getApplicationContext()).load("http://i.imgur.com/DvpvklR.png").into(backgroundImage);
+                Picasso.with(getApplicationContext()).load(story.getStoryImages().get(0).getImageFile()).into(backgroundImage);
                 hideProgressDialog();
-
+                dutation_text.setVisibility(View.VISIBLE);
             }
 
             @Override
@@ -95,15 +94,17 @@ public class StoryDetailsActivity extends BaseAppCompatActivity {
                 hideProgressDialog();
             }
         });
-
-    }
-
-    public void onMapClick(View view) {
-
+        } else {
+            Snackbar.make(
+                    findViewById(R.id.activity_main),
+                    getString(R.string.no_internet),
+                    Snackbar.LENGTH_INDEFINITE)
+                    .show();
+        }
     }
 
     public void onStartClick(View view) {
-        //TODO load points into DB
-        //bind service
+        if (story != null)
+            startActivity(MapActivity.getConfigureIntent(this, story.getId(), story.getTitle()));
     }
 }

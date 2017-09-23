@@ -10,5 +10,9 @@
     <dimen name="main_card_view_title_horizontal_padding">16dp</dimen>
     <dimen name="main_card_view_title_bottom_padding">16dp</dimen>
     <dimen name="main_card_view_title_font_size">18sp</dimen>
+    <dimen name="small_margin">8dp</dimen>
+    <dimen name="margin_horizontal">16dp</dimen>
+    <dimen name="margin_vertical">16dp</dimen>
+    <dimen name="point_row_height">48dp</dimen>
 
 </resources>

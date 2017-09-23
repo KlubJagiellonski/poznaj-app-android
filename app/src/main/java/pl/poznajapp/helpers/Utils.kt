@@ -8,7 +8,6 @@ import pl.poznajapp.R
 import java.text.DateFormat
 import java.util.*
 
-
 /**
  * Created by Rafał Gawlik on 11.08.17.
  */

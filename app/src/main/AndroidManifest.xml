@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="pl.poznajapp">
 
-
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
@@ -15,8 +14,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity
-            android:name=".view.MainActivity"
+        <meta-data android:name="com.google.android.geo.API_KEY" android:value="@string/google_map_api_key"/>
+
+        <activity android:name=".view.MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -25,16 +25,19 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name=".view.StoryDetailsActivity"
-            android:parentActivityName=".view.MainActivity"
+        <activity android:name=".view.StoryDetailsActivity"
+            android:screenOrientation="portrait" />
+
+        <activity android:name=".view.MapActivity"
+            android:screenOrientation="portrait" />
+
+        <activity android:name=".view.PointDetailsActivity"
             android:screenOrientation="portrait" />
         <activity
             android:name=".view.ActivityWebView"
             android:screenOrientation="portrait" />
 
-        <service
-            android:name=".service.LocationService"
+        <service android:name=".service.LocationService"
             android:enabled="true"
             android:exported="true" />
 

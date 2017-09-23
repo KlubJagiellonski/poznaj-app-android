@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:fab="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <ScrollView
-        android:id="@+id/activity_main"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context="pl.poznajapp.view.StoryDetailsActivity">
@@ -27,51 +25,37 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginBottom="@dimen/margin_vertical"
+                android:layout_marginLeft="@dimen/margin_horizontal"
+                android:layout_marginRight="@dimen/margin_horizontal"
+                android:layout_marginTop="@dimen/margin_vertical"
                 android:orientation="vertical">
 
-
-
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal">
-
-                    <Button
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Map"
-                        android:onClick="onMapClick"/>
-
-                    <Button
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Start"
-                        android:onClick="onStartClick"/>
-
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="@dimen/margin_vertical">
 
                     <TextView
+                        android:id="@+id/story_details_tv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:paddingRight="8dp"
-                        android:text="Długość: " />
+                        android:paddingRight="@dimen/small_margin"
+                        android:textSize="16sp"
+                        android:visibility="gone"
+                        android:text="@string/story_duration" />
 
                     <TextView
                         android:id="@+id/story_duration_text_tv"
                         android:layout_width="wrap_content"
+                        android:textSize="16sp"
                         android:layout_height="wrap_content" />
                 </LinearLayout>
 
                 <TextView
                     android:id="@+id/story_details_text_tv"
+                    android:layout_marginBottom="@dimen/margin_vertical"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="16sp" />
@@ -79,5 +63,15 @@
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
+
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="@dimen/margin_vertical"
+        android:layout_marginRight="@dimen/margin_horizontal"
+        android:onClick="onStartClick"
+        android:src="@drawable/ic_directions_walk" />
 
 </RelativeLayout>
