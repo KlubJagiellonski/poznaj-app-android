@@ -45,9 +45,7 @@ public class LocationService extends Service {
     private final IBinder binder = new LocalBinder();
     private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
     private static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = UPDATE_INTERVAL_IN_MILLISECONDS / 2;
-    private static final int NOTIFICATION_ID = 12345678;
     private boolean changingConfiguration = false;
-    private NotificationManager notificationManager;
     private LocationRequest locationRequest;
     private FusedLocationProviderClient fusedLocationClient;
     private LocationCallback locationCallback;
@@ -79,7 +77,6 @@ public class LocationService extends Service {
         HandlerThread handlerThread = new HandlerThread(TAG);
         handlerThread.start();
         serviceHandler = new Handler(handlerThread.getLooper());
-        notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
     }
 
     @Override
@@ -132,7 +129,6 @@ public class LocationService extends Service {
 //                startForeground(NOTIFICATION_ID, getNotification());
 //            }
 
-            startForeground(NOTIFICATION_ID, getNotification());
         }
         return true; // Ensures onRebind() is called when a client re-binds.
     }
@@ -168,33 +164,6 @@ public class LocationService extends Service {
         }
     }
 
-    private Notification getNotification() {
-        Intent intent = new Intent(this, LocationService.class);
-
-        CharSequence text = Utils.INSTANCE.getLocationText(location);
-
-        intent.putExtra(EXTRA_STARTED_FROM_NOTIFICATION, true);
-
-        PendingIntent servicePendingIntent = PendingIntent.getService(this, 0, intent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
-
-        PendingIntent activityPendingIntent = PendingIntent.getActivity(this, 0,
-                new Intent(this, MainActivity.class), 0);
-
-        return new NotificationCompat.Builder(this)
-                .addAction(R.drawable.ic_person_pin, getString(R.string.app_name),
-                        activityPendingIntent)
-                .addAction(R.drawable.ic_person_pin, getString(R.string.app_name),
-                        servicePendingIntent)
-                .setContentText(text)
-                .setContentTitle(Utils.INSTANCE.getLocationTitle(this))
-                .setOngoing(true)
-                .setPriority(Notification.PRIORITY_HIGH)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setTicker(text)
-                .setWhen(System.currentTimeMillis()).build();
-    }
-
     private void getLastLocation() {
         try {
             fusedLocationClient.getLastLocation()
@@ -222,9 +191,6 @@ public class LocationService extends Service {
         intent.putExtra(EXTRA_LOCATION, location);
         LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
 
-        if (serviceIsRunningInForeground(this)) {
-            notificationManager.notify(NOTIFICATION_ID, getNotification());
-        }
     }
 
     private void createLocationRequest() {
