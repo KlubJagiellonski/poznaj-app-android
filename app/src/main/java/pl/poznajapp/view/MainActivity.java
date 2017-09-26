@@ -1,28 +1,18 @@
 package pl.poznajapp.view;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.content.ActivityNotFoundException;
-import android.content.BroadcastReceiver;
-import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.IntentSender;
-import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.IBinder;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -30,17 +20,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.PendingResult;
-import com.google.android.gms.common.api.ResultCallback;
-import com.google.android.gms.common.api.Status;
-import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.location.LocationSettingsRequest;
-import com.google.android.gms.location.LocationSettingsResult;
-import com.google.android.gms.location.LocationSettingsStatusCodes;
-import com.google.firebase.crash.FirebaseCrash;
+import com.google.android.gms.tasks.OnSuccessListener;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,7 +36,6 @@ import pl.poznajapp.helpers.FacebookPageUrl;
 import pl.poznajapp.helpers.Utils;
 import pl.poznajapp.listeners.RecyclerViewItemClickListener;
 import pl.poznajapp.model.Story;
-import pl.poznajapp.service.LocationService;
 import pl.poznajapp.view.base.BaseAppCompatActivity;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -64,41 +45,34 @@ import timber.log.Timber;
 /**
  * Created by Rafał Gawlik on 13.08.17.
  */
-
 public class MainActivity extends BaseAppCompatActivity {
-
-    private LocationReceiver locationReceiver;
-
+    public Location location = null;
     protected static final int REQUEST_CHECK_SETTINGS = 0x1;
     protected static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
-
-    private GoogleApiClient googleApiClient;
-    protected LocationService locationService = null;
     protected boolean bound = false;
-    Location location = null;
-
+    private FusedLocationProviderClient mFusedLocationClient;
     private APIService service;
     private List<Story> stories;
-
     private StoryListAdapter adapter;
     private RecyclerView storyListRV;
-
     private Boolean progressDialogShowed = false; //progress dialog show only first time
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        locationReceiver = new LocationReceiver();
         setContentView(R.layout.activity_main);
 
         stories = new ArrayList<Story>();
         setupView();
         initListeners();
+
+        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.main_menu, menu);
+
         return true;
     }
 
@@ -131,7 +105,7 @@ public class MainActivity extends BaseAppCompatActivity {
                 intent.setType("plain/text");
                 intent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{Utils.INSTANCE.getPOZNAJAPP_MAIL()}); // do kogo
                 intent.putExtra(android.content.Intent.EXTRA_SUBJECT, getString(R.string.bug_mail_title)); // tytuł maila
-                intent.putExtra(android.content.Intent.EXTRA_TEXT, "APP_VERSION_NAME: "+ BuildConfig.VERSION_NAME + " | ANDROID_VERSION: "+ Build.VERSION.RELEASE + " | DEVICE_MODEL: " +  android.os.Build.MODEL + " | "+ getString(R.string.bug_mail_text) ); // tresc maila
+                intent.putExtra(android.content.Intent.EXTRA_TEXT, "APP_VERSION_NAME: " + BuildConfig.VERSION_NAME + " | ANDROID_VERSION: " + Build.VERSION.RELEASE + " | DEVICE_MODEL: " + android.os.Build.MODEL + " | " + getString(R.string.bug_mail_text)); // tresc maila
                 startActivity(intent);
                 return true;
 
@@ -182,7 +156,7 @@ public class MainActivity extends BaseAppCompatActivity {
     }
 
     private void loadStories(Location location) {
-        if (isInternetEnable()){
+        if (isInternetEnable()) {
             service = PoznajApp.retrofit.create(APIService.class);
 
             if (!progressDialogShowed) {
@@ -210,8 +184,8 @@ public class MainActivity extends BaseAppCompatActivity {
             Snackbar.make(
                     findViewById(R.id.activity_main),
                     getString(R.string.no_internet),
-                    Snackbar.LENGTH_INDEFINITE)
-                    .show();
+                    Snackbar.LENGTH_INDEFINITE
+            ).show();
         }
     }
 
@@ -222,103 +196,31 @@ public class MainActivity extends BaseAppCompatActivity {
 
         if (!checkPermissions()) {
             requestPermissions();
-        } else {
-            checkLocationEnabled();
         }
-
-        LocalBroadcastManager.getInstance(this).registerReceiver(locationReceiver,
-                new IntentFilter(LocationService.ACTION_BROADCAST));
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-        LocalBroadcastManager.getInstance(this).unregisterReceiver(locationReceiver);
-    }
-
-    @Override
-    protected void onDestroy() {
-        stopService(new Intent(this, LocationService.class));
-        super.onDestroy();
-    }
-
-    @Override
-    protected void onStop() {
-        Timber.i("onStop");
-        if (bound) {
-            unbindService(serviceConnection);
-            bound = false;
-        }
-        super.onStop();
     }
 
     protected boolean checkPermissions() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
+                ) {
+            requestPermissions();
+        } else {
+            mFusedLocationClient.getLastLocation()
+                    .addOnSuccessListener(this, new OnSuccessListener<Location>() {
+                        @Override
+                        public void onSuccess(Location currentLocation) {
+                            if (currentLocation != null) {
+                                location = currentLocation;
+                                loadStories(location);
+                            } else {
+                                Timber.d("There is no last location.");
+                            }
+                        }
+                    });
+        }
+
         return PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION);
-    }
-
-    protected void checkLocationEnabled() {
-        //location settings
-        LocationRequest locationRequest = LocationRequest.create();
-        locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-
-        LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder();
-        builder.addLocationRequest(locationRequest);
-
-        googleApiClient = new GoogleApiClient.Builder(this)
-                .addApi(LocationServices.API)
-                .addConnectionCallbacks(new GoogleApiClient.ConnectionCallbacks() {
-                    @Override
-                    public void onConnected(@Nullable Bundle bundle) {
-
-                    }
-
-                    @Override
-                    public void onConnectionSuspended(int i) {
-                        googleApiClient.connect();
-                    }
-                })
-                .addOnConnectionFailedListener(new GoogleApiClient.OnConnectionFailedListener() {
-                    @Override
-                    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-
-                    }
-                }).build();
-
-        builder.setAlwaysShow(true);
-
-        googleApiClient.connect();
-        PendingResult<LocationSettingsResult> result =
-                LocationServices.SettingsApi.checkLocationSettings(googleApiClient, builder.build());
-
-        result.setResultCallback(new ResultCallback<LocationSettingsResult>() {
-            @Override
-            public void onResult(@NonNull LocationSettingsResult locationSettingsResult) {
-                final Status status = locationSettingsResult.getStatus();
-                Timber.d(status.toString());
-                switch (status.getStatusCode()) {
-                    case LocationSettingsStatusCodes.SUCCESS:
-                        Timber.d("LocationSettingsStatusCodes.SUCCESS");
-
-                        bindService(new Intent(getApplicationContext(), LocationService.class), serviceConnection,
-                                Context.BIND_AUTO_CREATE);
-                        break;
-                    case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
-                        Timber.d("LocationSettingsStatusCodes.RESOLUTION_REQUIRED");
-                        try {
-                            status.startResolutionForResult(MainActivity.this, REQUEST_CHECK_SETTINGS);
-                        } catch (@SuppressLint("NewApi") IntentSender.SendIntentException e) {
-                            e.printStackTrace();
-                        }
-
-                        break;
-                    case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
-                        Timber.d("LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE");
-                        //TODO show toast - location turn off
-                        break;
-                }
-            }
-        });
     }
 
     @Override
@@ -329,7 +231,7 @@ public class MainActivity extends BaseAppCompatActivity {
             if (grantResults.length <= 0) {
                 Timber.d("User interaction was cancelled.");
             } else if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                checkLocationEnabled();
+                checkPermissions();
             } else {
                 Snackbar.make(
                         findViewById(R.id.activity_main),
@@ -383,55 +285,4 @@ public class MainActivity extends BaseAppCompatActivity {
                     REQUEST_PERMISSIONS_REQUEST_CODE);
         }
     }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case REQUEST_CHECK_SETTINGS:
-                switch (resultCode) {
-                    case Activity.RESULT_OK:
-                        bindService(new Intent(getApplicationContext(), LocationService.class), serviceConnection,
-                                Context.BIND_AUTO_CREATE);
-                        break;
-                    case Activity.RESULT_CANCELED:
-                        //TODO show toast - location turn off
-                        break;
-                }
-                break;
-        }
-    }
-
-    private class LocationReceiver extends BroadcastReceiver {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            Location newLocation = intent.getParcelableExtra(LocationService.EXTRA_LOCATION);
-
-            if(location == null) {
-                location = newLocation;
-                Timber.d(Utils.INSTANCE.getLocationText(location));
-                loadStories(location);
-            } else if (location.distanceTo(newLocation) > 200.0f) {
-                location = newLocation;
-                Timber.d(Utils.INSTANCE.getLocationText(location));
-                loadStories(location);
-            }
-        }
-    }
-
-    protected final ServiceConnection serviceConnection = new ServiceConnection() {
-
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-            LocationService.LocalBinder binder = (LocationService.LocalBinder) service;
-            locationService = binder.getService();
-            locationService.requestLocationUpdates();
-            bound = true;
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-            locationService = null;
-            bound = false;
-        }
-    };
 }
