@@ -102,3 +102,5 @@ fabric.properties
 # *.ipr
 app/src/main/res/values/api_keys.xml
 app/google-services.json
+
+app/release/
