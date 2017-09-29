@@ -10,12 +10,13 @@ import android.webkit.WebView
 
 import pl.poznajapp.R
 import pl.poznajapp.helpers.Utils
+import pl.poznajapp.view.base.BaseAppCompatActivity
 
 /**
  * Created by Mikołaj Rodkiewicz on 09.09.2017.
  */
 
-class ActivityWebView : AppCompatActivity() {
+class ActivityWebView : BaseAppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -23,6 +24,7 @@ class ActivityWebView : AppCompatActivity() {
 
         if (intent != null && intent.extras != null && intent.extras!!.containsKey("title")) {
             supportActionBar!!.setTitle(intent.extras!!.getString("title"))
+            supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         }
 
         val webView = findViewById<View>(R.id.activity_web_view) as WebView
