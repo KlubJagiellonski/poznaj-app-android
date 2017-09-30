@@ -30,8 +30,8 @@ public class PoznajApp extends Application {
         final HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
         OkHttpClient client = new OkHttpClient.Builder()
-                .connectTimeout(Config.TIMEOUT_SECONDS, TimeUnit.SECONDS)
-                .readTimeout(Config.TIMEOUT_SECONDS, TimeUnit.SECONDS)
+                .connectTimeout(Config.INSTANCE.getTIMEOUT_SECONDS(), TimeUnit.SECONDS)
+                .readTimeout(Config.INSTANCE.getTIMEOUT_SECONDS(), TimeUnit.SECONDS)
                 .addInterceptor(interceptor)
                 .build();
 
