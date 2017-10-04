@@ -16,7 +16,7 @@ import pl.poznajapp.view.base.BaseAppCompatActivity
  * Created by Mikołaj Rodkiewicz on 09.09.2017.
  */
 
-class ActivityWebView : BaseAppCompatActivity() {
+class WebViewActivity : BaseAppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
