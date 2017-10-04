@@ -4,7 +4,6 @@ import android.app.Application;
 
 import java.util.concurrent.TimeUnit;
 
-import io.realm.Realm;
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
 
@@ -21,7 +20,6 @@ import timber.log.Timber;
 public class PoznajApp extends Application {
 
     public static Retrofit retrofit;
-    public static Realm realm;
 
     @Override
     public void onCreate() {
@@ -45,9 +43,6 @@ public class PoznajApp extends Application {
                 .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                 .client(client)
                 .build();
-
-        Realm.init(this);
-        realm = Realm.getDefaultInstance();
     }
 
 }
