@@ -20,6 +20,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.LinearLayout;
 
 import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationServices;
@@ -58,6 +59,7 @@ public class MainActivity extends BaseAppCompatActivity {
 
     private SwipeRefreshLayout swipeRefreshSRL;
     private RecyclerView storyListRV;
+    private LinearLayout noContentLL;
 
     private StoryListAdapter adapter;
 
@@ -144,6 +146,8 @@ public class MainActivity extends BaseAppCompatActivity {
     private void setupView() {
         swipeRefreshSRL = (SwipeRefreshLayout) findViewById(R.id.activity_main_swipe_refresh_srl);
         storyListRV = (RecyclerView) findViewById(R.id.activity_main_story_list_rv);
+        noContentLL = (LinearLayout) findViewById(R.id.activity_main_no_content_ll);
+
         adapter = new StoryListAdapter(getApplicationContext(), stories);
         storyListRV.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         storyListRV.setAdapter(adapter);
@@ -191,6 +195,14 @@ public class MainActivity extends BaseAppCompatActivity {
                     stories.clear();
                     stories.addAll(response.body());
                     adapter.notifyDataSetChanged();
+
+                    if(stories.size() == 0){
+                        storyListRV.setVisibility(View.GONE);
+                        noContentLL.setVisibility(View.VISIBLE);
+                    } else {
+                        storyListRV.setVisibility(View.VISIBLE);
+                        noContentLL.setVisibility(View.GONE);
+                    }
 
                     if (progressDialog.isShowing())
                         hideProgressDialog();
