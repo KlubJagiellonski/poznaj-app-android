@@ -106,7 +106,10 @@ public class MapActivity extends BaseAppCompatActivity implements OnMapReadyCall
                             getApplicationContext(),
                             feature.getProperties().getPointImages().get(0).getImageFile(),
                             feature.getProperties().getTitle(),
-                            feature.getProperties().getDescription()));
+                            feature.getGeometry().getCoordinates().get(1),
+                            feature.getGeometry().getCoordinates().get(0),
+                            feature.getProperties().getDescription())
+                    );
             }
 
             @Override
@@ -133,7 +136,7 @@ public class MapActivity extends BaseAppCompatActivity implements OnMapReadyCall
         this.googleMap = googleMap;
         styleMap(googleMap);
 
-            if (isInternetEnable()){
+        if (isInternetEnable()){
             Call<List<Point>> pointListCall = service.getStoryPoints(id);
             pointListCall.enqueue(new Callback<List<Point>>() {
                 @Override
@@ -157,13 +160,13 @@ public class MapActivity extends BaseAppCompatActivity implements OnMapReadyCall
                     Timber.e(t);
                 }
             });
-            } else {
-                Snackbar.make(
-                        findViewById(R.id.activity_main),
-                        getString(R.string.no_internet),
-                        Snackbar.LENGTH_INDEFINITE)
-                        .show();
-            }
+        } else {
+            Snackbar.make(
+                    findViewById(R.id.activity_main),
+                    getString(R.string.no_internet),
+                    Snackbar.LENGTH_INDEFINITE)
+                    .show();
+        }
     }
 
     private void zoomToPoint(LatLng latLng) {
