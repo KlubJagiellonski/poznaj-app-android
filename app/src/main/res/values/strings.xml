@@ -21,5 +21,7 @@
     <string name="bug_mail_title">Chce zglosic blad</string>
     <string name="bug_mail_text"> Tresc maila</string>
     <string name="no_content_text">Nie ma tras dla Twojej okolicy.  Cały czas nad nimi pracujemy!</string>
+    <string name="download_stories">Pobieranie tras</string>
+    <string name="download_story">Pobieranie trasy</string>
 
 </resources>

@@ -184,7 +184,7 @@ public class MainActivity extends BaseAppCompatActivity {
             service = PoznajApp.retrofit.create(APIService.class);
 
             if (!progressDialogShowed) {
-                showProgressDialog(null, "Pobieranie tras");
+                showProgressDialog(null, getString(R.string.download_stories));
                 progressDialogShowed = true;
             }
             Call<List<Story>> storyListCall = service.listStories(location.getLatitude(), location.getLongitude());

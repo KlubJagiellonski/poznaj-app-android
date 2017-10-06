@@ -68,8 +68,7 @@ public class StoryDetailsActivity extends BaseAppCompatActivity {
         if (isInternetEnable()){
         service = PoznajApp.retrofit.create(APIService.class);
 
-        //TODO setup string for progress dialog
-        showProgressDialog(null, "Pobieranie trasy");
+        showProgressDialog(null, getString(R.string.download_story));
         Call<Story> storyCall = service.getStory(id);
         storyCall.enqueue(new Callback<Story>() {
             @Override
