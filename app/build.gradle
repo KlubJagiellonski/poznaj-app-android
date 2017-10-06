@@ -11,7 +11,6 @@ android {
         targetSdkVersion 26
         versionCode 5
         versionName "1.4"
-        multiDexEnabled true
     }
 
     packagingOptions {
@@ -32,6 +31,11 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:3.0.0', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    testImplementation 'junit:junit:4.12'
+
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
 
     compile 'com.android.support:appcompat-v7:26.0.1'
@@ -54,6 +58,8 @@ dependencies {
     compile 'com.squareup.picasso:picasso:2.5.2'
 
     compile 'com.google.firebase:firebase-crash:11.2.2'
+
+    provided 'javax.annotation:jsr250-api:1.0'
 }
 
 apply plugin: 'com.google.gms.google-services'
