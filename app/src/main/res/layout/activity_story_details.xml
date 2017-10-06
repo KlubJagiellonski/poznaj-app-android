@@ -31,28 +31,6 @@
                 android:layout_marginTop="@dimen/margin_vertical"
                 android:orientation="vertical">
 
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginBottom="@dimen/margin_vertical">
-
-                    <TextView
-                        android:id="@+id/story_details_tv"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingRight="@dimen/small_margin"
-                        android:textSize="16sp"
-                        android:visibility="gone"
-                        android:text="@string/story_duration" />
-
-                    <TextView
-                        android:id="@+id/story_duration_text_tv"
-                        android:layout_width="wrap_content"
-                        android:textSize="16sp"
-                        android:layout_height="wrap_content" />
-                </LinearLayout>
-
                 <TextView
                     android:id="@+id/story_details_text_tv"
                     android:layout_marginBottom="@dimen/margin_vertical"

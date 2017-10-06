@@ -29,7 +29,7 @@ public class StoryDetailsActivity extends BaseAppCompatActivity {
     public static final String EXTRAS_STORY_ID = "EXTRAS_STORY_ID";
 
     private ImageView backgroundImage;
-    private TextView duration, description, dutation_text;
+    private TextView description;
 
     private APIService service;
 
@@ -56,8 +56,6 @@ public class StoryDetailsActivity extends BaseAppCompatActivity {
 
     private void setupView() {
         backgroundImage = (ImageView) findViewById(R.id.story_details_back_iv);
-        dutation_text = (TextView) findViewById(R.id.story_details_tv);
-        duration = (TextView) findViewById(R.id.story_duration_text_tv);
         description = (TextView) findViewById(R.id.story_details_text_tv);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -71,7 +69,7 @@ public class StoryDetailsActivity extends BaseAppCompatActivity {
         service = PoznajApp.retrofit.create(APIService.class);
 
         //TODO setup string for progress dialog
-        showProgressDialog("Trasa", "Pobieranie ....");
+        showProgressDialog(null, "Pobieranie trasy");
         Call<Story> storyCall = service.getStory(id);
         storyCall.enqueue(new Callback<Story>() {
             @Override
@@ -80,18 +78,18 @@ public class StoryDetailsActivity extends BaseAppCompatActivity {
 
                 story = response.body();
                 getSupportActionBar().setTitle(story.getTitle());
-                duration.setText(story.getDuration());
-                description.setText(story.getDescription()); //TODO date format
+                description.setText(story.getDescription());
 
                 Picasso.with(getApplicationContext()).load(story.getStoryImages().get(0).getImageFile()).into(backgroundImage);
-                hideProgressDialog();
-                dutation_text.setVisibility(View.VISIBLE);
+                if (progressDialog.isShowing())
+                    hideProgressDialog();
             }
 
             @Override
             public void onFailure(Call<Story> call, Throwable t) {
                 Timber.e(t);
-                hideProgressDialog();
+                if (progressDialog.isShowing())
+                    hideProgressDialog();
             }
         });
         } else {

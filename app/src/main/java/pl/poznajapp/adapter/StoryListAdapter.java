@@ -41,7 +41,8 @@ public class StoryListAdapter extends RecyclerView.Adapter<StoryListAdapter.View
     public void onBindViewHolder(ViewHolder holder, int position) {
         holder.tv.setText(storyList.get(position).getTitle());
 
-        Picasso.with(context).load(storyList.get(position).getStoryImages().get(0).getImageFile()).into(holder.imageView);
+        if (holder.imageView.getDrawable() == null)
+            Picasso.with(context).load(storyList.get(position).getStoryImages().get(0).getImageFile()).into(holder.imageView);
     }
 
     @Override

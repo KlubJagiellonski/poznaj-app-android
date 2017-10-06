@@ -13,6 +13,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -46,15 +47,20 @@ import timber.log.Timber;
  * Created by Rafał Gawlik on 13.08.17.
  */
 public class MainActivity extends BaseAppCompatActivity {
-    public Location location = null;
-    protected static final int REQUEST_CHECK_SETTINGS = 0x1;
+
     protected static final int REQUEST_PERMISSIONS_REQUEST_CODE = 34;
-    protected boolean bound = false;
+
+    public Location location = null;
     private FusedLocationProviderClient mFusedLocationClient;
+
     private APIService service;
     private List<Story> stories;
-    private StoryListAdapter adapter;
+
+    private SwipeRefreshLayout swipeRefreshSRL;
     private RecyclerView storyListRV;
+
+    private StoryListAdapter adapter;
+
     private Boolean progressDialogShowed = false; //progress dialog show only first time
 
     @Override
@@ -136,6 +142,7 @@ public class MainActivity extends BaseAppCompatActivity {
     }
 
     private void setupView() {
+        swipeRefreshSRL = (SwipeRefreshLayout) findViewById(R.id.activity_main_swipe_refresh_srl);
         storyListRV = (RecyclerView) findViewById(R.id.activity_main_story_list_rv);
         adapter = new StoryListAdapter(getApplicationContext(), stories);
         storyListRV.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
@@ -156,6 +163,16 @@ public class MainActivity extends BaseAppCompatActivity {
 
             }
         }));
+
+        swipeRefreshSRL.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                if (!checkPermissions()) {
+                    requestPermissions();
+                }
+            }
+        });
+
     }
 
     private void loadStories(Location location) {
@@ -163,7 +180,7 @@ public class MainActivity extends BaseAppCompatActivity {
             service = PoznajApp.retrofit.create(APIService.class);
 
             if (!progressDialogShowed) {
-                showProgressDialog("Trasy", "Pobieraniem tras");
+                showProgressDialog(null, "Pobieranie tras");
                 progressDialogShowed = true;
             }
             Call<List<Story>> storyListCall = service.listStories(location.getLatitude(), location.getLongitude());
@@ -174,13 +191,19 @@ public class MainActivity extends BaseAppCompatActivity {
                     stories.clear();
                     stories.addAll(response.body());
                     adapter.notifyDataSetChanged();
-                    hideProgressDialog();
+
+                    if (progressDialog.isShowing())
+                        hideProgressDialog();
+
+                    if(swipeRefreshSRL.isRefreshing())
+                        swipeRefreshSRL.setRefreshing(false);
                 }
 
                 @Override
                 public void onFailure(Call<List<Story>> call, Throwable t) {
                     Timber.e(t);
-                    hideProgressDialog();
+                    if (progressDialog.isShowing())
+                        hideProgressDialog();
                 }
             });
         } else {
