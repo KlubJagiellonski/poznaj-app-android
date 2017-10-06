@@ -48,4 +48,14 @@
         </LinearLayout>
     </ScrollView>
 
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="@dimen/margin_vertical"
+        android:layout_marginRight="@dimen/margin_horizontal"
+        android:onClick="onShowGoogleMapsClick"
+        android:src="@drawable/ic_directions_white_24dp" />
+
 </RelativeLayout>
