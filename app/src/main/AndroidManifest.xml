@@ -36,6 +36,7 @@
         <activity android:name=".view.WebViewActivity"
             android:screenOrientation="portrait" />
 
+        <service android:name=".service.LocationService" />
     </application>
 
 </manifest>
