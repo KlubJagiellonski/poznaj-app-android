@@ -14,12 +14,15 @@ public class Point {
     @SerializedName("type")
     @Expose
     private String type;
+
     @SerializedName("geometry")
     @Expose
     private Geometry geometry;
+
     @SerializedName("properties")
     @Expose
     private Properties properties;
+
     @SerializedName("features")
     @Expose
     private List<Feature> features = null;

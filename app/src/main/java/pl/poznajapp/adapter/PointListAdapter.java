@@ -21,16 +21,14 @@ public class PointListAdapter extends RecyclerView.Adapter<PointListAdapter.View
 
     private List<Feature> pointList;
     private final OnItemClickListener listener;
-    private Context context;
 
     public interface OnItemClickListener {
         void onDetailsClick(Feature feature, int position);
         void onMoveClick(Feature feature, int position);
     }
 
-    public PointListAdapter(Context context, List<Feature> pointList, OnItemClickListener listener) {
+    public PointListAdapter( List<Feature> pointList, OnItemClickListener listener) {
         this.pointList = pointList;
-        this.context = context;
         this.listener = listener;
     }
 

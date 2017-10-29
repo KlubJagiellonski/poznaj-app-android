@@ -97,7 +97,7 @@ public class MapActivity extends BaseAppCompatActivity implements OnMapReadyCall
 
     private void setupView() {
         pointsList = (RecyclerView) findViewById(R.id.activity_map_point_list_rv);
-        adapter = new PointListAdapter(getApplicationContext(), new ArrayList<Feature>(), new PointListAdapter.OnItemClickListener() {
+        adapter = new PointListAdapter(new ArrayList<Feature>(), new PointListAdapter.OnItemClickListener() {
             @Override
             public void onDetailsClick(Feature feature, int position) {
 

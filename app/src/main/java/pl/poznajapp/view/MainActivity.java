@@ -78,7 +78,7 @@ public class MainActivity extends BaseAppCompatActivity {
     private GoogleApiClient googleApiClient;
     protected LocationService locationService = null;
     protected boolean bound = false;
-    Location location = null;
+    private Location location;
 
     private APIService service;
     private List<Story> stories;

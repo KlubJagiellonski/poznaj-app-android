@@ -14,9 +14,11 @@ public class Properties {
     @SerializedName("title")
     @Expose
     private String title;
+
     @SerializedName("description")
     @Expose
     private String description;
+
     @SerializedName("point_images")
     @Expose
     private List<Image> pointImages = null;

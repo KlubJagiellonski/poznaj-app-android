@@ -12,9 +12,11 @@ public class Feature {
     @SerializedName("type")
     @Expose
     private String type;
+
     @SerializedName("geometry")
     @Expose
     private Geometry geometry;
+
     @SerializedName("properties")
     @Expose
     private Properties properties;

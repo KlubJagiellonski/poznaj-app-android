@@ -13,10 +13,10 @@ import java.util.*
  */
 
 object Utils {
-    val URL_POZNAJAPP_ABOUT = "http://kj.org.pl/"
-    val URL_POZNAJAPP_KJ = "http://kj.org.pl/"
-    val URL_POZNAJAPP_TEAM = "http://kj.org.pl/"
-    val URL_POZNAJAPP_PARTNERS = "http://kj.org.pl/"
+    val URL_POZNAJAPP_ABOUT = "https://poznaj-wroclaw.herokuapp.com/mobile/about_app/"
+    val URL_POZNAJAPP_KJ = "https://poznaj-wroclaw.herokuapp.com/mobile/about_kj/"
+    val URL_POZNAJAPP_TEAM = "https://poznaj-wroclaw.herokuapp.com/mobile/team/"
+    val URL_POZNAJAPP_PARTNERS = "https://poznaj-wroclaw.herokuapp.com/mobile/partners/"
     val POZNAJAPP_MAIL = "poznaj.app@gmail.com"
     val URL_POZNAJAPP_FB = "https://www.facebook.com/poznajapp"
     val URL_POZNAJAPP_FB_PAGENAME = "poznajapp"

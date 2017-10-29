@@ -12,9 +12,11 @@ public class Image {
     @SerializedName("image_file")
     @Expose
     private String imageFile;
+
     @SerializedName("copyright")
     @Expose
     private String copyright;
+
     @SerializedName("title")
     @Expose
     private String title;

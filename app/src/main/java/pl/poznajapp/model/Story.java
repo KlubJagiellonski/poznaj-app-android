@@ -14,15 +14,19 @@ public class Story {
     @SerializedName("id")
     @Expose
     private Integer id;
+
     @SerializedName("title")
     @Expose
     private String title;
+
     @SerializedName("description")
     @Expose
     private String description;
+
     @SerializedName("duration")
     @Expose
     private String duration;
+
     @SerializedName("story_images")
     @Expose
     private List<Image> storyImages = null;

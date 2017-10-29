@@ -38,7 +38,7 @@ public class LocationService extends Service {
 
     private static final String TAG = LocationService.class.getSimpleName();
 
-    private static final String PACKAGE_NAME = "com.google.android.gms.location.sample.locationupdatesforegroundservice";
+    private static final String PACKAGE_NAME = "pl.poznajapp.service";
     public static final String ACTION_BROADCAST = PACKAGE_NAME + ".broadcast";
     public static final String EXTRA_LOCATION = PACKAGE_NAME + ".location";
     private static final String EXTRA_STARTED_FROM_NOTIFICATION = PACKAGE_NAME + ".started_from_notification";
@@ -132,7 +132,7 @@ public class LocationService extends Service {
 //                startForeground(NOTIFICATION_ID, getNotification());
 //            }
 
-            startForeground(NOTIFICATION_ID, getNotification());
+            startForeground(0, null);
         }
         return true; // Ensures onRebind() is called when a client re-binds.
     }
@@ -171,7 +171,8 @@ public class LocationService extends Service {
     private Notification getNotification() {
         Intent intent = new Intent(this, LocationService.class);
 
-        CharSequence text = Utils.INSTANCE.getLocationText(location);
+//        CharSequence text = Utils.INSTANCE.getLocationText(location);
+        CharSequence text = "PoznajApp";
 
         intent.putExtra(EXTRA_STARTED_FROM_NOTIFICATION, true);
 
@@ -222,9 +223,9 @@ public class LocationService extends Service {
         intent.putExtra(EXTRA_LOCATION, location);
         LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
 
-        if (serviceIsRunningInForeground(this)) {
-            notificationManager.notify(NOTIFICATION_ID, getNotification());
-        }
+//        if (serviceIsRunningInForeground(this)) {
+//            notificationManager.notify(0, null);
+//        }
     }
 
     private void createLocationRequest() {
