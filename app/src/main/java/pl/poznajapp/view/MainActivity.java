@@ -96,6 +96,8 @@ public class MainActivity extends BaseAppCompatActivity {
         locationReceiver = new LocationReceiver();
         setContentView(R.layout.activity_main);
 
+        showProgressDialog(null, getString(R.string.get_location));
+
         stories = new ArrayList<Story>();
         setupView();
         initListeners();
@@ -432,7 +434,7 @@ public class MainActivity extends BaseAppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             Location newLocation = intent.getParcelableExtra(LocationService.EXTRA_LOCATION);
-
+            hideProgressDialog();
             if(location == null) {
                 location = newLocation;
                 Timber.d(Utils.INSTANCE.getLocationText(location));
