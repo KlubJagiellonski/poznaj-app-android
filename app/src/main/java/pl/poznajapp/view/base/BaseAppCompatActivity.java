@@ -5,11 +5,8 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
-import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-
-import pl.poznajapp.R;
 
 /**
  * Created by Rafał Gawlik on 21.08.17.

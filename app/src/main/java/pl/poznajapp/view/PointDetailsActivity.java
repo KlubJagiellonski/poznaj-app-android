@@ -10,8 +10,6 @@ import android.widget.TextView;
 
 import com.squareup.picasso.Picasso;
 
-import pl.poznajapp.API.APIService;
-import pl.poznajapp.PoznajApp;
 import pl.poznajapp.R;
 import pl.poznajapp.view.base.BaseAppCompatActivity;
 import timber.log.Timber;

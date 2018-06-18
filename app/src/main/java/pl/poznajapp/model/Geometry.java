@@ -5,10 +5,6 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
-/**
- * Created by Rafał Gawlik on 06.09.17.
- */
-
 public class Geometry {
 
     @SerializedName("type")
