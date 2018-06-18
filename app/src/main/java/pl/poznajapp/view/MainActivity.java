@@ -22,8 +22,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -43,7 +41,6 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsResult;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
-import com.google.firebase.crash.FirebaseCrash;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,7 +77,6 @@ public class MainActivity extends BaseAppCompatActivity {
     protected boolean bound = false;
     private Location location;
 
-    private APIService service;
     private List<Story> stories;
 
     private RecyclerView storyListRV;
@@ -143,10 +139,10 @@ public class MainActivity extends BaseAppCompatActivity {
                 intent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{Utils.INSTANCE.getPOZNAJAPP_MAIL()}); // do kogo
                 intent.putExtra(android.content.Intent.EXTRA_SUBJECT, getString(R.string.bug_mail_title)); // tytuł maila
                 intent.putExtra(android.content.Intent.EXTRA_TEXT,
-                        "APP_VERSION_NAME: "+ BuildConfig.VERSION_NAME +
-                                " | ANDROID_VERSION: "+ Build.VERSION.RELEASE +
-                                " | DEVICE_MODEL: " +  android.os.Build.MODEL +
-                                " | "+ getString(R.string.bug_mail_text) ); // tresc maila
+                        "APP_VERSION_NAME: " + BuildConfig.VERSION_NAME +
+                                " | ANDROID_VERSION: " + Build.VERSION.RELEASE +
+                                " | DEVICE_MODEL: " + android.os.Build.MODEL +
+                                " | " + getString(R.string.bug_mail_text)); // tresc maila
                 startActivity(intent);
                 return true;
 
@@ -174,8 +170,8 @@ public class MainActivity extends BaseAppCompatActivity {
     }
 
     private void setupView() {
-        storyListRV = (RecyclerView) findViewById(R.id.activity_main_story_list_rv);
-        noContentLL = (LinearLayout) findViewById(R.id.activity_main_no_content_ll);
+        storyListRV = findViewById(R.id.activity_main_story_list_rv);
+        noContentLL = findViewById(R.id.activity_main_no_content_ll);
 
         adapter = new StoryListAdapter(getApplicationContext(), stories);
         storyListRV.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
@@ -200,8 +196,8 @@ public class MainActivity extends BaseAppCompatActivity {
     }
 
     private void loadStories(Location location) {
-        if (isInternetEnable()){
-            service = PoznajApp.retrofit.create(APIService.class);
+        if (isInternetEnable()) {
+            APIService service = PoznajApp.retrofit.create(APIService.class);
 
             if (!progressDialogShowed) {
                 showProgressDialog(null, getString(R.string.download_stories));
@@ -216,7 +212,7 @@ public class MainActivity extends BaseAppCompatActivity {
                     stories.addAll(response.body());
                     adapter.notifyDataSetChanged();
 
-                    if(stories.size() == 0){
+                    if (stories.size() == 0) {
                         storyListRV.setVisibility(View.GONE);
                         noContentLL.setVisibility(View.VISIBLE);
                     } else {
@@ -435,7 +431,7 @@ public class MainActivity extends BaseAppCompatActivity {
         public void onReceive(Context context, Intent intent) {
             Location newLocation = intent.getParcelableExtra(LocationService.EXTRA_LOCATION);
             hideProgressDialog();
-            if(location == null) {
+            if (location == null) {
                 location = newLocation;
                 Timber.d(Utils.INSTANCE.getLocationText(location));
                 loadStories(location);

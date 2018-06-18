@@ -41,9 +41,6 @@ public class MapActivity extends BaseAppCompatActivity implements OnMapReadyCall
     public static final String EXTRAS_STORY_ID = "EXTRAS_STORY_ID";
     public static final String EXTRAS_STORY_TITLE = "EXTRAS_STORY_TITLE";
 
-    private RecyclerView pointsList;
-    private SupportMapFragment supportMapFragment;
-
     private PointListAdapter adapter;
     private APIService service;
 
@@ -96,7 +93,7 @@ public class MapActivity extends BaseAppCompatActivity implements OnMapReadyCall
     }
 
     private void setupView() {
-        pointsList = (RecyclerView) findViewById(R.id.activity_map_point_list_rv);
+        RecyclerView pointsList = (RecyclerView) findViewById(R.id.activity_map_point_list_rv);
         adapter = new PointListAdapter(new ArrayList<Feature>(), new PointListAdapter.OnItemClickListener() {
             @Override
             public void onDetailsClick(Feature feature, int position) {
@@ -124,7 +121,7 @@ public class MapActivity extends BaseAppCompatActivity implements OnMapReadyCall
         pointsList.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         pointsList.setAdapter(adapter);
 
-        supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.activity_map_map);
+        SupportMapFragment supportMapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.activity_map_map);
         supportMapFragment.getMapAsync(this);
 
         getSupportActionBar().setTitle(title);

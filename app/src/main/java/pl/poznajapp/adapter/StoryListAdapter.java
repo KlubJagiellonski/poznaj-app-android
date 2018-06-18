@@ -50,11 +50,11 @@ public class StoryListAdapter extends RecyclerView.Adapter<StoryListAdapter.View
         return storyList.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder {
         TextView tv;
         ImageView imageView;
 
-        public ViewHolder(View itemView) {
+        ViewHolder(View itemView) {
             super(itemView);
             tv = (TextView) itemView.findViewById(R.id.row_story_list_tv);
             imageView = (ImageView) itemView.findViewById(R.id.row_story_list_image_iv);

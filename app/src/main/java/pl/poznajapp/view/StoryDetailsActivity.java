@@ -31,8 +31,6 @@ public class StoryDetailsActivity extends BaseAppCompatActivity {
     private ImageView backgroundImage;
     private TextView description;
 
-    private APIService service;
-
     private Story story;
 
     public static Intent getConfigureIntent(Context context, Integer storyId) {
@@ -55,8 +53,8 @@ public class StoryDetailsActivity extends BaseAppCompatActivity {
     }
 
     private void setupView() {
-        backgroundImage = (ImageView) findViewById(R.id.story_details_back_iv);
-        description = (TextView) findViewById(R.id.story_details_text_tv);
+        backgroundImage = findViewById(R.id.story_details_back_iv);
+        description = findViewById(R.id.story_details_text_tv);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
@@ -66,7 +64,7 @@ public class StoryDetailsActivity extends BaseAppCompatActivity {
             finish();
 
         if (isInternetEnable()){
-        service = PoznajApp.retrofit.create(APIService.class);
+            APIService service = PoznajApp.retrofit.create(APIService.class);
 
         showProgressDialog(null, getString(R.string.download_story));
         Call<Story> storyCall = service.getStory(id);

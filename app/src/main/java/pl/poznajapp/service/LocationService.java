@@ -45,9 +45,7 @@ public class LocationService extends Service {
     private final IBinder binder = new LocalBinder();
     private static final long UPDATE_INTERVAL_IN_MILLISECONDS = 10000;
     private static final long FASTEST_UPDATE_INTERVAL_IN_MILLISECONDS = UPDATE_INTERVAL_IN_MILLISECONDS / 2;
-    private static final int NOTIFICATION_ID = 12345678;
     private boolean changingConfiguration = false;
-    private NotificationManager notificationManager;
     private LocationRequest locationRequest;
     private FusedLocationProviderClient fusedLocationClient;
     private LocationCallback locationCallback;
@@ -55,10 +53,6 @@ public class LocationService extends Service {
     private Location location;
 
     public LocationService() {
-    }
-
-    public Location getLocation(){
-        return location;
     }
 
     @Override
@@ -79,7 +73,6 @@ public class LocationService extends Service {
         HandlerThread handlerThread = new HandlerThread(TAG);
         handlerThread.start();
         serviceHandler = new Handler(handlerThread.getLooper());
-        notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
     }
 
     @Override
@@ -124,14 +117,6 @@ public class LocationService extends Service {
         if (!changingConfiguration && Utils.INSTANCE.requestingLocationUpdates(this)) {
             Timber.d("Starting foreground service");
 
-            // TODO(developer). If targeting O, use the following code.
-//            if (Build.VERSION.SDK_INT == Build.VERSION_CODES.O) {
-//                notificationManager.startServiceInForeground(new Intent(this,
-//                        LocationService.class), NOTIFICATION_ID, getNotification());
-//            } else {
-//                startForeground(NOTIFICATION_ID, getNotification());
-//            }
-
             startForeground(0, null);
         }
         return true; // Ensures onRebind() is called when a client re-binds.
@@ -168,34 +153,6 @@ public class LocationService extends Service {
         }
     }
 
-    private Notification getNotification() {
-        Intent intent = new Intent(this, LocationService.class);
-
-//        CharSequence text = Utils.INSTANCE.getLocationText(location);
-        CharSequence text = "PoznajApp";
-
-        intent.putExtra(EXTRA_STARTED_FROM_NOTIFICATION, true);
-
-        PendingIntent servicePendingIntent = PendingIntent.getService(this, 0, intent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
-
-        PendingIntent activityPendingIntent = PendingIntent.getActivity(this, 0,
-                new Intent(this, MainActivity.class), 0);
-
-        return new NotificationCompat.Builder(this)
-                .addAction(R.drawable.ic_person_pin, getString(R.string.app_name),
-                        activityPendingIntent)
-                .addAction(R.drawable.ic_person_pin, getString(R.string.app_name),
-                        servicePendingIntent)
-                .setContentText(text)
-                .setContentTitle(Utils.INSTANCE.getLocationTitle(this))
-                .setOngoing(true)
-                .setPriority(Notification.PRIORITY_HIGH)
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setTicker(text)
-                .setWhen(System.currentTimeMillis()).build();
-    }
-
     private void getLastLocation() {
         try {
             fusedLocationClient.getLastLocation()
@@ -222,10 +179,6 @@ public class LocationService extends Service {
         Intent intent = new Intent(ACTION_BROADCAST);
         intent.putExtra(EXTRA_LOCATION, location);
         LocalBroadcastManager.getInstance(getApplicationContext()).sendBroadcast(intent);
-
-//        if (serviceIsRunningInForeground(this)) {
-//            notificationManager.notify(0, null);
-//        }
     }
 
     private void createLocationRequest() {
@@ -239,19 +192,5 @@ public class LocationService extends Service {
         public LocationService getService() {
             return LocationService.this;
         }
-    }
-
-    public boolean serviceIsRunningInForeground(Context context) {
-        ActivityManager manager = (ActivityManager) context.getSystemService(
-                Context.ACTIVITY_SERVICE);
-        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(
-                Integer.MAX_VALUE)) {
-            if (getClass().getName().equals(service.service.getClassName())) {
-                if (service.foreground) {
-                    return true;
-                }
-            }
-        }
-        return false;
     }
 }

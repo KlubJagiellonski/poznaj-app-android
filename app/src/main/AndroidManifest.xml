@@ -13,9 +13,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <meta-data android:name="com.google.android.geo.API_KEY" android:value="@string/google_map_api_key"/>
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_map_api_key" />
 
-        <activity android:name=".view.MainActivity"
+        <activity
+            android:name=".view.MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,16 +27,20 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".view.StoryDetailsActivity"
+        <activity
+            android:name=".view.StoryDetailsActivity"
             android:screenOrientation="portrait" />
 
-        <activity android:name=".view.MapActivity"
+        <activity
+            android:name=".view.MapActivity"
             android:screenOrientation="portrait" />
 
-        <activity android:name=".view.PointDetailsActivity"
+        <activity
+            android:name=".view.PointDetailsActivity"
             android:screenOrientation="portrait" />
 
-        <activity android:name=".view.WebViewActivity"
+        <activity
+            android:name=".view.WebViewActivity"
             android:screenOrientation="portrait" />
 
         <service android:name=".service.LocationService" />

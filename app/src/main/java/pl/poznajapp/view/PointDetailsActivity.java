@@ -28,10 +28,7 @@ public class PointDetailsActivity extends BaseAppCompatActivity {
     public static final String EXTRAS_POINT_LATLITUDE = "EXTRAS_POINT_LATLITUDE";
     public static final String EXTRAS_POINT_LONGITUDE = "EXTRAS_POINT_LONGITUDE";
 
-    private APIService service;
     private double latitude, longitude;
-    private ImageView pointIv;
-    private TextView pointTitleTv, pointDetailsTv;
 
 
     public static Intent getConfigureIntent(Context context, String image, String title, Double latitude, Double longitude, String details) {
@@ -57,8 +54,6 @@ public class PointDetailsActivity extends BaseAppCompatActivity {
             longitude =  getIntent().getDoubleExtra(EXTRAS_POINT_LONGITUDE,0);
 
             setupView(image, title, description);
-
-            service = PoznajApp.retrofit.create(APIService.class);
         } else {
             finish();
         }
@@ -66,9 +61,9 @@ public class PointDetailsActivity extends BaseAppCompatActivity {
     }
 
     private void setupView(String image, String title, String description) {
-        pointIv = (ImageView) findViewById(R.id.point_details_back_iv);
-        pointTitleTv = (TextView) findViewById(R.id.point_title_text_tv);
-        pointDetailsTv = (TextView) findViewById(R.id.point_details_text_tv);
+        ImageView pointIv = findViewById(R.id.point_details_back_iv);
+        TextView pointTitleTv = findViewById(R.id.point_title_text_tv);
+        TextView pointDetailsTv = findViewById(R.id.point_details_text_tv);
 
         pointTitleTv.setText(title);
         pointDetailsTv.setText(description);
@@ -97,7 +92,7 @@ public class PointDetailsActivity extends BaseAppCompatActivity {
     }
 
     public void onShowGoogleMapsClick(View view) {
-        String uri = new String("https://www.google.com/maps/search/?api=1&query=" + latitude + "," + longitude);
+        String uri = "https://www.google.com/maps/search/?api=1&query=" + latitude + "," + longitude;
         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(uri));
         startActivity(intent);
     }

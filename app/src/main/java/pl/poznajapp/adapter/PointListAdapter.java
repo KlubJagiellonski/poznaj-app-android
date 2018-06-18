@@ -1,6 +1,5 @@
 package pl.poznajapp.adapter;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -72,14 +71,14 @@ public class PointListAdapter extends RecyclerView.Adapter<PointListAdapter.View
         return pointList.size();
     }
 
-    public class ViewHolder extends RecyclerView.ViewHolder {
+    class ViewHolder extends RecyclerView.ViewHolder {
         TextView tv;
         ImageView iv;
 
-        public ViewHolder(View itemView) {
+        ViewHolder(View itemView) {
             super(itemView);
-            tv = (TextView) itemView.findViewById(R.id.row_point_list_tv);
-            iv = (ImageView) itemView.findViewById(R.id.row_point_details_iv);
+            tv = itemView.findViewById(R.id.row_point_list_tv);
+            iv = itemView.findViewById(R.id.row_point_details_iv);
         }
     }
 }
