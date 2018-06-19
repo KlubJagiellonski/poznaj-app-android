@@ -44,7 +44,8 @@ public class PointListAdapter extends RecyclerView.Adapter<PointListAdapter.View
     }
 
     @Override
-    public void onBindViewHolder(PointListAdapter.ViewHolder holder, final int position) {
+    public void onBindViewHolder(PointListAdapter.ViewHolder holder, int position) {
+        final int pos = holder.getAdapterPosition();
         if(pointList.get(position) != null)
             if(pointList.get(position).getProperties() != null)
                 if(pointList.get(position).getProperties().getTitle() != null) {
@@ -53,14 +54,14 @@ public class PointListAdapter extends RecyclerView.Adapter<PointListAdapter.View
                     holder.tv.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            listener.onMoveClick(pointList.get(position), position);
+                            listener.onMoveClick(pointList.get(pos), pos);
                         }
                     });
 
                     holder.iv.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
-                            listener.onDetailsClick(pointList.get(position), position);
+                            listener.onDetailsClick(pointList.get(pos), pos);
                         }
                     });
                 }

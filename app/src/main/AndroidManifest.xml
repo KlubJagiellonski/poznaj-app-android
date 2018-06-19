@@ -40,8 +40,9 @@
             android:screenOrientation="portrait" />
 
         <activity
-            android:name=".view.WebViewActivity"
-            android:screenOrientation="portrait" />
+            android:name=".view.InfoActivity"
+            android:screenOrientation="portrait"
+            android:parentActivityName=".view.MainActivity"/>
 
         <service android:name=".service.LocationService" />
     </application>

@@ -3,7 +3,6 @@ package pl.poznajapp.view;
 import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
-import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -14,7 +13,6 @@ import android.content.ServiceConnection;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.provider.Settings;
@@ -50,7 +48,6 @@ import pl.poznajapp.BuildConfig;
 import pl.poznajapp.PoznajApp;
 import pl.poznajapp.R;
 import pl.poznajapp.adapter.StoryListAdapter;
-import pl.poznajapp.helpers.FacebookPageUrl;
 import pl.poznajapp.helpers.Utils;
 import pl.poznajapp.listeners.RecyclerViewItemClickListener;
 import pl.poznajapp.model.Story;
@@ -107,62 +104,9 @@ public class MainActivity extends BaseAppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Intent intent;
         switch (item.getItemId()) {
             case R.id.action_about:
-                intent = new Intent(this, WebViewActivity.class);
-                intent.putExtra("url", Utils.INSTANCE.getURL_POZNAJAPP_ABOUT());
-                intent.putExtra("title", getString(R.string.action_about));
-                startActivity(intent);
-                return true;
-            case R.id.action_club:
-                intent = new Intent(this, WebViewActivity.class);
-                intent.putExtra("url", Utils.INSTANCE.getURL_POZNAJAPP_KJ());
-                intent.putExtra("title", getString(R.string.action_club));
-                startActivity(intent);
-                return true;
-            case R.id.action_team:
-                intent = new Intent(this, WebViewActivity.class);
-                intent.putExtra("url", Utils.INSTANCE.getURL_POZNAJAPP_TEAM());
-                intent.putExtra("title", getString(R.string.action_team));
-                startActivity(intent);
-                return true;
-            case R.id.action_partners:
-                intent = new Intent(this, WebViewActivity.class);
-                intent.putExtra("url", Utils.INSTANCE.getURL_POZNAJAPP_PARTNERS());
-                intent.putExtra("title", getString(R.string.action_partners));
-                startActivity(intent);
-                return true;
-            case R.id.action_bug:
-                intent = new Intent(android.content.Intent.ACTION_SEND);
-                intent.setType("plain/text");
-                intent.putExtra(android.content.Intent.EXTRA_EMAIL, new String[]{Utils.INSTANCE.getPOZNAJAPP_MAIL()}); // do kogo
-                intent.putExtra(android.content.Intent.EXTRA_SUBJECT, getString(R.string.bug_mail_title)); // tytuł maila
-                intent.putExtra(android.content.Intent.EXTRA_TEXT,
-                        "APP_VERSION_NAME: " + BuildConfig.VERSION_NAME +
-                                " | ANDROID_VERSION: " + Build.VERSION.RELEASE +
-                                " | DEVICE_MODEL: " + android.os.Build.MODEL +
-                                " | " + getString(R.string.bug_mail_text)); // tresc maila
-                startActivity(intent);
-                return true;
-
-            case R.id.action_rate:
-                Uri uri = Uri.parse("market://details?id=" + this.getPackageName());
-                intent = new Intent(Intent.ACTION_VIEW, uri);
-                intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY |
-                        Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET |
-                        Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
-                try {
-                    startActivity(intent);
-                } catch (ActivityNotFoundException e) {
-                    startActivity(new Intent(Intent.ACTION_VIEW,
-                            Uri.parse("http://play.google.com/store/apps/details?id=" + this.getPackageName())));
-                }
-                return true;
-            case R.id.action_fb:
-                String facebookPageURL = new FacebookPageUrl().getFacebookPageURL(this, Utils.INSTANCE.getURL_POZNAJAPP_FB(), Utils.INSTANCE.getURL_POZNAJAPP_FB_PAGENAME());
-                intent = new Intent(Intent.ACTION_VIEW, Uri.parse(facebookPageURL));
-                startActivity(intent);
+                startActivity(new Intent(this, InfoActivity.class));
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
