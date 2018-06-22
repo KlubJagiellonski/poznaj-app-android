@@ -8,18 +8,8 @@
     <string name="no_internet">Brak połączenia z internetem</string>
     <string name="settings">Ustawienia</string>
     <string name="ok">OK</string>
-    <string name="story_duration">Długość:</string>
 
     <string name="action_about">O PoznajApp</string>
-    <string name="title_activity_activity_about">O aplikacji</string>
-    <string name="action_club">O Klubie Jagiellońskim</string>
-    <string name="action_team">Zespół</string>
-    <string name="action_partners">Partnerzy</string>
-    <string name="action_bug">Zgłoś Bład</string>
-    <string name="action_rate">Oceń PoznajApp</string>
-    <string name="action_fb">PoznajApp na Facebooku</string>
-    <string name="bug_mail_title">Chce zglosic blad</string>
-    <string name="bug_mail_text"> Tresc maila</string>
     <string name="no_content_text">Nie ma tras dla Twojej okolicy.  Cały czas nad nimi pracujemy!</string>
     <string name="get_location">Pobieranie lokalizacji</string>
     <string name="download_stories">Pobieranie tras</string>
