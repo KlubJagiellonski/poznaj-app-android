@@ -24,7 +24,7 @@
     <string name="get_location">Pobieranie lokalizacji</string>
     <string name="download_stories">Pobieranie tras</string>
     <string name="download_story">Pobieranie trasy</string>
-    <string name="about_description">Aplikacja Poznajapp została stworzona by pomóc Ci poznać miejsce w którym mieszkasz. Zabierając PoznajApp na spacer możesz odkryć jakie niezwykłe historie mają miejsca Twojego miasta \n\n Aplikacja stworzona i wydaja przez Klub Jagielloński we współpracy z inicjatywą Koduj dla Polski.</string>
-    <string name="about_team">Programiści:\n  Krzysztof Żuraw\n  Maciej Węgrecki\n  Mikołaj Rodkiewicz\n  Radosław Groński\n  Jakub Stefanowski\n  Rafał Gawlik\n\n    Historycy:\n  Klementyna Marszałek\n\n    Koordynacja:\n  Rafał Gawlik</string>
+    <string name="about_description">Aplikacja Poznajapp została stworzona by pomóc Ci poznać miejsce w którym mieszkasz. Zabierając PoznajApp na spacer możesz odkryć jakie niezwykłe historie mają miejsca Twojego miasta \n\nAplikacja stworzona i wydaja przez Klub Jagielloński we współpracy z inicjatywą Koduj dla Polski.</string>
+    <string name="about_team">Programiści:\nKrzysztof Żuraw\nMaciej Węgrecki\nMikołaj Rodkiewicz\nRadosław Groński\nJakub Stefanowski\nRafał Gawlik\n\nHistorycy:\nKlementyna Marszałek\n\nKoordynacja:\nRafał Gawlik</string>
 
 </resources>

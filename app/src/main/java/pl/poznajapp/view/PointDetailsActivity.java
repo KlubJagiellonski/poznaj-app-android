@@ -60,10 +60,8 @@ public class PointDetailsActivity extends BaseAppCompatActivity {
 
     private void setupView(String image, String title, String description) {
         ImageView pointIv = findViewById(R.id.point_details_back_iv);
-        TextView pointTitleTv = findViewById(R.id.point_title_text_tv);
         TextView pointDetailsTv = findViewById(R.id.point_details_text_tv);
 
-        pointTitleTv.setText(title);
         pointDetailsTv.setText(description);
 
         Picasso.with(getApplicationContext()).load(image).into(pointIv);
