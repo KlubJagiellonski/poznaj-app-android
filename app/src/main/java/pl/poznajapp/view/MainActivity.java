@@ -329,6 +329,7 @@ public class MainActivity extends BaseAppCompatActivity {
                         Manifest.permission.ACCESS_FINE_LOCATION);
 
         if (shouldProvideRationale) {
+            hideProgressDialog();
             Timber.d("Displaying permission rationale to provide additional context.");
             Snackbar.make(
                     findViewById(R.id.activity_main),
