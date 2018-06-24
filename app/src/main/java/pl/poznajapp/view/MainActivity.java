@@ -89,9 +89,7 @@ public class MainActivity extends BaseAppCompatActivity {
         locationReceiver = new LocationReceiver();
         setContentView(R.layout.activity_main);
 
-        showProgressDialog(null, getString(R.string.get_location));
-
-        stories = new ArrayList<Story>();
+        stories = new ArrayList<>();
         setupView();
         initListeners();
     }
@@ -395,6 +393,11 @@ public class MainActivity extends BaseAppCompatActivity {
             LocationService.LocalBinder binder = (LocationService.LocalBinder) service;
             locationService = binder.getService();
             locationService.requestLocationUpdates();
+
+            if (!progressDialog.isShowing() && !progressDialogShowed) {
+                showProgressDialog(null, getString(R.string.get_location));
+            }
+
             bound = true;
         }
 
