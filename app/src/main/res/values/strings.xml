@@ -2,7 +2,6 @@
     <string name="app_name">PoznajApp</string>
     <string name="poznaj_app_api_url">https://poznaj-wroclaw.herokuapp.com/api/</string>
 
-    <string name="location_updated">Lokalizacja: %1$s</string>
     <string name="permission_rationale">Lokalizacja jest potrzebna do podstawowych funkcjonalności</string>
     <string name="permission_denied_explanation">Nie udziolono dostepu do lokalizacji, podstawowe funkcjonalności nie działają</string>
     <string name="no_internet">Brak połączenia z internetem</string>
@@ -14,7 +13,7 @@
     <string name="get_location">Pobieranie lokalizacji</string>
     <string name="download_stories">Pobieranie tras</string>
     <string name="download_story">Pobieranie trasy</string>
-    <string name="about_description">Aplikacja Poznajapp została stworzona by pomóc Ci poznać miejsce w którym mieszkasz. Zabierając PoznajApp na spacer możesz odkryć jakie niezwykłe historie mają miejsca Twojego miasta \n\nAplikacja stworzona i wydaja przez Klub Jagielloński we współpracy z inicjatywą Koduj dla Polski.</string>
-    <string name="about_team">Programiści:\nKrzysztof Żuraw\nMaciej Węgrecki\nMikołaj Rodkiewicz\nRadosław Groński\nJakub Stefanowski\nRafał Gawlik\n\nHistorycy:\nKlementyna Marszałek\n\nKoordynacja:\nRafał Gawlik</string>
+    <string name="about_description">Aplikacja <b>PoznajApp</b> została stworzona by pomóc Ci poznać miejsce w którym mieszkasz. Zabierając PoznajApp na spacer możesz odkryć jakie niezwykłe historie mają miejsca Twojego miasta \n\nAplikacja stworzona i wydaja przez <b>Klub Jagielloński</b> we współpracy z inicjatywą <b>Koduj dla Polski</b>.</string>
+    <string name="about_team"><b>Programiści:</b>\nKrzysztof Żuraw\nMaciej Węgrecki\nMikołaj Rodkiewicz\nRadosław Groński\nJakub Stefanowski\nRafał Gawlik\n\n<b>Historycy:</b>\nKlementyna Marszałek\n\n<b>Koordynacja:</b>\nRafał Gawlik</string>
 
 </resources>

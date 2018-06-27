@@ -1,13 +1,8 @@
 package pl.poznajapp.view
 
+
 import android.os.Bundle
-import android.view.View
-import android.webkit.WebChromeClient
-import android.webkit.WebView
-
-
 import pl.poznajapp.R
-import pl.poznajapp.helpers.Utils
 import pl.poznajapp.view.base.BaseAppCompatActivity
 
 /**

@@ -13,23 +13,6 @@ import java.util.*
  */
 
 object Utils {
-    val URL_POZNAJAPP_ABOUT = "https://poznaj-wroclaw.herokuapp.com/mobile/about_app/"
-    val URL_POZNAJAPP_KJ = "https://poznaj-wroclaw.herokuapp.com/mobile/about_kj/"
-    val URL_POZNAJAPP_TEAM = "https://poznaj-wroclaw.herokuapp.com/mobile/team/"
-    val URL_POZNAJAPP_PARTNERS = "https://poznaj-wroclaw.herokuapp.com/mobile/partners/"
-    val POZNAJAPP_MAIL = "poznaj.app@gmail.com"
-    val URL_POZNAJAPP_FB = "https://www.facebook.com/poznajapp"
-    val URL_POZNAJAPP_FB_PAGENAME = "poznajapp"
-
-    val TIMEOUT_SECONDS: Long = 20
-
-    fun dpToPx(dp: Int): Int {
-        return (dp * Resources.getSystem().displayMetrics.density).toInt()
-    }
-
-    fun pxToDp(px: Int): Int {
-        return (px / Resources.getSystem().displayMetrics.density).toInt()
-    }
 
     val KEY_REQUESTING_LOCATION_UPDATES = "requesting_locaction_updates"
 
@@ -63,10 +46,5 @@ object Utils {
             "Unknown location"
         else
             "(" + location!!.getLatitude() + ", " + location!!.getLongitude() + ")"
-    }
-
-    fun getLocationTitle(context: Context): String {
-        return context.getString(R.string.location_updated,
-                DateFormat.getDateTimeInstance().format(Date()))
     }
 }
