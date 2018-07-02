@@ -51,6 +51,7 @@ public class BaseAppCompatActivity extends AppCompatActivity {
     }
 
     public void hideProgressDialog(){
+        if(progressDialog !=null && progressDialog.isShowing())
             progressDialog.dismiss();
     }
 
