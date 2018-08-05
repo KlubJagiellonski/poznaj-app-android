@@ -44,7 +44,6 @@
             android:screenOrientation="portrait"
             android:parentActivityName=".view.MainActivity"/>
 
-        <service android:name=".service.LocationService" />
     </application>
 
 </manifest>
