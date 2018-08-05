@@ -4,11 +4,9 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.Snackbar
-import android.view.View
-import android.widget.ImageView
-import android.widget.TextView
 
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.activity_story_details.*
 
 import pl.poznajapp.API.APIService
 import pl.poznajapp.PoznajApp
@@ -26,10 +24,7 @@ import timber.log.Timber
 
 class StoryDetailsActivity : BaseAppCompatActivity() {
 
-    private var backgroundImage: ImageView? = null
-    private var description: TextView? = null
-
-    private var story: Story? = null
+    private lateinit var story: Story
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,9 +39,6 @@ class StoryDetailsActivity : BaseAppCompatActivity() {
     }
 
     private fun setupView() {
-        backgroundImage = findViewById(R.id.story_details_back_iv)
-        description = findViewById(R.id.story_details_text_tv)
-
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
     }
 
@@ -63,11 +55,11 @@ class StoryDetailsActivity : BaseAppCompatActivity() {
                 override fun onResponse(call: Call<Story>, response: Response<Story>) {
                     Timber.d(response.message())
 
-                    story = response.body()
-                    supportActionBar!!.title = story!!.title
-                    description!!.text = story!!.description
+                    story = response.body()!!
+                    supportActionBar!!.title = story.title
+                    story_details_text_tv.text = story.description
 
-                    Picasso.with(applicationContext).load(story!!.storyImages[0].imageFile).into(backgroundImage)
+                    Picasso.with(applicationContext).load(story.storyImages[0].imageFile).into(story_details_back_iv)
                     if (progressDialog.isShowing)
                         hideProgressDialog()
                 }
@@ -87,14 +79,13 @@ class StoryDetailsActivity : BaseAppCompatActivity() {
         }
     }
 
-    fun onStartClick(view: View) {
-        if (story != null)
-            startActivity(MapActivity.getConfigureIntent(this, story!!.id, story!!.title))
+    fun onStartClick() {
+        startActivity(MapActivity.getConfigureIntent(this, story.id, story.title))
     }
 
     companion object {
 
-        val EXTRAS_STORY_ID = "EXTRAS_STORY_ID"
+        const val EXTRAS_STORY_ID = "EXTRAS_STORY_ID"
 
         fun getConfigureIntent(context: Context, storyId: Int?): Intent {
             val intent = Intent(context, StoryDetailsActivity::class.java)

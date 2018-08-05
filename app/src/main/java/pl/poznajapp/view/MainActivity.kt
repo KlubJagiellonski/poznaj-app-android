@@ -14,19 +14,14 @@ import android.support.design.widget.Snackbar
 import android.support.v4.app.ActivityCompat
 import android.support.v7.widget.DefaultItemAnimator
 import android.support.v7.widget.LinearLayoutManager
-import android.support.v7.widget.RecyclerView
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.LinearLayout
 
 import com.google.android.gms.common.api.GoogleApiClient
-import com.google.android.gms.common.api.PendingResult
-import com.google.android.gms.common.api.Status
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
-import com.google.android.gms.location.LocationSettingsResult
 import com.google.android.gms.location.LocationSettingsStatusCodes
 import com.patloew.rxlocation.RxLocation
 
@@ -34,6 +29,7 @@ import java.util.ArrayList
 
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
+import kotlinx.android.synthetic.main.activity_main.*
 import pl.poznajapp.API.APIService
 import pl.poznajapp.BuildConfig
 import pl.poznajapp.PoznajApp
@@ -52,13 +48,10 @@ import retrofit2.Response
 
 class MainActivity : BaseAppCompatActivity() {
 
-    private var googleApiClient: GoogleApiClient? = null
+    private lateinit var googleApiClient: GoogleApiClient
 
-    private var storyListRV: RecyclerView? = null
-    private var noContentLL: LinearLayout? = null
-
-    private var adapter: StoryListAdapter? = null
-    private var stories: MutableList<Story>? = null
+    private lateinit var adapter: StoryListAdapter
+    private lateinit var stories: MutableList<Story>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,30 +78,27 @@ class MainActivity : BaseAppCompatActivity() {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
+        return when (item.itemId) {
             R.id.action_about -> {
                 startActivity(Intent(this, InfoActivity::class.java))
-                return true
+                true
             }
-            else -> return super.onOptionsItemSelected(item)
+            else -> super.onOptionsItemSelected(item)
         }
     }
 
     private fun setupView() {
-        storyListRV = findViewById(R.id.activity_main_story_list_rv)
-        noContentLL = findViewById(R.id.activity_main_no_content_ll)
-
         adapter = StoryListAdapter(applicationContext, stories)
-        storyListRV!!.layoutManager = LinearLayoutManager(applicationContext)
-        storyListRV!!.adapter = adapter
-        storyListRV!!.itemAnimator = DefaultItemAnimator()
+        activity_main_story_list_rv.layoutManager = LinearLayoutManager(applicationContext)
+        activity_main_story_list_rv.adapter = adapter
+        activity_main_story_list_rv.itemAnimator = DefaultItemAnimator()
     }
 
     private fun initListeners() {
-        storyListRV!!.addOnItemTouchListener(RecyclerViewItemClickListener(this,
-                storyListRV, object : RecyclerViewItemClickListener.OnItemClickListener {
+        activity_main_story_list_rv.addOnItemTouchListener(RecyclerViewItemClickListener(this,
+                activity_main_story_list_rv, object : RecyclerViewItemClickListener.OnItemClickListener {
             override fun onItemClick(view: View, position: Int) {
-                startActivity(StoryDetailsActivity.getConfigureIntent(applicationContext, stories!![position].id))
+                startActivity(StoryDetailsActivity.getConfigureIntent(applicationContext, stories[position].id))
             }
 
             override fun onItemLongClick(view: View, position: Int) {
@@ -127,11 +117,11 @@ class MainActivity : BaseAppCompatActivity() {
             storyListCall.enqueue(object : Callback<List<Story>> {
                 override fun onResponse(call: Call<List<Story>>, response: Response<List<Story>>) {
                     if (response.body() != null)
-                        stories!!.clear()
-                    stories!!.addAll(response.body()!!)
-                    adapter!!.notifyDataSetChanged()
+                        stories.clear()
+                    stories.addAll(response.body()!!)
+                    adapter.notifyDataSetChanged()
 
-                    showNoContent(stories!!.size == 0)
+                    showNoContent(stories.size == 0)
                     hideProgressDialog()
                 }
 
@@ -147,16 +137,16 @@ class MainActivity : BaseAppCompatActivity() {
     }
 
     private fun showNoContent(isListEmpty: Boolean) {
-        storyListRV!!.visibility = if (isListEmpty) View.GONE else View.VISIBLE
-        noContentLL!!.visibility = if (isListEmpty) View.VISIBLE else View.GONE
+        activity_main_story_list_rv.visibility = if (isListEmpty) View.GONE else View.VISIBLE
+        activity_main_no_content_ll.visibility = if (isListEmpty) View.VISIBLE else View.GONE
     }
 
-    protected fun checkPermissions(): Boolean {
+    private fun checkPermissions(): Boolean {
         return PackageManager.PERMISSION_GRANTED == ActivityCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
     }
 
-    protected fun checkLocationEnabled() {
+    private fun checkLocationEnabled() {
         //location settings
         val locationRequest = LocationRequest.create()
         locationRequest.priority = LocationRequest.PRIORITY_HIGH_ACCURACY
@@ -172,16 +162,16 @@ class MainActivity : BaseAppCompatActivity() {
                     }
 
                     override fun onConnectionSuspended(i: Int) {
-                        googleApiClient!!.connect()
+                        googleApiClient.connect()
                     }
                 })
-                .addOnConnectionFailedListener { connectionResult ->
+                .addOnConnectionFailedListener {
 
                 }.build()
 
         builder.setAlwaysShow(true)
 
-        googleApiClient!!.connect()
+        googleApiClient.connect()
         val result = LocationServices.SettingsApi.checkLocationSettings(googleApiClient, builder.build())
 
         result.setResultCallback { locationSettingsResult ->
@@ -203,7 +193,7 @@ class MainActivity : BaseAppCompatActivity() {
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>,
                                             grantResults: IntArray) {
         if (requestCode == REQUEST_PERMISSIONS_REQUEST_CODE) {
-            if (grantResults.size > 0) {
+            if (grantResults.isNotEmpty()) {
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     checkLocationEnabled()
                 } else {
@@ -226,7 +216,7 @@ class MainActivity : BaseAppCompatActivity() {
         }
     }
 
-    protected fun requestPermissions() {
+    private fun requestPermissions() {
         val shouldProvideRationale = ActivityCompat.shouldShowRequestPermissionRationale(this,
                 Manifest.permission.ACCESS_FINE_LOCATION)
 
@@ -260,7 +250,7 @@ class MainActivity : BaseAppCompatActivity() {
         }
     }
 
-    fun getLocation() {
+    private fun getLocation() {
 
         val rxLocation = RxLocation(this)
         val locationRequest = LocationRequest.create().setPriority(LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY)
@@ -290,7 +280,7 @@ class MainActivity : BaseAppCompatActivity() {
 
     companion object {
 
-        protected val REQUEST_CHECK_SETTINGS = 1
-        protected val REQUEST_PERMISSIONS_REQUEST_CODE = 2
+        private val REQUEST_CHECK_SETTINGS = 1
+        private val REQUEST_PERMISSIONS_REQUEST_CODE = 2
     }
 }
