@@ -111,7 +111,7 @@ class MainActivity : BaseAppCompatActivity() {
         if (isInternetEnable) {
             val service = PoznajApp.retrofit.create(APIService::class.java)
 
-            showProgressDialog(null, getString(R.string.download_stories))
+            showProgressDialog("", getString(R.string.download_stories))
 
             val storyListCall = service.listStories(location.latitude, location.longitude)
             storyListCall.enqueue(object : Callback<List<Story>> {
@@ -260,7 +260,7 @@ class MainActivity : BaseAppCompatActivity() {
 
         rxLocation.location().updates(locationRequest).subscribe(object : Observer<Location> {
             override fun onSubscribe(d: Disposable) {
-                showProgressDialog(null, getString(R.string.get_location))
+                showProgressDialog("", getString(R.string.get_location))
             }
 
             override fun onNext(location: Location) {

@@ -49,7 +49,7 @@ class StoryDetailsActivity : BaseAppCompatActivity() {
         if (isInternetEnable) {
             val service = PoznajApp.retrofit.create(APIService::class.java)
 
-            showProgressDialog(null, getString(R.string.download_story))
+            showProgressDialog("", getString(R.string.download_story))
             val storyCall = service.getStory(id)
             storyCall.enqueue(object : Callback<Story> {
                 override fun onResponse(call: Call<Story>, response: Response<Story>) {
