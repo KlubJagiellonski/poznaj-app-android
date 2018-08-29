@@ -101,7 +101,7 @@ class MainActivity : BaseAppCompatActivity() {
                 startActivity(StoryDetailsActivity.getConfigureIntent(applicationContext, stories[position].id))
             }
 
-            override fun onItemLongClick(view: View, position: Int) {
+            override fun onItemLongClick(view: View?, position: Int) {
 
             }
         }))

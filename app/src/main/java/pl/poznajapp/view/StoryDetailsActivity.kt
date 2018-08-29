@@ -3,7 +3,9 @@ package pl.poznajapp.view
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.Snackbar
+import android.view.View
 
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_story_details.*
@@ -40,6 +42,9 @@ class StoryDetailsActivity : BaseAppCompatActivity() {
 
     private fun setupView() {
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+
+        findViewById<FloatingActionButton>(R.id.story_details_walk_fab)
+                .setOnClickListener { startActivity(MapActivity.getConfigureIntent(this, story.id, story.title)) }
     }
 
     private fun loadStory(id: Int) {
@@ -77,10 +82,6 @@ class StoryDetailsActivity : BaseAppCompatActivity() {
                     Snackbar.LENGTH_INDEFINITE)
                     .show()
         }
-    }
-
-    fun onStartClick() {
-        startActivity(MapActivity.getConfigureIntent(this, story.id, story.title))
     }
 
     companion object {
