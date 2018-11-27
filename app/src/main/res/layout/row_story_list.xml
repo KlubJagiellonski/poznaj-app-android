@@ -22,7 +22,6 @@
             android:layout_width="match_parent"
             android:layout_height="160dp"
             android:scaleType="centerCrop"
-            android:src="@drawable/dribbble_statues"
             card_view:layout_constraintEnd_toEndOf="parent"
             card_view:layout_constraintStart_toStartOf="parent"
             card_view:layout_constraintTop_toTopOf="parent"
