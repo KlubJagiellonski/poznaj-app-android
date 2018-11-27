@@ -16,5 +16,6 @@
     <string name="about_description">Aplikacja <b>PoznajApp</b> została stworzona by pomóc Ci poznać miejsce w którym mieszkasz. Zabierając PoznajApp na spacer możesz odkryć jakie niezwykłe historie mają miejsca Twojego miasta \n\nAplikacja stworzona i wydaja przez <b>Klub Jagielloński</b> we współpracy z inicjatywą <b>Koduj dla Polski</b>.</string>
     <string name="about_team"><b>Programiści:</b>\nKrzysztof Żuraw\nMaciej Węgrecki\nMikołaj Rodkiewicz\nRadosław Groński\nJakub Stefanowski\nRafał Gawlik\n\n<b>Historycy:</b>\nKlementyna Marszałek\n\n<b>Koordynacja:</b>\nRafał Gawlik</string>
     <string name="reload_content">Załaduj na nowo</string>
+    <string name="zobacz">zobacz</string>
 
 </resources>

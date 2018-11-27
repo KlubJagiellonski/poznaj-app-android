@@ -14,7 +14,7 @@ import retrofit2.http.Query
 interface APIService {
 
     @GET("stories")
-    fun listStories(@Query("lat") latitude: Double?, @Query("long") longitude: Double?): Call<List<Story>>
+    fun listStories(): Call<List<Story>>
 
     @GET("stories/{id}")
     fun getStory(@Path("id") id: Int?): Call<Story>

@@ -3,9 +3,8 @@ package pl.poznajapp.view
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.support.design.widget.FloatingActionButton
-import android.support.design.widget.Snackbar
-import android.view.View
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
 
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_story_details.*
@@ -63,8 +62,10 @@ class StoryDetailsActivity : BaseAppCompatActivity() {
                     story = response.body()!!
                     supportActionBar!!.title = story.title
                     story_details_text_tv.text = story.description
-
-                    Picasso.with(applicationContext).load(story.storyImages[0].imageFile).into(story_details_back_iv)
+                    Picasso.with(applicationContext)
+                            .load(story.storyImages[0].imageFile)
+                            .placeholder(R.drawable.back)
+                            .into(story_details_back_iv)
                     if (progressDialog.isShowing)
                         hideProgressDialog()
                 }

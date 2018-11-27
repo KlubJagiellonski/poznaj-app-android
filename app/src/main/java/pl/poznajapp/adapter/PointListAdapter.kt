@@ -1,10 +1,9 @@
 package pl.poznajapp.adapter
 
-import android.support.v7.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageView
 import android.widget.TextView
 
 import pl.poznajapp.R
@@ -37,7 +36,7 @@ class PointListAdapter(private var pointList: List<Feature>?, private val listen
         val pos = holder.adapterPosition
         holder.tv.text = pointList!![position].properties.title
         holder.tv.setOnClickListener { listener.onMoveClick(pointList!![pos], pos) }
-        holder.iv.setOnClickListener { listener.onDetailsClick(pointList!![pos], pos) }
+        holder.visit.setOnClickListener { listener.onDetailsClick(pointList!![pos], pos) }
     }
 
     override fun getItemCount(): Int {
@@ -45,8 +44,8 @@ class PointListAdapter(private var pointList: List<Feature>?, private val listen
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        var tv: TextView = itemView.findViewById(R.id.row_point_list_tv)
-        var iv: ImageView = itemView.findViewById(R.id.row_point_details_iv)
+        var tv: TextView = itemView.findViewById(R.id.rowPointListTitle)
+        var visit: TextView = itemView.findViewById(R.id.rowPointDetailsVisit)
 
     }
 }

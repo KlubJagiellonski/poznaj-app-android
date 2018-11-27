@@ -41,10 +41,18 @@ class PointDetailsActivity : BaseAppCompatActivity() {
     private fun setupView(image: String, title: String, description: String) {
         point_details_text_tv.text = description
 
-        Picasso.with(applicationContext).load(image).into(point_details_back_iv)
+        Picasso.with(applicationContext)
+                .load(image)
+                .placeholder(R.drawable.back)
+                .into(point_details_back_iv)
 
         supportActionBar!!.title = title
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+
+        activityPointDetailsAction.setOnClickListener {
+            onShowGoogleMapsClick()
+        }
+
     }
 
     fun onShowGoogleMapsClick() {

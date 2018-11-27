@@ -10,15 +10,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/activity_main_story_list_rv"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/activityMainStoryList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scrollbars="vertical"
             android:visibility="visible" />
 
         <LinearLayout
-            android:id="@+id/activity_main_no_content_ll"
+            android:id="@+id/activityMainNoContent"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center_vertical|center_horizontal"
@@ -37,7 +37,5 @@
                 android:text="@string/no_content_text" />
 
         </LinearLayout>
-
     </RelativeLayout>
-
 </LinearLayout>
