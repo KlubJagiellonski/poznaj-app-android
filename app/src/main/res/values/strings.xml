@@ -17,5 +17,8 @@
     <string name="about_team"><b>Programiści:</b>\nKrzysztof Żuraw\nMaciej Węgrecki\nMikołaj Rodkiewicz\nRadosław Groński\nJakub Stefanowski\nRafał Gawlik\n\n<b>Historycy:</b>\nKlementyna Marszałek\n\n<b>Koordynacja:</b>\nRafał Gawlik</string>
     <string name="reload_content">Załaduj na nowo</string>
     <string name="zobacz">zobacz</string>
+    <string name="back"><![CDATA[<]]></string>
+    <string name="mapa">Mapa</string>
+    <string name="info">info</string>
 
 </resources>

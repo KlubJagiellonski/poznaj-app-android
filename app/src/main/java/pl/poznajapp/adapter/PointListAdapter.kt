@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import com.google.android.material.button.MaterialButton
 
 import pl.poznajapp.R
 import pl.poznajapp.adapter.PointListAdapter.ViewHolder
@@ -45,7 +46,7 @@ class PointListAdapter(private var pointList: List<Feature>?, private val listen
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         var tv: TextView = itemView.findViewById(R.id.rowPointListTitle)
-        var visit: TextView = itemView.findViewById(R.id.rowPointDetailsVisit)
+        var visit: MaterialButton = itemView.findViewById(R.id.rowPointDetailsVisit)
 
     }
 }

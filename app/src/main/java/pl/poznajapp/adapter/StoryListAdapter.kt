@@ -30,7 +30,6 @@ class StoryListAdapter(private val context: Context, private val storyList: List
         holder.tv.text = storyList[position].title
         Picasso.with(context)
                 .load(storyList[position].storyImages[0].imageFile)
-                .placeholder(R.drawable.back)
                 .into(holder.imageView)
     }
 

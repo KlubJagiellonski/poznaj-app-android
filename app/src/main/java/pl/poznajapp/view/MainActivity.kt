@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.toolbar.*
 import pl.poznajapp.API.APIService
 import pl.poznajapp.PoznajApp
 import pl.poznajapp.R
@@ -36,6 +37,12 @@ class MainActivity : BaseAppCompatActivity() {
 
         setupView()
         initListeners()
+        startIntroAnimation()
+    }
+
+    private fun startIntroAnimation() {
+        val actionbarSize = 1000
+        mainToolbar.translationY = -actionbarSize.toFloat()
     }
 
     override fun onResume() {
@@ -43,26 +50,16 @@ class MainActivity : BaseAppCompatActivity() {
         loadStories()
     }
 
-    override fun onCreateOptionsMenu(menu: Menu): Boolean {
-        menuInflater.inflate(R.menu.main_menu, menu)
-        return true
-    }
-
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        return when (item.itemId) {
-            R.id.action_about -> {
-                startActivity(Intent(this, InfoActivity::class.java))
-                true
-            }
-            else -> super.onOptionsItemSelected(item)
-        }
-    }
-
     private fun setupView() {
         adapter = StoryListAdapter(applicationContext, stories)
         activityMainStoryList.layoutManager = LinearLayoutManager(applicationContext)
         activityMainStoryList.adapter = adapter
         activityMainStoryList.itemAnimator = DefaultItemAnimator()
+
+        info.visibility = View.VISIBLE
+        info.setOnClickListener {
+            startActivity(Intent(this, InfoActivity::class.java))
+        }
     }
 
     private fun initListeners() {
@@ -87,13 +84,20 @@ class MainActivity : BaseAppCompatActivity() {
             val storyListCall = service.listStories()
             storyListCall.enqueue(object : Callback<List<Story>> {
                 override fun onResponse(call: Call<List<Story>>, response: Response<List<Story>>) {
-                    if (response.body() != null)
-                        stories.clear()
-                    stories.addAll(response.body()!!)
-                    adapter.notifyDataSetChanged()
 
-                    showNoContent(stories.size == 0)
+                    response.body()?.let {
+                        stories.clear()
+                        stories.addAll(it)
+                        adapter.notifyDataSetChanged()
+                    }
+
                     hideProgressDialog()
+                    showNoContent(stories.size == 0)
+                    mainToolbar.animate()
+                            .translationY(0F)
+                            .setDuration(400)
+                            .startDelay = 300
+
                 }
 
                 override fun onFailure(call: Call<List<Story>>, throwable: Throwable) {

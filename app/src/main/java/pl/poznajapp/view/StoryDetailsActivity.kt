@@ -3,11 +3,14 @@ package pl.poznajapp.view
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import com.google.android.material.floatingactionbutton.FloatingActionButton
+import android.view.View
+import com.google.android.material.bottomappbar.BottomAppBar
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_story_details.*
+import kotlinx.android.synthetic.main.toolbar.*
 
 import pl.poznajapp.API.APIService
 import pl.poznajapp.PoznajApp
@@ -40,10 +43,10 @@ class StoryDetailsActivity : BaseAppCompatActivity() {
     }
 
     private fun setupView() {
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        mainToolbarBack.visibility = View.VISIBLE
+        mainToolbarBack.setOnClickListener { finish() }
 
-        findViewById<FloatingActionButton>(R.id.story_details_walk_fab)
-                .setOnClickListener { startActivity(MapActivity.getConfigureIntent(this, story.id, story.title)) }
+        storyDetailsWalk.setOnClickListener { startActivity(MapActivity.getConfigureIntent(this, story.id, story.title)) }
     }
 
     private fun loadStory(id: Int) {
@@ -60,11 +63,10 @@ class StoryDetailsActivity : BaseAppCompatActivity() {
                     Timber.d(response.message())
 
                     story = response.body()!!
-                    supportActionBar!!.title = story.title
+                    mainToolbarTitle.text = story.title
                     story_details_text_tv.text = story.description
                     Picasso.with(applicationContext)
                             .load(story.storyImages[0].imageFile)
-                            .placeholder(R.drawable.back)
                             .into(story_details_back_iv)
                     if (progressDialog.isShowing)
                         hideProgressDialog()

@@ -13,13 +13,13 @@ import retrofit2.http.Query
 
 interface APIService {
 
-    @GET("stories")
+    @GET("stories/?format=json")
     fun listStories(): Call<List<Story>>
 
-    @GET("stories/{id}")
+    @GET("stories/{id}/?format=json")
     fun getStory(@Path("id") id: Int?): Call<Story>
 
-    @GET("stories/{id}/points/")
+    @GET("stories/{id}/points/?format=json")
     fun getStoryPoints(@Path("id") id: Int?): Call<List<Point>>
 
 }

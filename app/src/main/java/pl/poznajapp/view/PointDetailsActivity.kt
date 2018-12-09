@@ -4,9 +4,11 @@ import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.view.View
 
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_point_details.*
+import kotlinx.android.synthetic.main.toolbar.*
 
 import pl.poznajapp.R
 import pl.poznajapp.view.base.BaseAppCompatActivity
@@ -43,13 +45,13 @@ class PointDetailsActivity : BaseAppCompatActivity() {
 
         Picasso.with(applicationContext)
                 .load(image)
-                .placeholder(R.drawable.back)
                 .into(point_details_back_iv)
 
-        supportActionBar!!.title = title
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        mainToolbarBack.visibility = View.VISIBLE
+        mainToolbarTitle.text = title
+        mainToolbarBack.setOnClickListener { finish() }
 
-        activityPointDetailsAction.setOnClickListener {
+        pointDetailsWalk.setOnClickListener {
             onShowGoogleMapsClick()
         }
 

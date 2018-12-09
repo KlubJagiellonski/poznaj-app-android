@@ -17,6 +17,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
+import kotlinx.android.synthetic.main.toolbar.*
 
 import java.util.ArrayList
 
@@ -94,8 +95,9 @@ class MapActivity : BaseAppCompatActivity(), OnMapReadyCallback {
         val supportMapFragment = supportFragmentManager.findFragmentById(R.id.activity_map_map) as SupportMapFragment
         supportMapFragment.getMapAsync(this)
 
-        supportActionBar!!.title = title
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
+        mainToolbarBack.visibility = View.VISIBLE
+        mainToolbarTitle.text = title
+        mainToolbarBack.setOnClickListener { finish() }
     }
 
     override fun onMapReady(googleMap: GoogleMap) {

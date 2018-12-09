@@ -4,8 +4,10 @@
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="pl.poznajapp.view.MainActivity"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    tools:context="pl.poznajapp.view.MainActivity">
+
+    <include layout="@layout/toolbar"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
