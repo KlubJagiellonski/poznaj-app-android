@@ -9,8 +9,8 @@ android {
         applicationId "pl.poznajapp"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 10
-        versionName "1.5.2"
+        versionCode 12
+        versionName "1.5.4"
     }
 
     packagingOptions {

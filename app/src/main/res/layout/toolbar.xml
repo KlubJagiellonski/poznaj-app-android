@@ -20,7 +20,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
             android:text="@string/back"
-            android:layout_marginEnd="24dp"
+            android:layout_marginEnd="32dp"
             android:textColor="#fff"
             android:background="@color/primary_dark"
             android:fontFamily="@font/releway"
