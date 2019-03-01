@@ -5,5 +5,5 @@ package pl.poznajapp.helpers
  */
 
 object Config {
-    val TIMEOUT_SECONDS = 20L
+    const val TIMEOUT_SECONDS = 20L
 }

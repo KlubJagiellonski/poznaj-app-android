@@ -111,7 +111,7 @@ class MapActivity : BaseAppCompatActivity(), OnMapReadyCallback {
                     Timber.d(response.message())
                     features = response.body()!![1].features
 
-                    adapter.setPointList(response.body()!![1].features)
+                    adapter.pointList = response.body()!![1].features
                     adapter.notifyDataSetChanged()
 
                     for (feature in response.body()!![1].features)

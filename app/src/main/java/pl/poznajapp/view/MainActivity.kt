@@ -57,9 +57,6 @@ class MainActivity : BaseAppCompatActivity() {
         activityMainStoryList.itemAnimator = DefaultItemAnimator()
 
         info.visibility = View.VISIBLE
-        info.setOnClickListener {
-            startActivity(Intent(this, InfoActivity::class.java))
-        }
     }
 
     private fun initListeners() {
@@ -73,6 +70,9 @@ class MainActivity : BaseAppCompatActivity() {
 
             }
         }))
+        info.setOnClickListener {
+            startActivity(Intent(this, InfoActivity::class.java))
+        }
     }
 
     private fun loadStories() {

@@ -4,8 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import com.google.android.material.bottomappbar.BottomAppBar
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 
 import com.squareup.picasso.Picasso
@@ -60,20 +58,19 @@ class StoryDetailsActivity : BaseAppCompatActivity() {
             val storyCall = service.getStory(id)
             storyCall.enqueue(object : Callback<Story> {
                 override fun onResponse(call: Call<Story>, response: Response<Story>) {
-                    Timber.d(response.message())
-
-                    story = response.body()!!
-                    mainToolbarTitle.text = story.title
-                    story_details_text_tv.text = story.description
-                    Picasso.with(applicationContext)
-                            .load(story.storyImages[0].imageFile)
-                            .into(story_details_back_iv)
-                    if (progressDialog.isShowing)
-                        hideProgressDialog()
+                    response.body()?.let {
+                        story = it
+                        mainToolbarTitle.text = story.title
+                        storyDetailsTextTV.text = story.description
+                        Picasso.with(applicationContext)
+                                .load(story.storyImages[0].imageFile)
+                                .into(storyDetailsBackIV)
+                        if (progressDialog.isShowing)
+                            hideProgressDialog()
+                    }
                 }
 
                 override fun onFailure(call: Call<Story>, t: Throwable) {
-                    Timber.e(t)
                     if (progressDialog.isShowing)
                         hideProgressDialog()
                 }

@@ -20,17 +20,13 @@ import pl.poznajapp.model.Story
 class StoryListAdapter(private val context: Context, private val storyList: List<Story>) : RecyclerView.Adapter<StoryListAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val itemView = LayoutInflater.from(parent.context)
-                .inflate(R.layout.row_story_list, parent, false)
-
+        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.row_story_list, parent, false)
         return ViewHolder(itemView)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         holder.tv.text = storyList[position].title
-        Picasso.with(context)
-                .load(storyList[position].storyImages[0].imageFile)
-                .into(holder.imageView)
+        Picasso.with(context).load(storyList[position].storyImages[0].imageFile).into(holder.imageView)
     }
 
     override fun getItemCount(): Int {
